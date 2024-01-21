@@ -127,7 +127,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
                 user.Email = Input.Email;
-                user.Name = Input.Name;
+                user.UserName = Input.Name;
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
 
