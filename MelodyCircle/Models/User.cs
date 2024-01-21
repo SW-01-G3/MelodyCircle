@@ -18,7 +18,7 @@ namespace MelodyCircle.Models
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Username")]
-        public string Username { get; set; }
+        public string Name { get; set; }
 
         [PersonalData]
         [Required]
