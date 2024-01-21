@@ -12,19 +12,19 @@ namespace MelodyCircle.Models
         [Required]
         [EmailAddress]
         [Display(Name = "E-Mail")]
-        public string Email {  get; set; }
-
-        [PersonalData]
-        [Required]
-        [DataType(DataType.DateTime)]
-        [Display(Name = "Username")]
-        public string Name { get; set; }
+        public string Email { get; set; }
 
         [PersonalData]
         [Required]
         [DataType(DataType.Text)]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
+        [PersonalData]
+        [Required]
+        [DataType(DataType.Date)]
         [Display(Name = "Data Nascimento")]
-        public DateTime BirthDate { get; set; }
+        public DateOnly BirthDate { get; set; }
 
         [PersonalData]
         [Required]

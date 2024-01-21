@@ -20,6 +20,13 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireDigit = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
