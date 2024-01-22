@@ -23,8 +23,13 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
-                <label asp-for="Input.Name" class="text-white fs-md-4 fs-lg-3">Name</label>
-                <input asp-for="Input.Name" class="form-control" autocomplete="username" aria-required="true" placeholder="iamuser123" />
+                <label asp-for="Input.UserName" class="text-white fs-md-4 fs-lg-3">Nome de utilizador</label>
+                <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="iamuser123" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            </div>
+            <div class="mb-3 text-center">
+                <label asp-for="Input.Name" class="text-white fs-md-4 fs-lg-3">Nome próprio</label>
+                <input asp-for="Input.Name" class="form-control" autocomplete="name" aria-required="true" placeholder="Primeiro Apelido" />
                 <span asp-validation-for="Input.Name" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
@@ -33,16 +38,16 @@
                 <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
-                <label asp-for="Input.Password" class="text-white fs-md-4 fs-lg-3">Password</label>
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                <label asp-for="Input.Password" class="text-white fs-md-4 fs-lg-3">Palavra-passe</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Palavra-passe" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
-                <label asp-for="Input.ConfirmPassword" class="text-white fs-md-4 fs-lg-3">Confirm Password</label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm password" />
+                <label asp-for="Input.ConfirmPassword" class="text-white fs-md-4 fs-lg-3">Confirmar Palavra-passe</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirmar Palavra-passe" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg bg-purple text-white">Register</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg bg-purple text-white">Registar</button>
         </form>
     </div>
 </div>
