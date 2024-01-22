@@ -9,6 +9,12 @@
 <div class="row">
     <div class="col-md-4 mx-auto">
         <form id="registerForm" class="bg-lightPurple p-2 p-sm-2 p-md-3 p-lg-5 rounded-3" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div class="text-end">
+                <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" 
+                    title="<p>São necessários entre 6 a 20 caracteres para a palavra-passe</p><p>Comfirmação tem de ser igual á palavra-passe</p>">
+                    ?
+                </button>
+            </div>
             <h2 class="text-white text-center">Registar</h2>
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="mb-3 text-center">
@@ -18,22 +24,22 @@
             </div>
             <div class="mb-3 text-center">
                 <label asp-for="Input.Name" class="text-white fs-md-4 fs-lg-3">Name</label>
-                <input asp-for="Input.Name" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
+                <input asp-for="Input.Name" class="form-control" autocomplete="username" aria-required="true" placeholder="iamuser123" />
                 <span asp-validation-for="Input.Name" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
                 <label asp-for="Input.BirthDate" class="text-white fs-md-4 fs-lg-3">Data de Nascimento</label>
-                <input asp-for="Input.BirthDate" class="form-control" autocomplete="on" aria-required="true" placeholder="dd/mm/aaaa" />
+                <input asp-for="Input.BirthDate" class="form-control" autocomplete="on" aria-required="true" />
                 <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
                 <label asp-for="Input.Password" class="text-white fs-md-4 fs-lg-3">Password</label>
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="mb-3 text-center">
                 <label asp-for="Input.ConfirmPassword" class="text-white fs-md-4 fs-lg-3">Confirm Password</label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm password" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg bg-purple text-white">Register</button>
