@@ -11,8 +11,13 @@
     <div class="col-md-4 mx-auto">
         <section class="bg-lightPurple p-2 p-sm-2 p-md-3 p-lg-5 rounded-3">
             <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                            title="<p>Se ainda não se registou pode faze-lo na opção registar, com email e password, ou com a sua conta Google</p>">
+                        ?
+                    </button>
+                </div>
                 <h2 class="text-white text-center mb-3">Log In</h2>
-                
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3 text-center">
                     <label asp-for="Input.Email" class="form-label text-white fs-md-4 fs-lg-3">Email</label>
