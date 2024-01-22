@@ -94,7 +94,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             [PersonalData]
             [Required]
             [DataType(DataType.Date)]
-            [Range(typeof(DateOnly), "01-01-1924", "01-01-2019")]
+            //[Range(typeof(DateOnly), "01-01-1924", "01-01-2019")]
             [Display(Name = "Data Nascimento")]
             public DateOnly BirthDate { get; set; }
 
