@@ -1,5 +1,16 @@
+:root {
+    --darkPurple: #190482;
+    --purple: #7752FE;
+    --lightPurple: #8E8FFA;
+    --lightBlue: #C2D9FF;
+}
+
+* {
+    font-family: 'Playfair Display', serif !important;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
@@ -19,4 +30,60 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+/* -------------------------------------------- */
+
+.bg-darkPurple {
+    background-color: var(--darkPurple) !important;
+}
+
+.text-darkPurple {
+    color: var(--darkPurple) !important;
+}
+
+.border-darkPurple {
+    border-color: var(--darkPurple) !important;
+}
+
+/* -------------------------------------------- */
+
+.border-purple {
+    border-color: var(--purple) !important;
+}
+
+.bg-purple {
+    background-color: var(--purple) !important;
+}
+
+.text-purple {
+    color: var(--darkPurple) !important;
+}
+
+/* -------------------------------------------- */
+
+.bg-lightPurple {
+    background-color: var(--lightPurple) !important;
+}
+
+.text-lightPurple {
+    color: var(--lightPurple) !important;
+}
+
+.border-lightPurple {
+    border-color: var(--lightPurple) !important;
+}
+
+/* -------------------------------------------- */
+
+.bg-lightBlue {
+    background-color: var(--lightBlue) !important;
+}
+
+.text-lightBlue {
+    color: var(--lightBlue) !important;
+}
+
+.border-lightBlue {
+    border-color: var(--lightBlue) !important;
 }
