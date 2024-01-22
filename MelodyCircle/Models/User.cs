@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MelodyCircle.Services;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
@@ -11,13 +12,14 @@ namespace MelodyCircle.Models
         [PersonalData]
         [Required]
         [EmailAddress]
+        [UniqueEmail]
         [Display(Name = "E-Mail")]
         public string Email { get; set; }
 
         [PersonalData]
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Username")]
+        [Display(Name = "Name")]
         public string Name { get; set; }
 
         [PersonalData]

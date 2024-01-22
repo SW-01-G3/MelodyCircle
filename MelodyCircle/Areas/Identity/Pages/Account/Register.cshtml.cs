@@ -11,6 +11,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using MelodyCircle.Models;
+using MelodyCircle.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -76,15 +77,23 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+
+            [Required]
+            [Display(Name = "Username")]
+            public string UserName { get; set; }
+
             [Required]
             [EmailAddress]
+            [UniqueEmail]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Username")]
+            [Display(Name = "Name")]
             public string Name { get; set; }
+
 
             [PersonalData]
             [Required]
@@ -127,11 +136,12 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
                 user.Email = Input.Email;
-                user.UserName = Input.Name;
+                user.UserName = Input.UserName;
+                user.Name = Input.Name;
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
