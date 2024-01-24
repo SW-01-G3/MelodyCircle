@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MelodyCircle.Models;
@@ -81,6 +82,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Username")]
+            [RegularExpression(@"^[^@]+$", ErrorMessage = "Username não pode conter '@'")]
             public string UserName { get; set; }
 
             [Required]
@@ -98,7 +100,6 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             [PersonalData]
             [Required]
             [DataType(DataType.Date)]
-            //[Range(typeof(DateOnly), "01-01-1924", "01-01-2019")]
             [Display(Name = "Data Nascimento")]
             public DateOnly BirthDate { get; set; }
 
@@ -134,6 +135,22 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                DateTime currentDate = DateTime.Now;
+                DateOnly minDate = new DateOnly(currentDate.Year - 100, 1, 1);
+                DateOnly maxDate = new DateOnly(currentDate.Year - 5, 1, 1);
+
+                if (Input.BirthDate < minDate || Input.BirthDate > maxDate)
+                {
+                    ModelState.AddModelError("Input.BirthDate", $"The BirthDate must be between {minDate} and {maxDate}");
+                    return Page();
+                }
+
+                if (!Regex.IsMatch(Input.UserName, @"^[^@]+$"))
+                {
+                    ModelState.AddModelError("Input.UserName", "Username não pode conter '@'");
+                    return Page();
+                }
+
                 var user = CreateUser();
                 user.Email = Input.Email;
                 user.UserName = Input.UserName;
