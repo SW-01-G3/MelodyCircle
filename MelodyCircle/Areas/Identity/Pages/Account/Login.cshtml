@@ -20,9 +20,11 @@
                 <h2 class="text-white text-center mb-3">Log In</h2>
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3 text-center">
+
                     <label asp-for="Input.Email" class="form-label text-white fs-md-4 fs-lg-3">Email</label>
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                     <span asp-validation-for="Input.Email" class="bg-danger text-white"></span>
+
                 </div>
                 <div class="mb-3 text-center">
                     <label asp-for="Input.Password" class="form-label text-white fs-md-4 fs-lg-3">Palavra-passe</label>
