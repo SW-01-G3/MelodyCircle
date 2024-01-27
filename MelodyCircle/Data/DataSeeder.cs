@@ -37,7 +37,8 @@ namespace MelodyCircle.Data
                     Name = "Admin1",
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
-                    NormalizedEmail = "ADMIN@MELODYCIRCLE.PT"
+                    NormalizedEmail = "ADMIN@MELODYCIRCLE.PT",
+                    EmailConfirmed = true,
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
