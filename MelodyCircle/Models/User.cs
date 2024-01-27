@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace MelodyCircle.Models
 {
-    public class User: IdentityUser
+    public class User : IdentityUser
     {
         public Guid Id { get; set; }
 
