@@ -9,12 +9,12 @@ namespace MelodyCircle.Models
     {
         public Guid Id { get; set; }
 
-        [PersonalData]
-        [Required]
-        [EmailAddress]
-        [UniqueEmail]
-        [Display(Name = "E-Mail")]
-        public string Email { get; set; }
+        //[PersonalData]
+        //[Required]
+        //[EmailAddress]
+        //[UniqueEmail]
+        //[Display(Name = "E-Mail")]
+        //public string Email { get; set; }
 
         [PersonalData]
         [Required]
