@@ -2,7 +2,9 @@ using MelodyCircle.Data;
 using MelodyCircle.Models;
 using MelodyCircle.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -21,7 +23,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedEmail = true; 
+})
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
@@ -35,6 +40,16 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireDigit = true;
 });
+
+builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
+  new EmailSender(
+      builder.Configuration["EmailSender:Host"],
+      builder.Configuration.GetValue<int>("EmailSender:Port"),
+      builder.Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+      builder.Configuration["EmailSender:UserName"],
+      builder.Configuration["EmailSender:Password"]
+  )
+);
 
 builder.Services.AddScoped<UniqueEmailService>();
 
