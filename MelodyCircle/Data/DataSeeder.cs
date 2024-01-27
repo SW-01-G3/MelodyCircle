@@ -28,7 +28,7 @@ namespace MelodyCircle.Data
         private static async Task SeedAdminUser(UserManager<User> userManager)
         {
 
-            if (await userManager.FindByEmailAsync("admin@ips.pt") == null)
+            if (await userManager.FindByEmailAsync("admin@melodycircle.pt") == null)
             {
                 var user = new User
                 {
@@ -37,6 +37,7 @@ namespace MelodyCircle.Data
                     Name = "Admin1",
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
+                    NormalizedEmail = "ADMIN@MELODYCIRCLE.PT"
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
