@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"MelodyCircle Reference","topic_00000000000000B0.html"],['202',"MelodyCircle.Models Namespace","topic_000000000000009D.html"],['207',"User Class","topic_00000000000000A1.html"],['208',"Properties","topic_00000000000000A1_props--.html"],['210',"Id Property","topic_00000000000000A2.html"]];

@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"MelodyCircle Reference","topic_00000000000000B0.html"],['4',"MelodyCircle.Areas.Identity.Pages.Account Namespace","topic_000000000000003C.html"],['11',"ExternalLoginModel Class","topic_0000000000000041.html"],['25',"Methods","topic_0000000000000041_methods--.html"],['27',"OnGetCallbackAsync Method","topic_000000000000004F.html"]];
