@@ -20,15 +20,13 @@
                 <h2 class="text-white text-center mb-3">Log In</h2>
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3 text-center">
-
                     <label asp-for="Input.Email" class="form-label text-white fs-md-4 fs-lg-3">Email</label>
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nome@email.com" />
                     <span asp-validation-for="Input.Email" class="bg-danger text-white"></span>
-
                 </div>
                 <div class="mb-3 text-center">
                     <label asp-for="Input.Password" class="form-label text-white fs-md-4 fs-lg-3">Palavra-passe</label>
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Palavra-passe" />
                     <span asp-validation-for="Input.Password" class="bg-danger text-white"></span>
                 </div>
                 <div class="checkbox mb-3 text-center">
@@ -39,14 +37,13 @@
                 </div>
                 <div class="mb-3 text-center">
                     <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-white fs-md-4 fs-lg-3">Forgot your password?</a>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-white fs-md-4 fs-lg-3">Esqueceu-se da palavra-passe?</a>
                     </p>
                 <div>
-                        <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">Log in</button>
+                    <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">Log in</button>
                 </div>
                     <div class="text-center">
                         <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="w-75 mt-2 btn btn-lg bg-purple text-white">Register</a>
-                        
                     </div>
                     @*<p>
                         <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
