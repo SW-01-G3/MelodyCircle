@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MelodyCircle", "MelodyCircle\MelodyCircle.csproj", "{F6F71D08-1926-4EC7-94A2-CC795E6767B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MelodyCircle", "MelodyCircle\MelodyCircle.csproj", "{F6F71D08-1926-4EC7-94A2-CC795E6767B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MelodyCircleTest", "MelodyCircleTest\MelodyCircleTest.csproj", "{284F1A00-3714-4CFB-A890-149844B39776}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{284F1A00-3714-4CFB-A890-149844B39776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{284F1A00-3714-4CFB-A890-149844B39776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{284F1A00-3714-4CFB-A890-149844B39776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{284F1A00-3714-4CFB-A890-149844B39776}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
