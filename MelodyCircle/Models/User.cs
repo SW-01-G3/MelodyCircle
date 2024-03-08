@@ -33,5 +33,24 @@ namespace MelodyCircle.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+
+        [PersonalData]
+        [DataType(DataType.Upload)]
+        [Display(Name = "Foto de Perfil")]
+        public byte[]? ProfilePicture { get; set; }
+
+        [PersonalData]
+        //[DataType(DataType.)]
+        [Display(Name = "Género")]
+        public Gender Gender { get; set; }
+
+        public virtual List<User>? Connections { get; set; }
+    }
+
+    public enum Gender
+    {
+        Male,
+        Female,
+        Other
     }
 }
