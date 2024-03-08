@@ -1,11 +1,59 @@
-﻿@{
-    ViewData["Title"] = "UserProfile";
+﻿@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Index";
 }
-@section head {
-    <base href="/UserProfile">
-}
-<app-root></app-root>
-@section scripts {
-    <script src="~/js/polyfills-RT5I6R6G.js" type="module"></script>
-    <script src="~/js/main-3JPYQJYI.js" type="module"></script>
-}
+
+<h1>Users</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDate)
+                </td>
+                <td>
+                    <a asp-action="Profile" asp-route-id="@item.UserName">Profile</a> |
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>|
+                            <a asp-action = "Delete" asp-route-id = "@item.Id" > Delete </a>
+                        </td>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

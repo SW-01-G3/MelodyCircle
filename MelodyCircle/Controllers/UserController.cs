@@ -1,83 +1,65 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MelodyCircle.Data;
+using MelodyCircle.Models;
+using MelodyCircle.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using SendGrid.Helpers.Mail;
+using System.Numerics;
 
 namespace MelodyCircle.Controllers
 {
     public class UserController : Controller
     {
-        // GET: UserController
-        public ActionResult Index()
+        private readonly UserManager<User> _userManager;
+
+        public UserController(UserManager<User> userManager)
         {
-            return View();
+            _userManager = userManager;
         }
 
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
+        // GET: Patients
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var users = _userManager.Users;
+            return View(await users.ToListAsync());
         }
 
-        // GET: UserController/Create
-        public ActionResult Create()
+        [HttpGet]
+        public IActionResult ListUsers()
         {
-            return View();
+            var users = _userManager.Users;
+            return View(users);
         }
 
-        // POST: UserController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Profile(string? id)
         {
-            try
+            if (id == null || _userManager.Users == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(m => m.UserName == id);
 
-        // POST: UserController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
+            if (user == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            var roles = await _userManager.GetRolesAsync(user);
 
-        // POST: UserController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            var viewModel = new ProfileViewModel
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                User = user,
+                Roles = roles
+            };
+
+            return View(viewModel);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace MelodyCircle.Models
         [PersonalData]
         //[DataType(DataType.)]
         [Display(Name = "Género")]
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         public virtual List<User>? Connections { get; set; }
     }
