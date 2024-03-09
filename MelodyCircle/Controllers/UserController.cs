@@ -16,10 +16,12 @@ namespace MelodyCircle.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public UserController(UserManager<User> userManager)
+        public UserController(UserManager<User> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         // GET: Patients
@@ -60,6 +62,64 @@ namespace MelodyCircle.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddConnection(string id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userToAdd = await _userManager.FindByNameAsync(id);
+
+            if (currentUser == null || userToAdd == null)
+            {
+                return NotFound();
+            }
+
+            if (currentUser.UserName == userToAdd.UserName)
+            {
+                return BadRequest("Cannot add yourself as a connection.");
+            }
+
+            // Ensure the user isn't already in the connections list
+            if (currentUser.Connections == null)
+            {
+                currentUser.Connections = new List<User>();
+            }
+
+            if (currentUser.Connections.Contains(userToAdd))
+            {
+                return BadRequest("User is already in your connections list.");
+            }
+
+            currentUser.Connections.Add(userToAdd);
+            await _userManager.UpdateAsync(currentUser);
+
+            return RedirectToAction("Profile", new { id = userToAdd.UserName });
+        }
+
+        public async Task<IActionResult> ListConnections(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (id == null || _userManager.Users == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.Users
+                .FirstOrDefaultAsync(m => m.UserName == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Entry(user).Collection(u => u.Connections).LoadAsync();
+
+            return View(user.Connections);
         }
     }
 }

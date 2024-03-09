@@ -46,6 +46,12 @@
                 @Html.DisplayFor(model => model.Roles)
         </dd>
     </dl>
+    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
+    {
+        <form asp-action="AddConnection" asp-route-id="@Model.User.UserName">
+            <button type="submit" class="btn btn-primary">Add to Connections</button>
+        </form>
+    }
 </div>
 <div>
     <a asp-action="Index">Back to List</a>

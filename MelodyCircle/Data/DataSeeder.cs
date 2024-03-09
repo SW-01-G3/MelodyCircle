@@ -11,6 +11,7 @@ namespace MelodyCircle.Data
         {
             await SeedRoles(roleManager);
             await SeedAdminUser(userManager);
+            await SeedModUser(userManager);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -35,18 +36,47 @@ namespace MelodyCircle.Data
                     UserName = "admin1",
                     Email = "admin@melodycircle.pt",
                     Name = "Admin1",
-                    BirthDate = new DateOnly(2024, 1, 22),
+                    BirthDate = new DateOnly(2002, 1, 22),
                     Password = "Password-123",
                     NormalizedEmail = "ADMIN@MELODYCIRCLE.PT",
                     EmailConfirmed = true,
                     Gender = Gender.Male,
-                    ProfilePicture = null
+                    ProfilePicture = null,
+                    Connections = new List<User>()
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, "Admin");
+                }
+            }
+
+        }
+
+        private static async Task SeedModUser(UserManager<User> userManager)
+        {
+
+            if (await userManager.FindByEmailAsync("mod@melodycircle.pt") == null)
+            {
+                var user = new User
+                {
+                    UserName = "mod1",
+                    Email = "mod@melodycircle.pt",
+                    Name = "Moderator1",
+                    BirthDate = new DateOnly(2002, 1, 22),
+                    Password = "Password-123",
+                    NormalizedEmail = "MOD@MELODYCIRCLE.PT",
+                    EmailConfirmed = true,
+                    Gender = Gender.Other,
+                    ProfilePicture = null,
+                    Connections = new List<User>()
+                };
+
+                var result = await userManager.CreateAsync(user, "Password-123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Mod");
                 }
             }
 

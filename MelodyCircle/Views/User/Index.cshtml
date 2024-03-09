@@ -42,6 +42,7 @@
                 </td>
                 <td>
                     <a asp-action="Profile" asp-route-id="@item.UserName">Profile</a> |
+                    <a asp-action="ListConnections" asp-route-id="@item.UserName">Connections</a> |
                     @if (User.Identity.IsAuthenticated)
                     {
                         if (User.IsInRole("Admin"))
