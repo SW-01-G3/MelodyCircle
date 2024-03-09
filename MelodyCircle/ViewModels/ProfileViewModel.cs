@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace MelodyCircle.ViewModels
 {
@@ -7,5 +9,9 @@ namespace MelodyCircle.ViewModels
     {
         public User User { get; set; }
         public IList<string> Roles { get; set; }
+
+        public ApplicationDbContext Context { get; set; }
+
+        public UserManager<User> UserManager { get; set;}
     }
 }

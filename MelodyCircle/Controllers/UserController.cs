@@ -58,8 +58,14 @@ namespace MelodyCircle.Controllers
             var viewModel = new ProfileViewModel
             {
                 User = user,
-                Roles = roles
+                Roles = roles,
+                Context = _context,
+                UserManager = _userManager
             };
+
+            await _context.Entry(user)
+              .Collection(u => u.Connections)
+              .LoadAsync();
 
             return View(viewModel);
         }
@@ -69,6 +75,7 @@ namespace MelodyCircle.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var userToAdd = await _userManager.FindByNameAsync(id);
+
 
             if (currentUser == null || userToAdd == null)
             {
@@ -80,7 +87,6 @@ namespace MelodyCircle.Controllers
                 return BadRequest("Cannot add yourself as a connection.");
             }
 
-            // Ensure the user isn't already in the connections list
             if (currentUser.Connections == null)
             {
                 currentUser.Connections = new List<User>();
@@ -91,10 +97,33 @@ namespace MelodyCircle.Controllers
                 return BadRequest("User is already in your connections list.");
             }
 
+
+            await _context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
             currentUser.Connections.Add(userToAdd);
             await _userManager.UpdateAsync(currentUser);
 
+
             return RedirectToAction("Profile", new { id = userToAdd.UserName });
+        }
+
+        public async Task<IActionResult> RemoveConnection(string id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            var connectionToRemove = await _userManager.FindByNameAsync(id);
+
+
+            if (currentUser != null && connectionToRemove != null)
+            {
+                if (currentUser.Connections.Contains(connectionToRemove))
+                {
+                    await _context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
+
+                    currentUser.Connections.Remove(connectionToRemove);
+                    await _userManager.UpdateAsync(currentUser);
+                }
+            }
+
+            return RedirectToAction("Profile", new { id = connectionToRemove.UserName });
         }
 
         public async Task<IActionResult> ListConnections(string? id)

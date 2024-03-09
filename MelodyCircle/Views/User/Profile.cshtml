@@ -48,9 +48,23 @@
     </dl>
     @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
     {
-        <form asp-action="AddConnection" asp-route-id="@Model.User.UserName">
-            <button type="submit" class="btn btn-primary">Add to Connections</button>
-        </form>
+        //Model.Context.Entry(Model.User).Collection(u => u.Connections).Load();
+        var currentUser = await Model.UserManager.GetUserAsync(User);
+        await Model.Context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
+        var isConnected = currentUser.Connections.Find(u => u.UserName == Model.User.UserName);
+
+        if (isConnected == null)
+        {
+            <form asp-action="AddConnection" asp-route-id="@Model.User.UserName">
+                <button type="submit" class="btn btn-primary">Add to Connections</button>
+            </form>
+        }
+        else
+        {
+            <form asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
+                <button type="submit" class="btn btn-primary">Remove from Connections</button>
+            </form>
+        }
     }
 </div>
 <div>
