@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MelodyCircle.Models.Tutorial>
+
+@{
+    ViewData["Title"] = "Tutoriais";
+}
+
+<h1>Tutoriais</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar novo tutorial</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Criador</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Creator)</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">Não há tutoriais disponíveis</td>
+            </tr>
+        }
+    </tbody>
+</table>

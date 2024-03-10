@@ -4,7 +4,6 @@ using MelodyCircle.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
