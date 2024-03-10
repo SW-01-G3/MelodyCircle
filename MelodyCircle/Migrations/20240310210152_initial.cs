@@ -34,6 +34,7 @@ namespace MelodyCircle.Migrations
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    Locality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

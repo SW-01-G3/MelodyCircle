@@ -19,7 +19,7 @@ namespace MelodyCircle.Models
         [PersonalData]
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Name")]
+        [Display(Name = "Nome")]
         public string Name { get; set; }
 
         [PersonalData]
@@ -38,6 +38,11 @@ namespace MelodyCircle.Models
         [DataType(DataType.Upload)]
         [Display(Name = "Foto de Perfil")]
         public byte[]? ProfilePicture { get; set; }
+
+        [PersonalData]
+        [DataType(DataType.Text)]
+        [Display(Name = "Localidade")]
+        public string? Locality { get; set; }
 
         [PersonalData]
         //[DataType(DataType.)]

@@ -47,6 +47,9 @@ namespace MelodyCircle.Migrations
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<string>("Locality")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 

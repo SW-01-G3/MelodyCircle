@@ -150,5 +150,47 @@ namespace MelodyCircle.Controllers
 
             return View(user.Connections);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PutProfilePicture(string id, IFormFile profilePicture)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (id == null)
+            {
+                return BadRequest("User doens't exist.");
+            }
+
+            if (profilePicture == null || profilePicture.Length == 0)
+            {
+                return BadRequest("No image selected.");
+            }
+
+            if (profilePicture.ContentType != "image/jpeg")
+            {
+                ModelState.AddModelError("profilePicture", "Only JPEG files are allowed.");
+                return BadRequest("Not the right format."); 
+            }
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+            byte[] profilePictureBytes;
+            using (var ms = new MemoryStream())
+            {
+                await profilePicture.CopyToAsync(ms);
+                profilePictureBytes = ms.ToArray();
+            }
+
+            user.ProfilePicture = profilePictureBytes;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return StatusCode(500);
+            }
+
+            return RedirectToAction("Profile", new { id });
+        }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240309160754_initial")]
+    [Migration("20240310210152_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -49,6 +49,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<string>("Locality")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
