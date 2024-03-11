@@ -8,6 +8,7 @@ namespace MelodyCircle.Data
     {
 
         public DbSet<Tutorial> Tutorials { get; set; }
+        public DbSet<Step> Steps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

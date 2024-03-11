@@ -16,6 +16,7 @@
             <th>Título</th>
             <th>Descrição</th>
             <th>Criador</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -27,6 +28,10 @@
                     <td>@Html.DisplayFor(modelItem => item.Title)</td>
                     <td>@Html.DisplayFor(modelItem => item.Description)</td>
                     <td>@Html.DisplayFor(modelItem => item.Creator)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                    </td>
                 </tr>
             }
         }
