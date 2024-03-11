@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240310210152_initial")]
+    [Migration("20240311224817_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -86,6 +86,10 @@ namespace MelodyCircle.Migrations
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Ratings")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");

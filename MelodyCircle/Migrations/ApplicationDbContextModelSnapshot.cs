@@ -84,6 +84,10 @@ namespace MelodyCircle.Migrations
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("Ratings")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 

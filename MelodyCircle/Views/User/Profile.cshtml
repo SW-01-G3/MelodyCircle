@@ -1,4 +1,9 @@
 ﻿@model MelodyCircle.ViewModels.ProfileViewModel
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 
 @{
     ViewData["Title"] = "Profile";
@@ -42,6 +47,10 @@
             }
         </dd>
         <dt class="col-sm-2">
+            <p/>Rating:@Model.User.Ratings.CalculateAverageRating()</p>
+        </dt>
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.User.BirthDate)
         </dt>
         <dd class="col-sm-10">
@@ -60,17 +69,17 @@
             @Html.DisplayFor(model => model.User.Locality)
         </dd>
         <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Roles)
+            @Html.DisplayNameFor(model => model.Roles)
         </dt>
         <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Roles)
+            @Html.DisplayFor(model => model.Roles)
         </dd>
     </dl>
     @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
     {
         //Model.Context.Entry(Model.User).Collection(u => u.Connections).Load();
-        var currentUser = await Model.UserManager.GetUserAsync(User);
-        await Model.Context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
+        var currentUser = await UserManager.GetUserAsync(User);
+        await Context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
         var isConnected = currentUser.Connections.Find(u => u.UserName == Model.User.UserName);
 
         if (isConnected == null)
@@ -85,6 +94,14 @@
                 <button type="submit" class="btn btn-primary">Remove from Connections</button>
             </form>
         }
+
+        <div>
+            <h4>Rate this user:</h4>
+            <form asp-action="RateUser" asp-route-id="@Model.User.UserName" method="post">
+                <input type="number" name="rating" min="0" max="10" step="1" />
+                <button type="submit">Rate</button>
+            </form>
+        </div>
     }
 </div>
 <div>

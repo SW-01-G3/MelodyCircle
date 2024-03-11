@@ -1,5 +1,6 @@
 ﻿using MelodyCircle.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 
@@ -50,6 +51,10 @@ namespace MelodyCircle.Models
         public Gender? Gender { get; set; }
 
         public virtual List<User>? Connections { get; set; }
+
+        //public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
+
+        public List<int> Ratings { get; set; } = new List<int>();
     }
 
     public enum Gender

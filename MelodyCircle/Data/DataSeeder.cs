@@ -53,7 +53,8 @@ namespace MelodyCircle.Data
                     Gender = Gender.Male,
                     ProfilePicture = defaultProfilePictureBytes,
                     Locality = "Portugal",
-                    Connections = new List<User>()
+                    Connections = new List<User>(),
+                    Ratings = new List<int>()
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
@@ -89,8 +90,10 @@ namespace MelodyCircle.Data
                     Gender = Gender.Other,
                     ProfilePicture = defaultProfilePictureBytes,
                     Locality = "Portugal",
-                    Connections = new List<User>()
+                    Connections = new List<User>(),
+                    Ratings = new List<int>()
                 };
+
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
