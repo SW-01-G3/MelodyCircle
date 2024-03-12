@@ -4,7 +4,7 @@ namespace MelodyCircle.ExtensionMethods
 {
     public static class RatingExtensions
     {
-        public static double CalculateAverageRating(this List<int> ratings)
+        public static double CalculateAverageRating(this List<UserRating> ratings)
         {
             if (ratings == null || ratings.Count == 0)
             {
@@ -14,7 +14,7 @@ namespace MelodyCircle.ExtensionMethods
             int totalRating = 0;
             foreach (var rating in ratings)
             {
-                totalRating += rating;
+                totalRating += rating.Value;
             }
 
             return (double)totalRating / ratings.Count;

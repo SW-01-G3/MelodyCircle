@@ -54,7 +54,7 @@ namespace MelodyCircle.Data
                     ProfilePicture = defaultProfilePictureBytes,
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<int>()
+                    Ratings = new List<UserRating>()
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
@@ -91,7 +91,7 @@ namespace MelodyCircle.Data
                     ProfilePicture = defaultProfilePictureBytes,
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<int>()
+                    Ratings = new List<UserRating>()
                 };
 
 

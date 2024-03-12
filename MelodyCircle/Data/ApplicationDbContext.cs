@@ -6,6 +6,7 @@ namespace MelodyCircle.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
+        public DbSet<UserRating> UserRating { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

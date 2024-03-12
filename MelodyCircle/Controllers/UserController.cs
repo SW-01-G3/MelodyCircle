@@ -189,55 +189,6 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
-        //public async Task<IActionResult> RateUser(string id, int rating)
-        //{
-        //    if (rating < 0 || rating > 10)
-        //    {
-        //        return BadRequest("Rating value must be between 0 and 10");
-        //    }
-
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (currentUser == null)
-        //    {
-        //        return NotFound("User not found");
-        //    }
-
-        //    if (currentUser.UserName == id)
-        //    {
-        //        return BadRequest("Cannot rate yourself");
-        //    }
-
-        //    var userToRate = await _userManager.FindByNameAsync(id);
-
-        //    if (userToRate == null)
-        //    {
-        //        return NotFound("User to rate not found");
-        //    }
-
-        //    if (userToRate.Ratings == null)
-        //    {
-        //        userToRate.Ratings = new List<UserRating>();
-        //    }
-
-        //    // Check if the current user has already rated the user
-        //    var existingRating = userToRate.Ratings.FirstOrDefault(r => r.UserName == currentUser.UserName);
-        //    if (existingRating != null)
-        //    {
-        //        // Update the existing rating
-        //        existingRating.Value = rating;
-        //    }
-        //    else
-        //    {
-        //        // Add a new rating
-        //        userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, Value = rating });
-        //    }
-
-        //    // Update the user in the database
-        //    await _userManager.UpdateAsync(userToRate);
-
-        //    return RedirectToAction("Profile", new { id });
-        //}
-
         public async Task<IActionResult> RateUser(string id, int rating)
         {
             if (rating < 0 || rating > 10)
@@ -251,6 +202,11 @@ namespace MelodyCircle.Controllers
                 return NotFound("User not found");
             }
 
+            if (currentUser.UserName == id)
+            {
+                return BadRequest("Cannot rate yourself");
+            }
+
             var userToRate = await _userManager.FindByNameAsync(id);
 
             if (userToRate == null)
@@ -260,20 +216,64 @@ namespace MelodyCircle.Controllers
 
             if (userToRate.Ratings == null)
             {
-                userToRate.Ratings = new List<int>();
+                userToRate.Ratings = new List<UserRating>();
             }
 
-            userToRate.Ratings.Add(rating);
+            // Check if the current user has already rated the user
+            var existingRating = userToRate.Ratings.FirstOrDefault(r => r.UserName == currentUser.UserName);
+            if (existingRating != null)
+            {
+                // Update the existing rating
+                existingRating.Value = rating;
+            }
+            else
+            {
+                // Add a new rating
+                userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, Value = rating });
+            }
 
+            // Update the user in the database
             await _userManager.UpdateAsync(userToRate);
 
             return RedirectToAction("Profile", new { id });
         }
 
+        //public async Task<IActionResult> RateUser(string id, int rating)
+        //{
+        //    if (rating < 0 || rating > 10)
+        //    {
+        //        return BadRequest("Rating value must be between 0 and 10");
+        //    }
+
+        //    var currentUser = await _userManager.GetUserAsync(User);
+        //    if (currentUser == null)
+        //    {
+        //        return NotFound("User not found");
+        //    }
+
+        //    var userToRate = await _userManager.FindByNameAsync(id);
+
+        //    if (userToRate == null)
+        //    {
+        //        return NotFound("User to rate not found");
+        //    }
+
+        //    if (userToRate.Ratings == null)
+        //    {
+        //        userToRate.Ratings = new List<int>();
+        //    }
+
+        //    userToRate.Ratings.Add(rating);
+
+        //    await _userManager.UpdateAsync(userToRate);
+
+        //    return RedirectToAction("Profile", new { id });
+        //}
+
         public async Task<IActionResult> ViewRatings(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
-
+            Console.WriteLine(id.ToString());
 
             if (user == null)
             {
@@ -281,7 +281,7 @@ namespace MelodyCircle.Controllers
             }
 
 
-            return View(_context.Users.First().Ratings);
+            return View(_context.UserRating.Where(u => u.UserId.ToString().Equals(id.ToString())));
         }
     }
 }

@@ -52,9 +52,9 @@ namespace MelodyCircle.Models
 
         public virtual List<User>? Connections { get; set; }
 
-        //public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
+        public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
 
-        public List<int> Ratings { get; set; } = new List<int>();
+        //public List<int> Ratings { get; set; } = new List<int>();
     }
 
     public enum Gender
