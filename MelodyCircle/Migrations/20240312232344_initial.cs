@@ -174,6 +174,7 @@ namespace MelodyCircle.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },

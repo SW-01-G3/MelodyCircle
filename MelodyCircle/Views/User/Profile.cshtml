@@ -47,7 +47,8 @@
             }
         </dd>
         <dt class="col-sm-2">
-            <p/>Rating:@Model.User.Ratings.CalculateAverageRating()</p>
+            @*     <p />Rating:@Context.UserRating.Where(u => u.UserId.ToString().Equals(Model.User.Id.ToString())).ToList().FirstOrDefault().Value</p> *@
+            <p />Rating:@Context.UserRating.Where(u => u.RatedUserName.Equals(Model.User.UserName)).ToList().CalculateAverageRating()</p> 
         </dt>
         </dd>
         <dt class="col-sm-2">

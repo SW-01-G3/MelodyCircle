@@ -6,7 +6,8 @@ namespace MelodyCircle.Models
     public class UserRating
     {
         public Guid Id { get; set; }
-        public string UserName { get; set; }  // 'required' should be lowercase
+        public required string UserName { get; set; } 
+        public required string RatedUserName { get; set; } 
         public int Value { get; set; }
 
         // Foreign key to the rated user

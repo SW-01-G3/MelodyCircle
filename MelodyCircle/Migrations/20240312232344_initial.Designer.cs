@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240312160108_initial")]
+    [Migration("20240312232344_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -120,6 +120,10 @@ namespace MelodyCircle.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RatedUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()

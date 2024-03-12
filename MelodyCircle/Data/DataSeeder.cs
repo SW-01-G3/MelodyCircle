@@ -12,6 +12,7 @@ namespace MelodyCircle.Data
             await SeedRoles(roleManager);
             await SeedAdminUser(userManager);
             await SeedModUser(userManager);
+            await SeedModUser2(userManager);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -94,14 +95,46 @@ namespace MelodyCircle.Data
                     Ratings = new List<UserRating>()
                 };
 
-
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, "Mod");
                 }
             }
+        }
 
+        private static async Task SeedModUser2(UserManager<User> userManager)
+        {
+            byte[] defaultProfilePictureBytes;
+
+            // Open the file stream
+            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
+            {
+                defaultProfilePictureBytes = new byte[fs.Length];
+                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
+            }
+
+            var user2 = new User
+            {
+                UserName = "mod2",
+                Email = "mod2@melodycircle.pt",
+                Name = "Moderator2",
+                BirthDate = new DateOnly(2002, 1, 22),
+                Password = "Password-123",
+                NormalizedEmail = "MOD2@MELODYCIRCLE.PT",
+                EmailConfirmed = true,
+                Gender = Gender.Other,
+                ProfilePicture = defaultProfilePictureBytes,
+                Locality = "Portugal",
+                Connections = new List<User>(),
+                Ratings = new List<UserRating>()
+            };
+
+            var result2 = await userManager.CreateAsync(user2, "Password-123");
+            if (result2.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user2, "Mod");
+            }
         }
     }
 }

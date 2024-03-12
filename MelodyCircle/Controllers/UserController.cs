@@ -220,8 +220,12 @@ namespace MelodyCircle.Controllers
             }
 
             // Check if the current user has already rated the user
-            var existingRating = userToRate.Ratings.FirstOrDefault(r => r.UserName == currentUser.UserName);
-            if (existingRating != null)
+            //var existingRatings = userToRate.Ratings.All(r => r.UserName.Equals(currentUser.UserName));
+
+            //var existingRating = existingRatings.Where
+            var existingRatings = _context.UserRating.AsEnumerable().Where(r => r.UserName.Equals(currentUser.UserName));
+            var existingRating = existingRatings.Where(u => u.RatedUserName.Equals(userToRate.UserName)).FirstOrDefault();
+            if (existingRating != null )
             {
                 // Update the existing rating
                 existingRating.Value = rating;
@@ -229,7 +233,7 @@ namespace MelodyCircle.Controllers
             else
             {
                 // Add a new rating
-                userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, Value = rating });
+                userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, RatedUserName = userToRate.UserName, Value = rating });
             }
 
             // Update the user in the database
