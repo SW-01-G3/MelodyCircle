@@ -5,12 +5,13 @@
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
+
+
 @{
     ViewData["Title"] = "Profile";
 }
 
-<h1>Profile</h1>
-
+<div class=" text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
 <div>
     <h4>Profile</h4>
     <hr />
@@ -47,7 +48,7 @@
             }
         </dd>
         <dt class="col-sm-2">
-            <p/>Rating:@Model.User.Ratings.CalculateAverageRating()</p>
+            <p>Rating:@Model.User.Ratings.CalculateAverageRating()</p>
         </dt>
         </dd>
         <dt class="col-sm-2">
@@ -103,7 +104,33 @@
             </form>
         </div>
     }
+
+    <div class="foto mx-auto ">
+        <div class="bg-purple rounded foto ">
+            <!-- Foto de Perfil -->
+            @Html.DisplayFor(model => model.User.ProfilePicture)
+        </div>
+    </div>
+    
+                
+    
+
+    <div class="col-sm-4 ">
+                <!-- Nome de Utilizador e Nome -->
+                <h1>@Html.DisplayFor(model => model.User.UserName)</h1>
+                <h5>@Html.DisplayFor(model => model.User.Name)</h5>
+    </div>
+
+    <div class="col-sm-4 ">
+                <!-- Data de Nascimento, género e cargos -->
+                <h6>@Html.DisplayFor(model => model.User.BirthDate)</h6>
+                <h6>@Html.DisplayFor(model => model.User.Gender)</h6>
+                <h6>@Html.DisplayFor(model => model.Roles)</h6>
+    </div>
 </div>
-<div>
+
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
+
+
