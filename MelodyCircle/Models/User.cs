@@ -38,7 +38,7 @@ namespace MelodyCircle.Models
         [PersonalData]
         [DataType(DataType.Upload)]
         [Display(Name = "Foto de Perfil")]
-        public byte[]? ProfilePicture { get; set; }
+        public byte[]? ProfilePicture { get; set; } =[];
 
         [PersonalData]
         [DataType(DataType.Text)]

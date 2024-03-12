@@ -38,15 +38,14 @@ namespace MelodyCircle.Controllers
             return View(users);
         }
 
-        public async Task<IActionResult> Profile(string? id)
+        public async Task<IActionResult> Profile(string id)
         {
             if (id == null || _userManager.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(m => m.UserName == id);
+            var user = await _userManager.FindByNameAsync(id);
 
             if (user == null)
             {
@@ -124,7 +123,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id = connectionToRemove.UserName });
         }
 
-        public async Task<IActionResult> ListConnections(string? id)
+        public async Task<IActionResult> ListConnections(string id)
         {
             if (id == null)
             {
@@ -136,8 +135,7 @@ namespace MelodyCircle.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(m => m.UserName == id);
+            var user = await _userManager.FindByNameAsync(id);
 
             if (user == null)
             {
