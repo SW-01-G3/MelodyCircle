@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
-  push:
-    branches: [ main, master, deploy ]
-  pull_request:
-    branches: [ main, master, deploy ]
+  workflow_run:
+    workflows: ["Build and deploy ASP.Net Core app to Azure Web App - MelodyCircle20240224155113"]
+    types:
+      - completed
 jobs:
   test:
     timeout-minutes: 60
