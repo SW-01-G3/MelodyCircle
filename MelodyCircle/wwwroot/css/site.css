@@ -79,6 +79,11 @@ body {
     border-style: solid !important;
 }
 
+.btn-lightPurple {
+    background-color: var(--lightPurple) !important;
+    color: white !important;
+}
+
 /* -------------------------------------------- */
 
 .bg-lightBlue {
