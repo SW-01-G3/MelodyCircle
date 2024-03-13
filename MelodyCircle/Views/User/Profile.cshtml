@@ -12,108 +12,80 @@
 }
 
 <div class=" text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
-<div>
-    <h4>Profile</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.UserName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.UserName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.ProfilePicture)
-        </dt>
-        <dd class="col-sm-10">
-            @if (Model.User.ProfilePicture != null && Model.User.ProfilePicture.Length > 0)
-            {
-                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.User.ProfilePicture))" 
-                alt="Profile Picture" class="profile-picture" style="width: 256px; height: 256px;" />
-            }
 
-            @if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
-            {
-                <form asp-action="PutProfilePicture" asp-route-id="@Model.User.UserName" method="post" enctype="multipart/form-data">
-  
-                    <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/jpeg">
-                    <button type="submit" class="btn btn-primary">Upload</button>
-                </form>
-            }
-        </dd>
-        <dt class="col-sm-2">
-            <p>Rating:@Context.UserRating.Where(u => u.RatedUserName.Equals(Model.User.UserName)).ToList().CalculateAverageRating()</p>
-        </dt>
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.BirthDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.BirthDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Gender)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Gender)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User.Locality)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.Locality)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Roles)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Roles)
-        </dd>
-    </dl>
-    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
-    {
-        //Model.Context.Entry(Model.User).Collection(u => u.Connections).Load();
-        var currentUser = await UserManager.GetUserAsync(User);
-        await Context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
-        var isConnected = currentUser.Connections.Find(u => u.UserName == Model.User.UserName);
+    <div class="col-sm-4 justify-content-center align-items-center ">
 
-        if (isConnected == null)
+        <!-- Foto de Perfil -->
+        @*@Html.DisplayFor(model => model.User.ProfilePicture)*@
+
+        @if (Model.User.ProfilePicture != null && Model.User.ProfilePicture.Length > 0)
         {
-            <form asp-action="AddConnection" asp-route-id="@Model.User.UserName">
-                <button type="submit" class="btn btn-primary">Add to Connections</button>
-            </form>
-        }
-        else
-        {
-            <form asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
-                <button type="submit" class="btn btn-primary">Remove from Connections</button>
-            </form>
+            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.User.ProfilePicture))"
+                 alt="Profile Picture" class="profile-picture foto rounded " />
+            
         }
 
-        <div>
-            <h4>Rate this user:</h4>
-            <form asp-action="RateUser" asp-route-id="@Model.User.UserName" method="post">
-                <input type="number" name="rating" min="0" max="10" step="1" />
-                <button type="submit">Rate</button>
-            </form>
-        </div>
-    }
+        @if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+        {
+            <div class="custom-file">
 
-    <div class="foto mx-auto ">
-        <div class="bg-purple rounded foto ">
-            <!-- Foto de Perfil -->
-            @Html.DisplayFor(model => model.User.ProfilePicture)
-        </div>
+                <img src="~/img/mudar_foto.svg" alt="Add Foto" class="icon" onclick="openModal()">
+
+                <div id="confirmModal" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Alteração da Foto de Perfil</h5>
+                                <button type="button" class="close border-0 bg-white" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="previewImage" src="caminho/para/foto/antiga.jpg" style="max-width: 100%; max-height: 300px;">
+                            </div>
+                            <div class="modal-footer">
+                                <form asp-action="PutProfilePicture" asp-route-id="@Model.User.UserName" method="post" enctype="multipart/form-data">
+                                    <input type="file" accept="image/jpeg" onchange="previewImage()">
+                                    <button type="submit" class="btn bg-purple text-white border-darkPurple">Upload</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function openModal() {
+                    $('#confirmModal').modal('show');
+                }
+
+                function closeModal() {
+                    $('#confirmModal').modal('hide');
+                }
+
+                function previewImage() {
+                    var preview = document.getElementById('previewImage');
+                    var file = document.getElementById('profilePicture').files[0];
+                    var reader = new FileReader();
+
+                    reader.onloadend = function () {
+                        preview.src = reader.result;
+                    }
+
+                    if (file) {
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = "caminho/para/foto/antiga.jpg"; // Defina o caminho para a foto antiga aqui
+                    }
+                }
+            </script>
+
+            }
+
+        <h6>Rating: @Model.User.Ratings.CalculateAverageRating()</h6>
+        
+
     </div>
-    
-                
-    
 
     <div class="col-sm-4 ">
                 <!-- Nome de Utilizador e Nome -->
@@ -127,6 +99,39 @@
                 <h6>@Html.DisplayFor(model => model.User.Gender)</h6>
                 <h6>@Html.DisplayFor(model => model.Roles)</h6>
     </div>
+
+    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
+    {
+        <div class="col-sm-3">
+            @{
+                var currentUser = await UserManager.GetUserAsync(User);
+                await Context.Entry(currentUser).Collection(u => u.Connections).LoadAsync();
+                var isConnected = currentUser.Connections.Find(u => u.UserName == Model.User.UserName);
+
+                if (isConnected == null)
+                {
+                    <form asp-action="AddConnection" asp-route-id="@Model.User.UserName">
+                        <button class="border-purple bg-purple" type="submit"> <img src="~/img/add_conexao.svg" /> </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
+                        <button class="border-purple bg-white " type="submit"> <img src="~/img/remove_conexao.svg" /> </button>
+                    </form>
+                }
+            }
+        </div>
+    }
+</div>
+
+
+<div>
+    <h4>Rate this user:</h4>
+    <form asp-action="RateUser" asp-route-id="@Model.User.UserName" method="post">
+        <input type="number" name="rating" min="0" max="10" step="1" />
+        <button type="submit">Rate</button>
+    </form>
 </div>
 
 @*<div>

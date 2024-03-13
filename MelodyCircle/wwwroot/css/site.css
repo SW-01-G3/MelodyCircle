@@ -96,9 +96,31 @@ body {
 }
 
 .foto {
-    height: 150px;
-    width: 150px;
+    height: 100px;
+    width: 100px;
     padding: 0px;
 }
+.custom-file-input {
+    display: none; /* Esconde o botão padrão de seleção de arquivos */
+}
 
+.star-rating {
+    display: inline-block;
+    font-size: 0;
+    position: relative;
+}
 
+.stars {
+    display: inline-block;
+    width: 100px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+    .stars .star-rating-span {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: url('path_to_star_image.png') repeat-x 0 0;
+    }
