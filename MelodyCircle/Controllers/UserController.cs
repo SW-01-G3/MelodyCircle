@@ -24,29 +24,31 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
-        // GET: Patients
+        /// <summary>
+        /// Return the index of all users list.
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             var users = _userManager.Users;
             return View(await users.ToListAsync());
         }
 
-        [HttpGet]
-        public IActionResult ListUsers()
-        {
-            var users = _userManager.Users;
-            return View(users);
-        }
-
-        public async Task<IActionResult> Profile(string? id)
+        /// <summary>
+        /// Action for checking user profile by param (Username).
+        /// Displays the profile of the user.
+        /// Finds user by username, checks if exists.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> Profile(string id)
         {
             if (id == null || _userManager.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(m => m.UserName == id);
+            var user = await _userManager.FindByNameAsync(id);
 
             if (user == null)
             {
@@ -68,6 +70,13 @@ namespace MelodyCircle.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Action for adding a new connection of a user.
+        /// Checks for user existence, connection existence.
+        /// Redirects to profile of added user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddConnection(string id)
         {
@@ -104,6 +113,13 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id = userToAdd.UserName });
         }
 
+        /// <summary>
+        /// Action for removing an existing connection of a user.
+        /// Checks for user existence, connection existence.
+        /// Redirects to profile of removed user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> RemoveConnection(string id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -124,7 +140,14 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id = connectionToRemove.UserName });
         }
 
-        public async Task<IActionResult> ListConnections(string? id)
+        /// <summary>
+        /// Lists all user's connections.
+        /// Checks for user existence and list's connections.
+        /// Displays a list of connections.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ListConnections(string id)
         {
             if (id == null)
             {
@@ -136,8 +159,7 @@ namespace MelodyCircle.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(m => m.UserName == id);
+            var user = await _userManager.FindByNameAsync(id);
 
             if (user == null)
             {
@@ -149,6 +171,14 @@ namespace MelodyCircle.Controllers
             return View(user.Connections);
         }
 
+        /// <summary>
+        /// Insert a new profile picture on the editing user's profile.
+        /// Checks for picture's format, transforms it into an array of bytes.
+        /// Redirects to profile of logged user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="profilePicture"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> PutProfilePicture(string id, IFormFile profilePicture)
         {
@@ -191,55 +221,15 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
-        //public async Task<IActionResult> RateUser(string id, int rating)
-        //{
-        //    if (rating < 0 || rating > 10)
-        //    {
-        //        return BadRequest("Rating value must be between 0 and 10");
-        //    }
-
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (currentUser == null)
-        //    {
-        //        return NotFound("User not found");
-        //    }
-
-        //    if (currentUser.UserName == id)
-        //    {
-        //        return BadRequest("Cannot rate yourself");
-        //    }
-
-        //    var userToRate = await _userManager.FindByNameAsync(id);
-
-        //    if (userToRate == null)
-        //    {
-        //        return NotFound("User to rate not found");
-        //    }
-
-        //    if (userToRate.Ratings == null)
-        //    {
-        //        userToRate.Ratings = new List<UserRating>();
-        //    }
-
-        //    // Check if the current user has already rated the user
-        //    var existingRating = userToRate.Ratings.FirstOrDefault(r => r.UserName == currentUser.UserName);
-        //    if (existingRating != null)
-        //    {
-        //        // Update the existing rating
-        //        existingRating.Value = rating;
-        //    }
-        //    else
-        //    {
-        //        // Add a new rating
-        //        userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, Value = rating });
-        //    }
-
-        //    // Update the user in the database
-        //    await _userManager.UpdateAsync(userToRate);
-
-        //    return RedirectToAction("Profile", new { id });
-        //}
-
+        /// <summary>
+        /// Action for rating a user's profile.
+        /// Checks existence of user and if rating is between 0 and 10 (included).
+        /// A User cannot rate multiple times, if rating already exists, then it updates said rating.
+        /// Redirects to profile of rated user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="rating"></param>
+        /// <returns></returns>
         public async Task<IActionResult> RateUser(string id, int rating)
         {
             if (rating < 0 || rating > 10)
@@ -253,6 +243,11 @@ namespace MelodyCircle.Controllers
                 return NotFound("User not found");
             }
 
+            if (currentUser.UserName == id)
+            {
+                return BadRequest("Cannot rate yourself");
+            }
+
             var userToRate = await _userManager.FindByNameAsync(id);
 
             if (userToRate == null)
@@ -262,28 +257,43 @@ namespace MelodyCircle.Controllers
 
             if (userToRate.Ratings == null)
             {
-                userToRate.Ratings = new List<int>();
+                userToRate.Ratings = new List<UserRating>();
             }
 
-            userToRate.Ratings.Add(rating);
+            var existingRatings = _context.UserRating.AsEnumerable().Where(r => r.UserName.Equals(currentUser.UserName));
+            var existingRating = existingRatings.Where(u => u.RatedUserName.Equals(userToRate.UserName)).FirstOrDefault();
 
+            if (existingRating != null )
+            {
+                existingRating.Value = rating;
+            }
+            else
+            {
+                userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, RatedUserName = userToRate.UserName, Value = rating });
+            }
+
+            // Update the user in the database
             await _userManager.UpdateAsync(userToRate);
 
             return RedirectToAction("Profile", new { id });
         }
 
+        /// <summary>
+        /// Listing of all rating by user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ViewRatings(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
-
+            Console.WriteLine(id.ToString());
 
             if (user == null)
             {
                 return NotFound("User not found");
             }
 
-
-            return View(_context.Users.First().Ratings);
+            return View(_context.UserRating.Where(u => u.UserId.ToString().Equals(id.ToString())));
         }
     }
 }

@@ -38,7 +38,7 @@ namespace MelodyCircle.Models
         [PersonalData]
         [DataType(DataType.Upload)]
         [Display(Name = "Foto de Perfil")]
-        public byte[]? ProfilePicture { get; set; }
+        public byte[]? ProfilePicture { get; set; } =[];
 
         [PersonalData]
         [DataType(DataType.Text)]
@@ -52,9 +52,9 @@ namespace MelodyCircle.Models
 
         public virtual List<User>? Connections { get; set; }
 
-        //public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
+        public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
 
-        public List<int> Ratings { get; set; } = new List<int>();
+        //public List<int> Ratings { get; set; } = new List<int>();
     }
 
     public enum Gender
