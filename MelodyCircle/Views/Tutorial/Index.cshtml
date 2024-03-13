@@ -4,7 +4,7 @@
     ViewData["Title"] = "Tutoriais";
 }
 
-<h1>Tutoriais</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Adicionar novo tutorial</a>
@@ -22,7 +22,7 @@
     <tbody>
         @if (Model != null && Model.Any())
         {
-            foreach (var item in Model)
+            @foreach (var item in Model)
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.Title)</td>
@@ -30,7 +30,8 @@
                     <td>@Html.DisplayFor(modelItem => item.Creator)</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a> |
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id">Passos</a>
                     </td>
                 </tr>
             }

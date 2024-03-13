@@ -42,7 +42,7 @@ namespace MelodyCircle.Controllers
             if (string.IsNullOrWhiteSpace(tutorial.Description) || string.IsNullOrWhiteSpace(tutorial.Title))
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
 
-            else 
+            else
             {
                 tutorial.Id = Guid.NewGuid();
 
@@ -122,6 +122,12 @@ namespace MelodyCircle.Controllers
             _context.Tutorials.Remove(tutorial);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Tutorial/AddStep/id
+        public IActionResult AddStep(Guid id)
+        {
+            return RedirectToAction("Index", "Step", new { tutorialId = id });
         }
 
         //Método auxiliar

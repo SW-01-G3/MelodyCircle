@@ -12,7 +12,7 @@ namespace MelodyCircle.Models
         public string Title { get; set; }
 
         [Required]
-        public byte[] Content { get; set; }
+        public string Content { get; set; }
         public int Order { get; set; }
     }
 }

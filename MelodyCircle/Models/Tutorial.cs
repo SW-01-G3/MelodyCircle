@@ -12,6 +12,6 @@ namespace MelodyCircle.Models
         [Required]
         public string Description { get; set; }
         public string Creator { get; set; }
-        public ICollection<Step> Steps { get; set; }
+        public virtual List<Step>? Steps { get; set; }
     }
 }
