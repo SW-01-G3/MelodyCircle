@@ -2,8 +2,6 @@
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace MelodyCircle.Controllers
 {
@@ -16,7 +14,6 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
-        // GET: Step
         public async Task<IActionResult> Index(Guid? tutorialId)
         {
             if (tutorialId == null)
@@ -27,7 +24,13 @@ namespace MelodyCircle.Controllers
                 .Where(s => s.TutorialId == tutorialId)
                 .ToListAsync();
 
+            var creator = await _context.Tutorials
+                .Where(t => t.Id == tutorialId)
+                .Select(t => t.Creator)
+                .FirstOrDefaultAsync();
+
             ViewBag.TutorialId = tutorialId;
+            ViewBag.Creator = creator;
 
             return View(steps);
         }

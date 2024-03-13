@@ -7,11 +7,17 @@
 <h1>@ViewData["Title"]</h1>
 
 <p style="display: none;">
-   @ViewBag.TutorialId
+    @ViewBag.TutorialId
+</p>
+<p style="display: none;">
+    @ViewBag.Creator
 </p>
 
 <p>
-    <a asp-action="Create" asp-route-tutorialId="@ViewBag.TutorialId">Adicionar Passo</a>
+    @if (User.Identity.Name == ViewBag.Creator)
+    {
+        <a asp-action="Create" asp-route-tutorialId="@ViewBag.TutorialId">Adicionar Passo</a>
+    }
 </p>
 
 <table class="table">
@@ -32,17 +38,21 @@
                     <td>@Html.DisplayFor(modelItem => step.Title)</td>
                     <td>@Html.DisplayFor(modelItem => step.Content)</td>
                     <td>@Html.DisplayFor(modelItem => step.Order)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-tutorialId="@ViewBag.TutorialId">Editar</a> |
-                        <a asp-action="Delete" asp-route-tutorialId="@ViewBag.TutorialId">Excluir</a>
-                    </td>
+
+                    @if (User.Identity.Name == ViewBag.Creator)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@step.Id">Editar</a> |
+                            <a asp-action="Delete" asp-route-id="@step.Id">Excluir</a>
+                        </td>
+                    }
                 </tr>
             }
         }
         else
         {
             <tr>
-                <td colspan="3">Não há passos</td>
+                <td colspan="4">Não há passos</td>
             </tr>
         }
     </tbody>

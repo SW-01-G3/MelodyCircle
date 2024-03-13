@@ -1,7 +1,5 @@
 ﻿using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Update.Internal;
-using SQLitePCL;
 
 namespace MelodyCircle.Data
 {
@@ -65,6 +63,45 @@ namespace MelodyCircle.Data
                 }
             }
 
+            if (await userManager.FindByEmailAsync("professor1@melodycircle.pt") == null)
+            {
+                var user = new User
+                {
+                    UserName = "professor1",
+                    Email = "professor1@melodycircle.pt",
+                    Name = "professor1",
+                    BirthDate = new DateOnly(2024, 1, 22),
+                    Password = "Password-123",
+                    NormalizedEmail = "PROFESSOR1@MELODYCIRCLE.PT",
+                    EmailConfirmed = true,
+                };
+
+                var result = await userManager.CreateAsync(user, "Password-123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Teacher");
+                }
+            }
+
+            if (await userManager.FindByEmailAsync("professor2@melodycircle.pt") == null)
+            {
+                var user = new User
+                {
+                    UserName = "professor2",
+                    Email = "professor2@melodycircle.pt",
+                    Name = "professor2",
+                    BirthDate = new DateOnly(2024, 1, 22),
+                    Password = "Password-123",
+                    NormalizedEmail = "PROFESSOR2@MELODYCIRCLE.PT",
+                    EmailConfirmed = true,
+                };
+
+                var result = await userManager.CreateAsync(user, "Password-123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Teacher");
+                }
+            }
         }
 
         private static async Task SeedModUser(UserManager<User> userManager)
