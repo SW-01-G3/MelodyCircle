@@ -5,14 +5,16 @@
 <table class="table">
     <thead>
         <tr>
+            <th>@Html.DisplayNameFor(model => model.ProfilePicture)</th>
             <th>@Html.DisplayNameFor(model => model.UserName)</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var patient in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => patient.UserName)</td>
+                <td><img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.ProfilePicture))" alt="Profile Picture" class="profile-picture" style="width: 64px; height: 64px;" /></td> 
+                <td>@Html.DisplayFor(modelItem => user.UserName)</td>
             </tr>
         }
     </tbody>
