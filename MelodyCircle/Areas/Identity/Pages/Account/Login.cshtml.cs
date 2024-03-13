@@ -66,7 +66,6 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
             public string Email { get; set; }
 
             /// <summary>
@@ -113,18 +112,21 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
 
-                var userName = Input.Email; // Default to using the input as the username
+                var user = await FindUserByEmailOrUserNameAsync(Input.Email); // Try to find the user by email or username
 
-                if (Input.Email.Contains("@")) // Check if input is an email
+                if (user == null)
                 {
-                    var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
-                    if (user != null)
-                    {
-                        userName = user.UserName; // If it's an email, get the corresponding username
-                    }
+                    ModelState.AddModelError(string.Empty, "Username or Email don't exist.");
+                    return Page();
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                if (!await _signInManager.UserManager.IsEmailConfirmedAsync(user))
+                {
+                    ModelState.AddModelError(string.Empty, "Please confirm your email before logging in. Check your email for the confirmation link.");
+                    return Page();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
@@ -149,6 +151,21 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        /// <summary>
+        /// For finding a User through the same input (email or username)
+        /// </summary>
+        /// <param name="emailOrUserName"></param>
+        /// <returns></returns>
+        private async Task<User> FindUserByEmailOrUserNameAsync(string emailOrUserName)
+        {
+            var user = await _signInManager.UserManager.FindByEmailAsync(emailOrUserName);
+            if (user == null)
+            {
+                user = await _signInManager.UserManager.FindByNameAsync(emailOrUserName);
+            }
+            return user;
         }
     }
 }
