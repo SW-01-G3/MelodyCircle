@@ -322,7 +322,7 @@ namespace MelodyCircle.Migrations
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
-				
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.HasOne("MelodyCircle.Models.User", null)
@@ -339,80 +339,82 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-					
-            modelBuilder.Entity("MelodyCircle.Models.Step", b =>
-                {
-                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
-                        .WithMany("Steps")
-                        .HasForeignKey("TutorialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
-                    b.Navigation("Tutorial");
-                });
+                    modelBuilder.Entity("MelodyCircle.Models.Step", b =>
+                        {
+                            b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                                .WithMany("Steps")
+                                .HasForeignKey("TutorialId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                            b.Navigation("Tutorial");
+                        });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("MelodyCircle.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                        {
+                            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                                .WithMany()
+                                .HasForeignKey("RoleId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("MelodyCircle.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                        {
+                            b.HasOne("MelodyCircle.Models.User", null)
+                                .WithMany()
+                                .HasForeignKey("UserId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                        {
+                            b.HasOne("MelodyCircle.Models.User", null)
+                                .WithMany()
+                                .HasForeignKey("UserId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
 
-                    b.HasOne("MelodyCircle.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                        {
+                            b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                                .WithMany()
+                                .HasForeignKey("RoleId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("MelodyCircle.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                            b.HasOne("MelodyCircle.Models.User", null)
+                                .WithMany()
+                                .HasForeignKey("UserId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
 
-            modelBuilder.Entity("MelodyCircle.Models.User", b =>
-                {
-                    b.Navigation("Connections");
+                    modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                        {
+                            b.HasOne("MelodyCircle.Models.User", null)
+                                .WithMany()
+                                .HasForeignKey("UserId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+                        });
 
-                    b.Navigation("Ratings");
+                    modelBuilder.Entity("MelodyCircle.Models.User", b =>
+                        {
+                            b.Navigation("Connections");
 
-            modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
-                {
-                    b.Navigation("Steps");
-                });
+                            b.Navigation("Ratings");
+
+                            modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
+                        {
+                            b.Navigation("Steps");
+                        });
 #pragma warning restore 612, 618
+                        });
+                });
         }
     }
 }
