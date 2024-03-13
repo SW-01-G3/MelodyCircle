@@ -1,0 +1,49 @@
+﻿@model IEnumerable<MelodyCircle.Models.Step>
+
+@{
+    ViewData["Title"] = "Lista de Passos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p style="display: none;">
+   @ViewBag.TutorialId
+</p>
+
+<p>
+    <a asp-action="Create" asp-route-tutorialId="@ViewBag.TutorialId">Adicionar Passo</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Conteúdo</th>
+            <th>Ordem</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var step in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => step.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => step.Content)</td>
+                    <td>@Html.DisplayFor(modelItem => step.Order)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-tutorialId="@ViewBag.TutorialId">Editar</a> |
+                        <a asp-action="Delete" asp-route-tutorialId="@ViewBag.TutorialId">Excluir</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">Não há passos</td>
+            </tr>
+        }
+    </tbody>
+</table>

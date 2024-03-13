@@ -1,0 +1,22 @@
+﻿@model MelodyCircle.Models.Tutorial
+
+@{
+    ViewData["Title"] = "Confirmar Exclusão";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div>
+    <h4>Tem certeza que deseja excluir este tutorial?</h4>
+    <div>
+        <h4>Título: @Model.Title</h4>
+        <h4>Descrição: @Model.Description</h4>
+        <h4>Criador: @Model.Creator</h4>
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Excluir" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

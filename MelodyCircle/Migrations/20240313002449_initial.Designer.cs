@@ -4,6 +4,7 @@ using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+
+    [Migration("20240313002449_initial")]
+
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,7 +327,8 @@ namespace MelodyCircle.Migrations
 
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
-				
+
+<<<<<<<< HEAD:MelodyCircle/Migrations/20240312232344_initial.Designer.cs
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.HasOne("MelodyCircle.Models.User", null)
@@ -339,7 +345,7 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-					
+========
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
                     b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
@@ -349,6 +355,7 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
 
                     b.Navigation("Tutorial");
+>>>>>>>> 102:MelodyCircle/Migrations/20240313002449_initial.Designer.cs
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -402,15 +409,17 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
                 });
 
+<<<<<<<< HEAD:MelodyCircle/Migrations/20240312232344_initial.Designer.cs
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.Navigation("Connections");
 
                     b.Navigation("Ratings");
-
+========
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
                     b.Navigation("Steps");
+>>>>>>>> 102:MelodyCircle/Migrations/20240313002449_initial.Designer.cs
                 });
 #pragma warning restore 612, 618
         }
