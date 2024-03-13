@@ -90,6 +90,60 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        // GET: Step/Edit/tutorialId
+        public async Task<IActionResult> Edit(Guid? tutorialId)
+        {
+            ViewBag.TutorialId = tutorialId;
+
+            if (tutorialId == null)
+                return NotFound();
+
+            var step = await _context.Steps.FirstOrDefaultAsync(m => m.TutorialId == tutorialId);
+
+            if (step == null)
+                return NotFound();
+
+            return View(step);
+        }
+
+        // POST: Step/Edit/tutorialId
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid tutorialId, [Bind("Id,TutorialId,Title,Content,Order")] Step step)
+        {
+            var existingTutorial = await _context.Tutorials.FindAsync(tutorialId);
+
+            if (existingTutorial == null)
+                return NotFound($"Tutorial com ID {tutorialId} não encontrado.");
+
+            if (tutorialId != step.TutorialId)
+                return NotFound($"O TutorialId do passo não corresponde ao TutorialId fornecido.");
+
+            if (string.IsNullOrEmpty(step.Title) || string.IsNullOrEmpty(step.Content))
+                ModelState.AddModelError(nameof(step.Title), "O título é obrigatório");
+
+            if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
+                ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
+
+            else
+            {
+                try
+                {
+                    _context.Update(step);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StepExists(step.Id))
+                        return NotFound();
+                    else
+                        throw;
+                }
+                return RedirectToAction("Index", new { tutorialId = step.TutorialId });
+            }
+            return View(step);
+        }
+
         private bool StepExists(Guid tutorialId)
         {
             return _context.Steps.Any(e => e.Id == tutorialId);

@@ -307,7 +307,7 @@ namespace MelodyCircle.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Steps");
+               name: "Steps");
 
             migrationBuilder.DropTable(
                 name: "Tutorials");
