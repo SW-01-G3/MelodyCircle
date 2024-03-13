@@ -104,23 +104,13 @@ body {
     display: none; /* Esconde o botão padrão de seleção de arquivos */
 }
 
-.star-rating {
-    display: inline-block;
-    font-size: 0;
-    position: relative;
+.profile-link {
+    text-decoration: none; /* Remove underline */
+    color: black; /* Change color */
 }
 
-.stars {
-    display: inline-block;
-    width: 100px;
-    height: 20px;
-    overflow: hidden;
-    position: relative;
-}
-
-    .stars .star-rating-span {
-        display: block;
-        width: 0;
-        height: 100%;
-        background: url('path_to_star_image.png') repeat-x 0 0;
+    /* Style for when the hyperlink is hovered */
+    .profile-link:hover {
+        text-decoration: none; /* Remove underline on hover */
+        color: blue; /* Change color on hover */
     }
