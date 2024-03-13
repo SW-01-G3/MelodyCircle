@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240312232344_initial")]
+    [Migration("20240313204108_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -24,6 +24,56 @@ namespace MelodyCircle.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MelodyCircle.Models.Step", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TutorialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.ToTable("Steps");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Creator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tutorials");
+                });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
@@ -276,6 +326,17 @@ namespace MelodyCircle.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.Step", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                        .WithMany("Steps")
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.HasOne("MelodyCircle.Models.User", null)
@@ -343,6 +404,11 @@ namespace MelodyCircle.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
+                {
+                    b.Navigation("Steps");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
