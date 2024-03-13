@@ -64,6 +64,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            [DataType(DataType.Date)]
             [Display(Name = "Data Nascimento")]
             public DateOnly BirthDate { get; set; }
 
@@ -113,6 +114,16 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
             if (!ModelState.IsValid)
             {
                 await LoadAsync(user);
+                return Page();
+            }
+
+            DateTime currentDate = DateTime.Now;
+            DateOnly minDate = new DateOnly(currentDate.Year - 100, 1, 1);
+            DateOnly maxDate = new DateOnly(currentDate.Year - 5, 1, 1);
+
+            if (Input.BirthDate < minDate || Input.BirthDate > maxDate)
+            {
+                ModelState.AddModelError("Input.BirthDate", $"The BirthDate must be between {minDate} and {maxDate}");
                 return Page();
             }
 
