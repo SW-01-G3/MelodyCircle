@@ -121,6 +121,7 @@ namespace MelodyCircle.Controllers
 
             _context.Tutorials.Remove(tutorial);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

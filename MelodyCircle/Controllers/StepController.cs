@@ -60,6 +60,36 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        // GET: Step/Delete/tutorialId
+        public async Task<IActionResult> Delete(Guid? tutorialId)
+        {
+            if (tutorialId == null)
+                return NotFound();
+
+            var step = await _context.Steps.FirstOrDefaultAsync(m => m.TutorialId == tutorialId);
+
+            if (step == null)
+                return NotFound();
+
+            return View(step);
+        }
+
+        // POST: Step/DeleteConfirmed
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid stepId)
+        {
+            var step = await _context.Steps.FindAsync(stepId);
+
+            if (step == null)
+                return NotFound();
+
+            _context.Steps.Remove(step);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId });
+        }
+
         private bool StepExists(Guid tutorialId)
         {
             return _context.Steps.Any(e => e.Id == tutorialId);
