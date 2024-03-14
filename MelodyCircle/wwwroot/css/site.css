@@ -1,16 +1,17 @@
 :root {
-    --darkPurple: #190482;
-    --purple: #7752FE;
-    --lightPurple: #8E8FFA;
+    --darkPurple: #7752FE;
+    --purple: #8E8FFA;
     --lightBlue: #C2D9FF;
 }
 
 * {
-    font-family: 'Playfair Display', serif !important;
+    font-family: 'Lexend', serif !important;
 }
 
 html {
     font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -23,10 +24,6 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
 
 body {
   margin-bottom: 60px;
@@ -45,13 +42,11 @@ body {
 
 .border-darkPurple {
     border-color: var(--darkPurple) !important;
+    border-width: 2px !important;
+    border-style: solid !important;
 }
 
 /* -------------------------------------------- */
-
-.border-purple {
-    border-color: var(--purple) !important;
-}
 
 .bg-purple {
     background-color: var(--purple) !important;
@@ -59,6 +54,13 @@ body {
 
 .text-purple {
     color: var(--darkPurple) !important;
+    
+}
+
+.border-purple {
+    border-color: var(--purple) !important;
+    border-width: 2px !important;
+    border-style: solid !important;
 }
 
 /* -------------------------------------------- */
@@ -73,6 +75,13 @@ body {
 
 .border-lightPurple {
     border-color: var(--lightPurple) !important;
+    border-width: 2px !important;
+    border-style: solid !important;
+}
+
+.btn-lightPurple {
+    background-color: var(--lightPurple) !important;
+    color: white !important;
 }
 
 /* -------------------------------------------- */
@@ -87,4 +96,38 @@ body {
 
 .border-lightBlue {
     border-color: var(--lightBlue) !important;
+    border-width: 2px !important;
+    border-style: solid !important;
+}
+
+.foto {
+    height: 100px;
+    width: 100px;
+    padding: 0px;
+}
+.custom-file-input {
+    display: none; /* Esconde o botão padrão de seleção de arquivos */
+}
+
+.profile-link {
+    text-decoration: none; /* Remove underline */
+    color: black; /* Change color */
+}
+
+    /* Style for when the hyperlink is hovered */
+    .profile-link:hover {
+        text-decoration: none; /* Remove underline on hover */
+        color: blue; /* Change color on hover */
+    }
+
+.floating-button {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    height: 40px;
+    width: 40px;
+}
+
+.fill-purple {
+    fill: var(--purple) !important;
 }

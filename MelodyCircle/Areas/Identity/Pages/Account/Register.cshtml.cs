@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using EllipticCurve.Utils;
 using MelodyCircle.Models;
 using MelodyCircle.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -33,13 +35,16 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
+
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,6 +52,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -157,6 +163,17 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 user.Name = Input.Name;
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
+                user.Gender = Gender.Male;
+                byte[] defaultProfilePictureBytes;
+
+                using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
+                {
+                    defaultProfilePictureBytes = new byte[fs.Length];
+
+                    fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
+                }
+
+                user.ProfilePicture = defaultProfilePictureBytes;
 
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -165,6 +182,9 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+
+                    await _userManager.AddToRoleAsync(user, "Student");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

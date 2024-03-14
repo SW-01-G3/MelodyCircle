@@ -56,21 +56,38 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+            [Display(Name= "Nome de Perfil")]
+            public string Name { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [DataType(DataType.Date)]
+            [Display(Name = "Data Nascimento")]
+            public DateOnly BirthDate { get; set; }
+
+            [Display(Name = "Localidade")]
+            public string Locality { get; set; }
+
+            [Display(Name = "Género")]
+            public Gender Gender { get; set; }
         }
 
         private async Task LoadAsync(User user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
+            //var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Name = user.Name,
+                PhoneNumber = phoneNumber,
+                BirthDate = user.BirthDate,
+                Locality = user.Locality,
+                Gender = (Gender)user.Gender
+
             };
         }
 
@@ -100,6 +117,22 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            DateTime currentDate = DateTime.Now;
+            DateOnly minDate = new DateOnly(currentDate.Year - 100, 1, 1);
+            DateOnly maxDate = new DateOnly(currentDate.Year - 5, 1, 1);
+
+            if (Input.BirthDate < minDate || Input.BirthDate > maxDate)
+            {
+                ModelState.AddModelError("Input.BirthDate", $"The BirthDate must be between {minDate} and {maxDate}");
+                return Page();
+            }
+
+            // Update user properties with values from InputModel
+            user.Name = Input.Name;
+            user.BirthDate = Input.BirthDate;
+            user.Locality = Input.Locality;
+            user.Gender = Input.Gender;
+
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -111,7 +144,17 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            // Update the user in the database
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to update profile.";
+                return RedirectToPage();
+            }
+
+            // Refresh the user's sign-in cookie
             await _signInManager.RefreshSignInAsync(user);
+
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }

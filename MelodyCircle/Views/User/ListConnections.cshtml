@@ -1,0 +1,23 @@
+﻿@model IEnumerable<User>
+
+<h2 class="text-center">Conexões</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+
+        @foreach (var user in Model)
+        {
+            <div class="col-md-3 text-center">
+                <a href="@Url.Action("Profile", "User", new { id = user.UserName })" class="profile-link">
+                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.ProfilePicture))" alt="Profile Picture" class="profile-picture" style="width: 64px; height: 64px;" />
+                    <h4>@Html.DisplayFor(modelItem => user.UserName)</h4>
+                </a>
+            </div>
+        }
+
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
