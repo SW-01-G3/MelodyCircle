@@ -1,0 +1,94 @@
+﻿@model IEnumerable<MelodyCircle.Models.Step>
+
+@{
+    ViewData["Title"] = "Lista de Passos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@section scripts {
+    <script>
+        function logContents(contents) {
+            console.log(contents);
+        }
+    </script>
+}
+
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+
+        quill.on('text-change', function(delta, oldDelta, source) {
+            if (source === 'user') { // Check if the change was made by the user
+                var contents = quill.getContents(); // Get the contents every time the text is changed
+                convertToHtml(contents).then(html => {
+                    console.log(html);
+                });
+            }
+        });
+
+        function convertToHtml(contents) {
+            return quill.clipboard.convert(contents);
+        } 
+    </script>
+}
+
+
+<p style="display: none;">
+    @ViewBag.TutorialId
+</p>
+<p style="display: none;">
+    @ViewBag.Creator
+</p>
+
+<p>
+    @if (User.Identity.Name == ViewBag.Creator)
+    {
+        <a asp-action="Create" asp-route-tutorialId="@ViewBag.TutorialId">Adicionar Passo</a>
+    }
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Conteúdo</th>
+            <th>Ordem</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var step in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => step.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => step.Content)</td>
+                    <td>@Html.DisplayFor(modelItem => step.Order)</td>
+
+                    @if (User.Identity.Name == ViewBag.Creator)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@step.Id">Editar</a> |
+                            <a asp-action="Delete" asp-route-id="@step.Id">Excluir</a>
+                            <button onClick="javascript:logContents(@step.Content)">Log</button>
+                        </td>
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">Não há passos</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Tutorial>
+
+@{
+    ViewData["Title"] = "Tutoriais";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button z-3">+</a>
+    }
+}
+
+
+<div class="container d-flex justify-content-center">
+    <div class="row justify-content-between">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model) {
+                <div class="card col-lg-3 m-4 rounded border border-purple">
+                    <img class="card-img-top mt-3" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Navajo_Dome_in_Capitol_Reef_National_Park%2C_Utah.jpg/1920px-Navajo_Dome_in_Capitol_Reef_National_Park%2C_Utah.jpg" alt="Imagem do tutorial" />
+                    <div class="card-body align-content-center text-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <h5 class="card-title">Nº de passos</h5>
+                        <h5 class="card-title">Nº de inscritos</h5>
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
+                        @if (User.Identity.Name == item.Creator)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id"><img src="~/img/edit.svg"  alt="Edit tutorial." class="icon fill-purple"/></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id"><img src="~/img/delete.svg" alt="Delete tutorial." class="icon" /></a>
+                        }                         
+                    </div>
+                </div>
+            }
+        } else {
+            <h1>Não existem tutoriais disponiveis.</h1>
+        }
+    </div>
+</div>
