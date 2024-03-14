@@ -119,3 +119,15 @@ body {
         text-decoration: none; /* Remove underline on hover */
         color: blue; /* Change color on hover */
     }
+
+.floating-button {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    height: 40px;
+    width: 40px;
+}
+
+.fill-purple {
+    fill: var(--purple) !important;
+}

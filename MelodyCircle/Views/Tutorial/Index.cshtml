@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Tutorial>
+
 @{
     ViewData["Title"] = "Tutoriais";
 }
@@ -10,7 +11,7 @@
 {
     @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn btn-primary" style="position: fixed;">+</a>
+        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button">+</a>
     }
 }
 
@@ -29,7 +30,7 @@
                         <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
                         @if (User.Identity.Name == item.Creator)
                         {
-                            <a asp-action="Edit" asp-route-id="@item.Id" ><img src="~/img/edit.svg" alt="Edit tutorial." class="icon"/></a>
+                            <a asp-action="Edit" asp-route-id="@item.Id"><img src="~/img/edit.svg"  alt="Edit tutorial." class="icon fill-purple"/></a>
                             <a asp-action="Delete" asp-route-id="@item.Id"><img src="~/img/delete.svg" alt="Delete tutorial." class="icon" /></a>
                         }                         
                     </div>
