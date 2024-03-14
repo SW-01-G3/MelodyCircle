@@ -2,8 +2,6 @@
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace MelodyCircle.Controllers
 {
@@ -54,10 +52,14 @@ namespace MelodyCircle.Controllers
             if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
                 ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
 
-            _context.Add(step);
-            await _context.SaveChangesAsync();
+            else 
+            {
+                _context.Add(step);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", new { tutorialId = step.TutorialId });
+                return RedirectToAction("Index", new { tutorialId = step.TutorialId });
+            }
+            return View(step);
         }
 
         // GET: Step/Delete/tutorialId
@@ -106,38 +108,42 @@ namespace MelodyCircle.Controllers
             return View(step);
         }
 
-        // POST: Step/Edit/tutorialId
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid tutorialId, [Bind("Id,TutorialId,Title,Content,Order")] Step step)
         {
-            var existingTutorial = await _context.Tutorials.FindAsync(tutorialId);
+            var existingStep = await _context.Steps.FindAsync(step.Id);
 
-            if (existingTutorial == null)
-                return NotFound($"Tutorial com ID {tutorialId} não encontrado.");
+            if (existingStep == null)
+                return NotFound($"Step with ID {step.Id} not found.");
 
             if (tutorialId != step.TutorialId)
-                return NotFound($"O TutorialId do passo não corresponde ao TutorialId fornecido.");
+                return NotFound($"The TutorialId of the step does not match the provided tutorialId.");
 
             if (string.IsNullOrEmpty(step.Title) || string.IsNullOrEmpty(step.Content))
                 ModelState.AddModelError(nameof(step.Title), "O título é obrigatório");
 
             if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
-                ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
+                ModelState.AddModelError(nameof(step.Content), "O conteúdo é obrigatório");
 
             else
             {
                 try
                 {
+                    _context.Entry(existingStep).State = EntityState.Detached;
                     _context.Update(step);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!StepExists(step.Id))
+                    {
                         return NotFound();
+                    }
                     else
+                    {
                         throw;
+                    }
                 }
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }

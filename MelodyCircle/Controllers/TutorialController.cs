@@ -104,7 +104,7 @@ namespace MelodyCircle.Controllers
             if (id == null)
                 return NotFound();
 
-            var tutorial = await _context.Tutorials.FirstOrDefaultAsync(m => m.Id == id);
+            var tutorial = await _context.Tutorials.FindAsync(id);
 
             if (tutorial == null)
                 return NotFound();
@@ -115,15 +115,19 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Delete/id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var tutorial = await _context.Tutorials.FindAsync(id);
+
+            if (tutorial == null)
+                return NotFound();
 
             _context.Tutorials.Remove(tutorial);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Tutorial/AddStep/id
         public IActionResult AddStep(Guid id)
