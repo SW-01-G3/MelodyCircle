@@ -29,15 +29,6 @@ namespace MelodyCircle.Data
         {
             byte[] defaultProfilePictureBytes;
 
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                // Initialize byte array with the length of the file
-                defaultProfilePictureBytes = new byte[fs.Length];
-
-                // Read the file contents into the byte array
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
             if (await userManager.FindByEmailAsync("admin@melodycircle.pt") == null)
             {
                 var user = new User
@@ -50,7 +41,7 @@ namespace MelodyCircle.Data
                     NormalizedEmail = "ADMIN@MELODYCIRCLE.PT",
                     EmailConfirmed = true,
                     Gender = Gender.Male,
-                    ProfilePicture = defaultProfilePictureBytes,
+                    ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
                     Ratings = new List<UserRating>()
@@ -103,17 +94,10 @@ namespace MelodyCircle.Data
                 }
             }
         }
-
         private static async Task SeedModUser(UserManager<User> userManager)
         {
             byte[] defaultProfilePictureBytes;
 
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                defaultProfilePictureBytes = new byte[fs.Length];
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
             if (await userManager.FindByEmailAsync("mod@melodycircle.pt") == null)
             {
                 var user = new User
@@ -126,7 +110,7 @@ namespace MelodyCircle.Data
                     NormalizedEmail = "MOD@MELODYCIRCLE.PT",
                     EmailConfirmed = true,
                     Gender = Gender.Other,
-                    ProfilePicture = defaultProfilePictureBytes,
+                    ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
                     Ratings = new List<UserRating>()
@@ -144,13 +128,6 @@ namespace MelodyCircle.Data
         {
             byte[] defaultProfilePictureBytes;
 
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                defaultProfilePictureBytes = new byte[fs.Length];
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
-
             var user2 = new User
             {
                 UserName = "mod2",
@@ -161,7 +138,7 @@ namespace MelodyCircle.Data
                 NormalizedEmail = "MOD2@MELODYCIRCLE.PT",
                 EmailConfirmed = true,
                 Gender = Gender.Other,
-                ProfilePicture = defaultProfilePictureBytes,
+                ProfilePicture = [],
                 Locality = "Portugal",
                 Connections = new List<User>(),
                 Ratings = new List<UserRating>()

@@ -7,24 +7,15 @@
 <h1>@ViewData["Title"]</h1>
 
 @section scripts {
-    <script>
-        function logContents(contents) {
-            console.log(contents);
-        }
-    </script>
-}
-
-@section head {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
-}
-@section scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
         var quill = new Quill('#editor', {
             theme: 'snow'
         });
 
-        quill.on('text-change', function(delta, oldDelta, source) {
+        quill.on('text-change', function (delta, oldDelta, source) {
             if (source === 'user') { // Check if the change was made by the user
                 var contents = quill.getContents(); // Get the contents every time the text is changed
                 convertToHtml(contents).then(html => {
@@ -35,10 +26,9 @@
 
         function convertToHtml(contents) {
             return quill.clipboard.convert(contents);
-        } 
+        }
     </script>
 }
-
 
 <p style="display: none;">
     @ViewBag.TutorialId

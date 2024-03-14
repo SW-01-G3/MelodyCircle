@@ -30,6 +30,7 @@
 	  <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.2" />
+	  <PackageReference Include="System.Composition.Runtime" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
