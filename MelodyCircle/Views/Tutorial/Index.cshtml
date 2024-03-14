@@ -11,7 +11,7 @@
 {
     @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button">+</a>
+        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button z-3">+</a>
     }
 }
 
