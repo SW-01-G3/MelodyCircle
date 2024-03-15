@@ -11,6 +11,8 @@ using Xunit;
 using Microsoft.Extensions.Primitives;
 using MelodyCircle.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.RegularExpressions;
+using System;
 
 
 namespace MelodyCircleTest
@@ -150,6 +152,67 @@ namespace MelodyCircleTest
             Assert.Equal(5, userToRate.Ratings[0].Value);
             Assert.Equal("Profile", redirectResult.ActionName);
             Assert.Equal("UserToRate", redirectResult.RouteValues["id"]);
+        }
+
+        [Fact]
+        public async Task AddMusicCard_WithValidInput_ShouldAddMusicAndRedirectToProfile()
+        {
+            // Arrange
+            var user = new User { UserName = "TestUser", MusicURI = new List<string>() {} };
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+            var uri = "https://open.spotify.com/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492"; // Exemplo de URI válido
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(uri);
+            var id = "TestUser";
+            // Act
+            var result = await _controller.AddMusicCard(id, uri);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Profile", redirectResult.ActionName);
+            Assert.Equal(id, redirectResult.RouteValues["id"]);
+            Assert.Contains(match.ToString(), user.MusicURI.ToList());
+        }
+
+        [Fact]
+        public async Task RemoveMusicCard_WithValidInput_ShouldRemoveMusicAndRedirectToProfile()
+        {
+            // Arrange
+            var user = new User { UserName = "TestUser", MusicURI = new List<string> { "https://open.spotify.com/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492" } };
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+            var uri = "https://open.spotify.com/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492"; // Exemplo de URI válido
+            var id = "TestUser";
+
+            // Act
+            var result = await _controller.RemoveMusicCard(uri);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Profile", redirectResult.ActionName);
+            Assert.Equal(id, redirectResult.RouteValues["id"]);
+            Assert.DoesNotContain(uri, user.MusicURI);
+        }
+
+        [Fact]
+        public async Task EditMusicCard_WithValidInput_ShouldEditMusicAndRedirectToProfile()
+        {
+            // Arrange
+            var user = new User { UserName = "TestUser", MusicURI = new List<string> { "/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492" } };
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+            var oldUri = "https://open.spotify.com/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492";
+            var newUri = "https://open.spotify.com/track/3ZV60LVhqQ2uHXG6FL6F0V?si=ee2c438186cc4492";
+
+            var id = "TestUser";
+
+            // Act
+            var result = await _controller.EditMusicCard(oldUri, newUri);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Profile", redirectResult.ActionName);
+            Assert.Equal(id, redirectResult.RouteValues["id"]);
+            Assert.DoesNotContain(oldUri, user.MusicURI);
+            Assert.Contains("/track/3ZV60LVhqQ2uHXG6LL6F0V?si=ee2c438186cc4492", user.MusicURI);
         }
     }
 }
