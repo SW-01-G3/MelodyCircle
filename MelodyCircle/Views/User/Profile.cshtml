@@ -5,8 +5,6 @@
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
-
-
 @{
     ViewData["Title"] = "Profile";
 }
@@ -115,8 +113,35 @@
     </form>
 </div>
 }
-@*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
 
+@if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+{
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMusicModal">
+        Adicionar Música
+    </button>
 
+    <!-- Modal para adicionar música -->
+    <div class="modal fade" id="addMusicModal" tabindex="-1" aria-labelledby="addMusicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMusicModalLabel">Adicionar Música</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário para adicionar música -->
+                    <form id="addMusicForm" asp-action="AddMusicCard" asp-route-id="@Model.User.UserName" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="musicUri" class="form-label">URI da Música</label>
+                            <input type="text" class="form-control" id="musicUri" name="musicUri" placeholder="Insira o URI da música">
+                            <button type="submit" class="btn btn-primary" onclick="addMusic()">Adicionar</button>
+                            <!--<span asp-validation-for="musicUri" class="text-danger"></span>-->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@await Component.InvokeAsync("MusicList", Model.User.MusicURI)

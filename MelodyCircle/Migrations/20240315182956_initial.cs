@@ -36,6 +36,7 @@ namespace MelodyCircle.Migrations
                     ProfilePicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Locality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: true),
+                    MusicURI = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -60,6 +61,20 @@ namespace MelodyCircle.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tutorials",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Creator = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tutorials", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,20 +205,6 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tutorials",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Creator = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tutorials", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Steps",
                 columns: table => new
                 {
@@ -223,11 +224,6 @@ namespace MelodyCircle.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Steps_TutorialId",
-                table: "Steps",
-                column: "TutorialId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -274,6 +270,11 @@ namespace MelodyCircle.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Steps_TutorialId",
+                table: "Steps",
+                column: "TutorialId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRating_UserId",
                 table: "UserRating",
                 column: "UserId");
@@ -298,19 +299,19 @@ namespace MelodyCircle.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Steps");
+
+            migrationBuilder.DropTable(
                 name: "UserRating");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-               name: "Steps");
-
-            migrationBuilder.DropTable(
                 name: "Tutorials");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
