@@ -53,7 +53,7 @@ namespace MelodyCircle.Controllers
                     }
                 }
                 else
-                    ModelState.AddModelError(nameof(tutorial.Photo), "Only JPEG files are allowed.");
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Only JPEG files are allowed");
 
                 tutorial.Id = Guid.NewGuid();
 
