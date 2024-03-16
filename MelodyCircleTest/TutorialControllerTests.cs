@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 using Moq;
+using System.Text;
 
 namespace MelodyCircle.Tests.Controllers
 {
@@ -38,8 +39,8 @@ namespace MelodyCircle.Tests.Controllers
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<List<Tutorial>>(viewResult.ViewData.Model);
-            Assert.Equal(4, model.Count); // Verifica se há quatro tutoriais na lista
+            var model = Assert.IsAssignableFrom<IEnumerable<Tutorial>>(viewResult.ViewData.Model);
+            Assert.Equal(5, model.Count());
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace MelodyCircle.Tests.Controllers
             var tutorial = new Tutorial();
 
             // Act
-            var result = await controller.Create(tutorial);
+            var result = await controller.Create(tutorial, null);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -70,9 +71,9 @@ namespace MelodyCircle.Tests.Controllers
             var userStore = new UserStore<User>(context);
             var userManager = new UserManager<User>(userStore, null, null, null, null, null, null, null, null);
             var controller = new TutorialController(context, userManager);
+
             var tutorial = new Tutorial { Title = "Test Title", Description = "Test Description", Creator = "TestUser" };
 
-            // Set up a ClaimsPrincipal
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, "TestUser")
@@ -85,13 +86,14 @@ namespace MelodyCircle.Tests.Controllers
             {
                 HttpContext = new DefaultHttpContext { User = principal }
             };
-            var result = await controller.Create(tutorial);
+            var result = await controller.Create(tutorial, null); // Passar o arquivo de imagem
 
             // Assert
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Equal("Index", redirectToActionResult.ActionName);
             Assert.Contains(tutorial, context.Tutorials);
         }
+
 
         [Fact]
         public async Task Edit_ReturnsNotFound_WhenIdIsNull()

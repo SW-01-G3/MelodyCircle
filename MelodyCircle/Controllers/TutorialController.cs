@@ -22,7 +22,20 @@ namespace MelodyCircle.Controllers
         // GET: Tutorial/Index
         public async Task<IActionResult> Index()
         {
-            var tutorials = await _context.Tutorials.ToListAsync();
+            var tutorials = await _context.Tutorials
+                .Select(t => new Tutorial
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    Description = t.Description,
+                    Creator = t.Creator,
+                    Photo = t.Photo,
+                    PhotoFileName = t.PhotoFileName,
+                    PhotoContentType = t.PhotoContentType,
+                    StepCount = t.Steps.Count
+                })
+                .ToListAsync();
+
             return View(tutorials);
         }
 
@@ -50,6 +63,8 @@ namespace MelodyCircle.Controllers
                     {
                         await photo.CopyToAsync(memoryStream);
                         tutorial.Photo = memoryStream.ToArray();
+                        tutorial.PhotoFileName = photo.FileName;
+                        tutorial.PhotoContentType = photo.ContentType;
                     }
                 }
                 else
@@ -69,7 +84,6 @@ namespace MelodyCircle.Controllers
 
             return View(tutorial);
         }
-
 
         // GET: Tutorial/Edit/id
         public async Task<IActionResult> Edit(Guid? id)
