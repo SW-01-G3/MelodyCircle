@@ -12,29 +12,48 @@
     <link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
     @RenderSection("head", false)
 </head>
+@{
+    // Obtém o nome do controlador e da ação da página atual
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    //var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}   
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-purple border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MelodyCircle</a>
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">MelodyCircle</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
+                        @if (currentController != null && currentController.Equals("Home"))
+                        {
+                            <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome2.svg" alt="Home." class="icon fill-lightBlue" /></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome.svg" alt="Home." class="icon fill-white" /></a>
+                            </li>
+                        }
+
+                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                            <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Privacy"><img src="~/img/IconProcurar.svg" alt="Home." class="icon fill-white" /></a></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Collaboration" asp-action="Index">Collaboration</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tutorial" asp-action="Index">Tutoriais</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Collaboration" asp-action="Index">Collaboration</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Tutorial" asp-action="Index">Tutoriais</a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">

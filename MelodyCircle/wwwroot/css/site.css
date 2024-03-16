@@ -131,3 +131,7 @@ body {
 .fill-purple {
     fill: var(--purple) !important;
 }
+
+.fill-lightBlue {
+    fill: var(--lightBlue) !important;
+}
