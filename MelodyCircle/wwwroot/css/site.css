@@ -135,3 +135,10 @@ body {
 .fill-lightBlue {
     fill: var(--lightBlue) !important;
 }
+
+.dropdown-icon {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+}

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -46,13 +50,30 @@
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Collaboration" asp-action="Index">Collaboration</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Tutorial" asp-action="Index">Tutoriais</a>
-                            </li>
+                            @if (currentController != null && currentController.Equals("Tutorial"))
+                            {
+                                <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-area="" asp-controller="Tutorial" asp-action="Index"><img src="~/img/IconProjetos2.svg" alt="Tuto." class="icon" /></a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-area="" asp-controller="Tutorial" asp-action="Index"><img src="~/img/IconProjetos.svg" alt="Tuto." class="icon" /></a>
+                                </li>
+                            }
+                            @if (currentController != null && currentController.Equals("Collaboration"))
+                            {
+                                <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-area="" asp-controller="Collaboration" asp-action="Index"><img src="~/img/IconColabs2.svg" alt="Colab." class="icon" /></a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-area="" asp-controller="Collaboration" asp-action="Index"><img src="~/img/IconColabs.svg" alt="Colab." class="icon" /></a>
+                                </li>
+                            }
                         }
                         @if (User.IsInRole("Admin"))
                         {
@@ -60,8 +81,34 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">All Users</a>
                             </li>
                         }
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <a class="nav-link text-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;">
+                                    <img src="~/img/IconPerfil.svg" alt="Home." class="icon fill-white" style="margin-right: 5px;" />
+                                    <img src="~/img/IconDropdown.svg" alt="Drop." class="icon dropdown-icon" />
+                                </a>
+                                <div class="dropdown-menu rounded-bottom border border-purple" aria-labelledby="navbarDropdown">
+                                    <form class="form-inline" asp-controller="User" asp-action="Profile" asp-route-id="@User.Identity.Name">
+                                        <button type="submit" class="dropdown-item">Pefil</button>
+                                    </form>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Definições</a>
+                                    @* <form class="form-inline" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name">
+                                <button type="submit" class="dropdown-item">Connections</button>
+                                </form> *@
+                                    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <button type="submit" class="dropdown-item">Terminar Sessão</button>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <form class="form-inline " asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name">
+                                    <button type="submit" class="nav-link btn btn-link text-center"><img src="~/img/IconMensagem.svg" alt="Drop." class="icon" /></button>
+                                </form>
+                            </li>
+                        }
                     </ul>
-                    <partial name="_LoginPartial" />
+                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
