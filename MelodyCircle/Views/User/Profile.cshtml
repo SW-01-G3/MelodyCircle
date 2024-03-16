@@ -94,9 +94,29 @@
                 }
                 else
                 {
-                    <form asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
-                        <button class="border-purple bg-white " type="submit"> <img src="~/img/remove_conexao.svg" /> </button>
-                    </form>
+                    <button type="button" class="border-purple bg-white " data-bs-toggle="modal" data-bs-target="#removeConnectionModal">
+                        <img src="~/img/remove_conexao.svg" />
+                    </button>
+                    <!-- Modal para remover música -->
+                    <div class="modal fade" id="removeConnectionModal" tabindex="-1" aria-labelledby="removeConnectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="removeConnectionModalLabel">Pretende remover esta conexão?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Formulário para remover música -->
+                                    <form id="removeConnectionForm" asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary">Remover</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 }
             }
         </div>
