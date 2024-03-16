@@ -34,7 +34,7 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial)
+        public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
             if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
@@ -44,6 +44,17 @@ namespace MelodyCircle.Controllers
 
             else
             {
+                if (photo != null && photo.Length > 0 && photo.ContentType == "image/jpeg")
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await photo.CopyToAsync(memoryStream);
+                        tutorial.Photo = memoryStream.ToArray();
+                    }
+                }
+                else
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Only JPEG files are allowed.");
+
                 tutorial.Id = Guid.NewGuid();
 
                 var user = await _userManager.GetUserAsync(User);

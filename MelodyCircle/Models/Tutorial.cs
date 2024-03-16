@@ -13,5 +13,6 @@ namespace MelodyCircle.Models
         public string Description { get; set; }
         public string Creator { get; set; }
         public virtual List<Step>? Steps { get; set; }
+        public byte[]? Photo { get; set; }
     }
 }
