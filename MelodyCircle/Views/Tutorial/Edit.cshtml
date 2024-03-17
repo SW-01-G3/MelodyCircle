@@ -6,6 +6,11 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
+        <div class="text-end">
+            <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                    title="<p>Pode editar tutoriais através a inserção obrigatória de um título e uma descrição.</p>">
+                ?
+            </button>
         <form asp-action="Edit">
             <div class="form-group text-center mt-3">
                 <h1>@ViewData["Title"]</h1>
@@ -27,7 +32,7 @@
                 <span asp-validation-for="Creator" class="text-danger"></span>
             </div>
             <div class="form-group text-center my-3">
-                <input type="submit" value="Adicionar" class="btn bg-purple text-white" />
+                <input type="submit" value="Alterar" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>

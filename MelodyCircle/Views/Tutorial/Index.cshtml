@@ -5,17 +5,17 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
-
 @if (User.Identity.IsAuthenticated)
 {
     @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
     {
-        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button z-3">+</a>
+        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button">+</a>
     }
 }
 
 <div class="container d-flex justify-content-center">
+
+
     <div class="row justify-content-between">
         @if (Model != null && Model.Any())
         {
@@ -43,4 +43,12 @@
             <h1>Não existem tutoriais disponiveis.</h1>
         }
     </div>
+</div>
+
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'.
+            Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</p>">
+        ?
+    </button>
 </div>
