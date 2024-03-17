@@ -9,6 +9,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+            <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                    title="<p>Pode editar passo através a inserção obrigatória de um título e uma ordem.</p>">
+                ?
+            </button>
         <form asp-action="Edit" asp-route-tutorialId="@Model.TutorialId" method="post">
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="TutorialId" value="@ViewBag.TutorialId" />
@@ -36,5 +40,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Voltar à lista de Passos</a>
+    <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
 </div>

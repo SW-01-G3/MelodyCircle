@@ -9,7 +9,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using SendGrid.Helpers.Mail;
+using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace MelodyCircle.Controllers
 {
@@ -197,7 +200,6 @@ namespace MelodyCircle.Controllers
             if (profilePicture.ContentType != "image/jpeg")
             {
                 ModelState.AddModelError("profilePicture", "Only JPEG files are allowed.");
-                return BadRequest("Not the right format."); 
             }
             
             if (user == null)
@@ -295,5 +297,108 @@ namespace MelodyCircle.Controllers
 
             return View(_context.UserRating.Where(u => u.UserId.ToString().Equals(id.ToString())));
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddMusicCard(string id, string musicUri)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (musicUri == null || !IsValidSpotifyUri(musicUri))
+            {
+                ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
+            }
+
+            if (user.MusicURI.Contains(musicUri))
+            {
+                ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
+            }
+
+            /*if (!await IsValidSpotifyTrack(uri))
+            {
+                ModelState.AddModelError("uri", "O URI da música não é válido ou não existe no Spotify.");
+            }*/
+
+            if (!ModelState.IsValid)
+            {
+     
+                return RedirectToAction("Profile", new { id });
+            }
+
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(musicUri);
+
+            user.MusicURI.Add(match.Value.ToString());
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Profile", new { id });
+        }
+
+ 
+        [HttpPost]
+        public async Task<IActionResult> RemoveMusicCard(string uri)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            string id = user.UserName;
+
+            if (user == null)
+            {
+                return RedirectToAction("Profile", new { id });
+            }
+
+
+            if (!user.MusicURI.Contains(uri))
+            {
+                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
+                return RedirectToAction("Profile", new { id });
+            }
+
+            user.MusicURI.Remove(uri);
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Profile", new { id }); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditMusicCard(string uri, string newMusicUri)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            string id = user.UserName;
+
+            if (user == null)
+            {
+                return RedirectToAction("Profile", new { id });
+            }
+
+            if (newMusicUri == null || !IsValidSpotifyUri(newMusicUri))
+            {
+                ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
+                return RedirectToAction("Profile", new { id }); 
+            }
+
+            if (!user.MusicURI.Contains(uri))
+            {
+                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
+                return RedirectToAction("Profile", new { id });
+            }
+
+            user.MusicURI.Remove(uri);
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(newMusicUri);
+
+            user.MusicURI.Add(match.Value.ToString());
+            await _userManager.UpdateAsync(user);
+
+            return RedirectToAction("Profile", new { id }); 
+        }
+
+        private bool IsValidSpotifyUri(string uri)
+        {
+            // O URI da música do Spotify deve começar com "https://open.spotify.com/embed/track/" 
+            //return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 80;
+
+            return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 73;
+        }
+
     }
 }

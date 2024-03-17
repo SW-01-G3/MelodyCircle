@@ -23,6 +23,12 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
+         <div class="text-end">
+            <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                    title="<p>Pode adicionar passo através a inserção obrigatória de um título e uma ordem.</p>">
+                ?
+            </button>
+        </div>
         <form asp-action="Create">
             <div class="form-group text-center mt-3">
                 <h1>@ViewData["Title"]</h1>
@@ -60,5 +66,5 @@
 </div>
 
 <div>
-    <a asp-action="Index">Voltar à lista de Passos</a>
+    <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
 </div>

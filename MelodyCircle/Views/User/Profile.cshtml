@@ -5,8 +5,6 @@
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
-
-
 @{
     ViewData["Title"] = "Profile";
 }
@@ -96,9 +94,29 @@
                 }
                 else
                 {
-                    <form asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
-                        <button class="border-purple bg-white " type="submit"> <img src="~/img/remove_conexao.svg" /> </button>
-                    </form>
+                    <button type="button" class="border-purple bg-white " data-bs-toggle="modal" data-bs-target="#removeConnectionModal">
+                        <img src="~/img/remove_conexao.svg" />
+                    </button>
+                    <!-- Modal para remover música -->
+                    <div class="modal fade" id="removeConnectionModal" tabindex="-1" aria-labelledby="removeConnectionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="removeConnectionModalLabel">Pretende remover esta conexão?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Formulário para remover música -->
+                                    <form id="removeConnectionForm" asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary">Remover</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 }
             }
         </div>
@@ -115,8 +133,44 @@
     </form>
 </div>
 }
-@*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
 
+@if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+{
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMusicModal">
+        Adicionar Música
+    </button>
+
+    <!-- Modal para adicionar música -->
+    <div class="modal fade" id="addMusicModal" tabindex="-1" aria-labelledby="addMusicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMusicModalLabel">Adicionar Música</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulário para adicionar música -->
+                    <form id="addMusicForm" asp-action="AddMusicCard" asp-route-id="@Model.User.UserName" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="musicUri" class="form-label">Insira URI da Música</label>
+                            <input type="text" class="form-control" id="musicUri" name="musicUri" placeholder="https://open.spotify.com/track/">
+                            <button type="submit" class="btn btn-primary" onclick="addMusic()">Adicionar</button>
+                            <!--<span asp-validation-for="musicUri" class="text-danger"></span>-->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+        @if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+        {
+            <div class="text-end">
+                <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                        title="<p>Pefil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</p>">
+                    ?
+                </button>
+            </div>
+        }
+@await Component.InvokeAsync("MusicList", Model.User.MusicURI)
 

@@ -57,6 +57,10 @@ body {
     
 }
 
+.text-purple2 {
+    color: var(--purple) !important;
+}
+
 .border-purple {
     border-color: var(--purple) !important;
     border-width: 2px !important;
@@ -128,6 +132,36 @@ body {
     width: 40px;
 }
 
+.floating-button-left {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    height: 40px;
+    width: 40px;
+}
+
 .fill-purple {
     fill: var(--purple) !important;
+}
+
+.fill-lightBlue {
+    fill: var(--lightBlue) !important;
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dropdown-toggle:focus {
+    background-color: white; /* Cor quando o botão é clicado */
+    color: #fff; /* Cor do texto quando o botão é clicado */
+}
+
+.active {
+    /* Adicione os estilos desejados para o background e fill dos ícones quando o botão dropdown está ativado */
+    background-color: #ffffff; /* exemplo de cor de fundo branca */
+    fill: #000000; /* exemplo de cor de preenchimento preta */
 }

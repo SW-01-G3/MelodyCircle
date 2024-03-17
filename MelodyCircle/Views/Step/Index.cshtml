@@ -7,7 +7,11 @@
 <h1>@ViewData["Title"]</h1>
 
 @section scripts {
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+    <script>
+        function logContents(contents) {
+            console.log(contents);
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
@@ -28,6 +32,8 @@
             return quill.clipboard.convert(contents);
         }
     </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
 
 <p style="display: none;">
@@ -66,8 +72,8 @@
                     @if (User.Identity.Name == ViewBag.Creator)
                     {
                         <td>
-                            <a asp-action="Edit" asp-route-id="@step.Id">Editar</a> |
-                            <a asp-action="Delete" asp-route-id="@step.Id">Excluir</a>
+                            <a asp-action="Edit" asp-route-tutorialId="@step.TutorialId">Editar</a> |
+                            <a asp-action="Delete" asp-route-tutorialId="@step.TutorialId">Excluir</a>
                             <button onClick="javascript:logContents(@step.Content)">Log</button>
                         </td>
                     }
@@ -82,3 +88,14 @@
         }
     </tbody>
 </table>
+
+<div>
+    <a asp-action="Index" asp-controller="Tutorial">Voltar à lista de Passos</a>
+</div>
+
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>Nesta página pode visualizar todos os passos do tutorial. Caso seja instrutor, poderá adicionar passos, editar ou remover.</p>">
+        ?
+    </button>
+</div>

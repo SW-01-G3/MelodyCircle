@@ -27,8 +27,6 @@ namespace MelodyCircle.Data
 
         private static async Task SeedAdminUser(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
             if (await userManager.FindByEmailAsync("admin@melodycircle.pt") == null)
             {
                 var user = new User
@@ -96,8 +94,6 @@ namespace MelodyCircle.Data
         }
         private static async Task SeedModUser(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
             if (await userManager.FindByEmailAsync("mod@melodycircle.pt") == null)
             {
                 var user = new User
@@ -126,8 +122,6 @@ namespace MelodyCircle.Data
 
         private static async Task SeedModUser2(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
             var user2 = new User
             {
                 UserName = "mod2",

@@ -54,6 +54,8 @@ namespace MelodyCircle.Models
 
         public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
 
+        public virtual List<string> MusicURI { get; set; } = new List<string>();
+
         //public List<int> Ratings { get; set; } = new List<int>();
     }
 
