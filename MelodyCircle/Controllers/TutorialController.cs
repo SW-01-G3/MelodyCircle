@@ -57,7 +57,7 @@ namespace MelodyCircle.Controllers
 
             else
             {
-                if (photo != null && photo.Length > 0 && photo.ContentType == "image/jpeg")
+                if (photo != null && photo.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
