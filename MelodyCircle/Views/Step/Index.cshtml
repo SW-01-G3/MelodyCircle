@@ -6,14 +6,6 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@section scripts {
-    <script>
-        function logContents(contents) {
-            console.log(contents);
-        }
-    </script>
-}
-
 @section head {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
@@ -36,6 +28,11 @@
         function convertToHtml(contents) {
             return quill.clipboard.convert(contents);
         } 
+    </script>
+    <script>
+        function logContents(contents) {
+            console.log(contents);
+        }
     </script>
 }
 
@@ -92,3 +89,9 @@
         }
     </tbody>
 </table>
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>Nesta página pode visualizar todos os passos do tutorial. Caso seja instrutor, poderá adicionar passos, editar ou remover.</p>">
+        ?
+    </button>
+</div>

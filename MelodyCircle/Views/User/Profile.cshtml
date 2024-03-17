@@ -163,5 +163,14 @@
         </div>
     </div>
 }
-
+        @if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+        {
+            <div class="text-end">
+                <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                        title="<p>Pefil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</p>">
+                    ?
+                </button>
+            </div>
+        }
 @await Component.InvokeAsync("MusicList", Model.User.MusicURI)
+

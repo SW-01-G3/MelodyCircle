@@ -132,6 +132,14 @@ body {
     width: 40px;
 }
 
+.floating-button-left {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    height: 40px;
+    width: 40px;
+}
+
 .fill-purple {
     fill: var(--purple) !important;
 }
