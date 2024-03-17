@@ -1,0 +1,11 @@
+﻿@model Search
+
+<form asp-action="SearchTutorial" method="post">
+    <input type="text" name="searchTerm" placeholder="Pesquisar por tutoriais..." />
+    <button type="submit">Pesquisar</button>
+</form>
+
+<form asp-action="SearchUser" method="get">
+    <input type="text" name="searchTerm" placeholder="Pesquisar por utilizadores..." />
+    <button type="submit">Pesquisar</button>
+</form>

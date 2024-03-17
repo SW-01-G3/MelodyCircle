@@ -94,7 +94,6 @@ namespace MelodyCircle.Tests.Controllers
             Assert.Contains(tutorial, context.Tutorials);
         }
 
-
         [Fact]
         public async Task Edit_ReturnsNotFound_WhenIdIsNull()
         {
