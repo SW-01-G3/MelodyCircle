@@ -12,19 +12,14 @@
             console.log(contents);
         }
     </script>
-}
 
-@section head {
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
-}
-@section scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
         var quill = new Quill('#editor', {
             theme: 'snow'
         });
 
-        quill.on('text-change', function(delta, oldDelta, source) {
+        quill.on('text-change', function (delta, oldDelta, source) {
             if (source === 'user') { // Check if the change was made by the user
                 var contents = quill.getContents(); // Get the contents every time the text is changed
                 convertToHtml(contents).then(html => {
@@ -35,10 +30,11 @@
 
         function convertToHtml(contents) {
             return quill.clipboard.convert(contents);
-        } 
+        }
     </script>
-}
 
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
 
 <p style="display: none;">
     @ViewBag.TutorialId
@@ -76,8 +72,8 @@
                     @if (User.Identity.Name == ViewBag.Creator)
                     {
                         <td>
-                            <a asp-action="Edit" asp-route-id="@step.Id">Editar</a> |
-                            <a asp-action="Delete" asp-route-id="@step.Id">Excluir</a>
+                            <a asp-action="Edit" asp-route-tutorialId="@step.TutorialId">Editar</a> |
+                            <a asp-action="Delete" asp-route-tutorialId="@step.TutorialId">Excluir</a>
                             <button onClick="javascript:logContents(@step.Content)">Log</button>
                         </td>
                     }
@@ -92,3 +88,7 @@
         }
     </tbody>
 </table>
+
+<div>
+    <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
+</div>

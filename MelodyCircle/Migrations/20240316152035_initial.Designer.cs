@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240315182956_initial")]
+    [Migration("20240316152035_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -65,6 +65,18 @@ namespace MelodyCircle.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Photo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhotoContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StepCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()

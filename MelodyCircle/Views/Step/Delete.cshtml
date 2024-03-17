@@ -21,7 +21,7 @@
     <form asp-action="DeleteConfirmed" asp-route-stepid="@Model.Id">
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-danger" />
-            <a asp-action="Index" class="btn btn-default">Cancelar</a>
+            <a asp-action="Index" asp-controller="Step" class="btn btn-default">Cancelar</a>
         </div>
     </form>
 </div>

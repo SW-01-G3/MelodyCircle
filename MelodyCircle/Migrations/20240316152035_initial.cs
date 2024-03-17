@@ -70,7 +70,11 @@ namespace MelodyCircle.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Creator = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Creator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StepCount = table.Column<int>(type: "int", nullable: true),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PhotoFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
