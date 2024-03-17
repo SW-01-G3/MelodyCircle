@@ -6,14 +6,13 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="text-end">
             <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
                     title="<p>Pode adicionar tutoriais através a inserção obrigatória de um título e uma descrição.</p>">
                 ?
             </button>
         </div>
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="form-group text-center mt-3">
                 <h1>@ViewData["Title"]</h1>
             </div>

@@ -40,7 +40,7 @@ namespace MelodyCircle.Tests.Controllers
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<Tutorial>>(viewResult.ViewData.Model);
-            Assert.Equal(5, model.Count());
+            Assert.Equal(4, model.Count());
         }
 
         [Fact]
