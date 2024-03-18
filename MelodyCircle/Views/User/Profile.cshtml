@@ -109,7 +109,7 @@
                                     <!-- Formulário para remover música -->
                                     <form id="removeConnectionForm" asp-action="RemoveConnection" asp-route-id="@Model.User.UserName">
                                         <div class="mb-3">
-                                            <button type="submit" class="btn btn-primary">Remover</button>
+                                            <button type="submit" class="btn bg-purple text-white border-darkPurple">Remover</button>
                                         </div>
                                     </form>
                                 </div>
@@ -154,7 +154,7 @@
                         <div class="mb-3">
                             <label for="musicUri" class="form-label">Insira URI da Música</label>
                             <input type="text" class="form-control" id="musicUri" name="musicUri" placeholder="https://open.spotify.com/track/">
-                            <button type="submit" class="btn btn-primary" onclick="addMusic()">Adicionar</button>
+                            <button type="submit" class="btn bg-purple text-white border-darkPurple" onclick="addMusic()">Adicionar</button>
                             <!--<span asp-validation-for="musicUri" class="text-danger"></span>-->
                         </div>
                     </form>

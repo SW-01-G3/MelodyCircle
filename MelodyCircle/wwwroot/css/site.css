@@ -165,3 +165,8 @@ body {
     background-color: #ffffff; /* exemplo de cor de fundo branca */
     fill: #000000; /* exemplo de cor de preenchimento preta */
 }
+
+.selected {
+    background-color: var(--purple) !important;
+    color: white !important;
+}
