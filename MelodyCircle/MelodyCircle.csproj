@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\SubscribeTutorial\**" />
+    <Content Remove="Views\SubscribeTutorial\**" />
+    <EmbeddedResource Remove="Views\SubscribeTutorial\**" />
+    <None Remove="Views\SubscribeTutorial\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />
@@ -34,10 +41,6 @@
 
   <ItemGroup>
     <None Include="wwwroot\img\default_pf.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\SubscribeTutorial\" />
   </ItemGroup>
 
 </Project>
