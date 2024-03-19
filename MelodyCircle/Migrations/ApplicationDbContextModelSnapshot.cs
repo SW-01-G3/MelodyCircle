@@ -97,6 +97,9 @@ namespace MelodyCircle.Migrations
                     b.Property<int?>("StepCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubscribersCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

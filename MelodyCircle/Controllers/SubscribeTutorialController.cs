@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +24,32 @@ namespace MelodyCircle.Controllers
         [Authorize]
         public async Task<IActionResult> Subscribe(Guid tutorialId)
         {
-            var inscricao = new SubscribeTutorial { User = await _userManager.GetUserAsync(User), TutorialId = tutorialId };
+            var userId = _userManager.GetUserId(User);
+
+            // Verificar se o usuário já está inscrito neste tutorial
+            var alreadySubscribed = await _context.SubscribeTutorials
+                .AnyAsync(s => s.User.Id.ToString() == userId && s.TutorialId == tutorialId);
+
+            if (alreadySubscribed)
+            {
+                TempData["Message"] = "Já está inscrito neste tutorial";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            var inscricao = new SubscribeTutorial { User = user, TutorialId = tutorialId };
             _context.Add(inscricao);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Tutorial");
+
+            // Incrementar o contador de inscritos no tutorial
+            var tutorial = await _context.Tutorials.FindAsync(tutorialId);
+            if (tutorial != null)
+            {
+                tutorial.SubscribersCount = (tutorial.SubscribersCount ?? 0) + 1;
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: SubscribeTutorial/MyTutorials
@@ -38,10 +57,12 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> MyTutorials()
         {
             var userId = _userManager.GetUserId(User);
+
             var tutoriaisInscritos = await _context.SubscribeTutorials
                 .Where(s => s.User.Id == Guid.Parse(userId))
                 .Include(s => s.Tutorial)
                 .ToListAsync();
+
             return View(tutoriaisInscritos);
         }
 
@@ -54,11 +75,17 @@ namespace MelodyCircle.Controllers
             var inscricao = await _context.SubscribeTutorials.FindAsync(id);
 
             if (inscricao == null)
+            {
                 return NotFound();
+            }
+
+            var tutorial = await _context.Tutorials.FindAsync(inscricao.TutorialId);
+            tutorial.SubscribersCount--; // Decrementa o contador de inscritos
 
             _context.SubscribeTutorials.Remove(inscricao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MyTutorials));
         }
+
     }
 }
