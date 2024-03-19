@@ -26,8 +26,9 @@
                     <div class="card-body align-content-center text-center">
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
                         <h5 class="card-title">Nº de passos</h5>
-                        <td>@item.StepCount</td>
+                        <h6>@item.StepCount</h6>
                         <h5 class="card-title">Nº de inscritos</h5>
+                        <h6>@item.SubscribersCount</h6>
                         <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
                         @if (User.Identity.Name == item.Creator)
                         {
@@ -35,9 +36,12 @@
                             <a asp-action="Delete" asp-route-id="@item.Id"><img src="~/img/delete.svg" alt="Delete tutorial." class="icon" /></a>
                         }
                     </div>
-            <form asp-action="Subscribe" asp-controller="SubscribeTutorial" asp-route-tutorialId="@item.Id">
-                <button type="submit" class="btn btn-primary">Inscrever-se</button>
-            </form>
+                    @if (User.Identity.Name != item.Creator)
+                    {
+                        <form asp-action="Subscribe" asp-controller="SubscribeTutorial" asp-route-tutorialId="@item.Id">
+                            <button type="submit" class="btn btn-primary">Inscrever-se</button>
+                        </form>
+                    }
                 </div>
             }
         }

@@ -32,7 +32,8 @@ namespace MelodyCircle.Controllers
                     Photo = t.Photo,
                     PhotoFileName = t.PhotoFileName,
                     PhotoContentType = t.PhotoContentType,
-                    StepCount = t.Steps.Count
+                    StepCount = t.Steps.Count,
+                    SubscribersCount = t.SubscribersCount
                 })
                 .ToListAsync();
 
@@ -153,14 +154,12 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         // GET: Tutorial/AddStep/id
         public IActionResult AddStep(Guid id)
         {
             return RedirectToAction("Index", "Step", new { tutorialId = id });
         }
 
-        //Método auxiliar
         private bool TutorialExists(Guid id)
         {
             return _context.Tutorials.Any(e => e.Id == id);

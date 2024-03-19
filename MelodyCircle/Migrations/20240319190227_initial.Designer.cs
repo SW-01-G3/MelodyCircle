@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240319133354_initial")]
+    [Migration("20240319190227_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -98,6 +98,9 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("StepCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SubscribersCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
