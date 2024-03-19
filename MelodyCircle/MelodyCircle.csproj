@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\img\star-sharp-half-svgrepo-com.svg" />
+    <Content Remove="wwwroot\img\star-svgrepo-com-filled.svg" />
+    <Content Remove="wwwroot\img\star-svgrepo-com.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />

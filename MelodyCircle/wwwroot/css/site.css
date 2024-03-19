@@ -155,6 +155,10 @@ body {
     fill: var(--lightBlue) !important;
 }
 
+.fill-white{
+    fill: #ffffff !important;
+}
+
 .dropdown-icon {
     position: absolute;
     right: 10px; 
