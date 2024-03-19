@@ -229,6 +229,31 @@ namespace MelodyCircle.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SubscribeTutorials",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscribeTutorials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubscribeTutorials_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubscribeTutorials_Tutorials_TutorialId",
+                        column: x => x.TutorialId,
+                        principalTable: "Tutorials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -279,6 +304,16 @@ namespace MelodyCircle.Migrations
                 column: "TutorialId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SubscribeTutorials_TutorialId",
+                table: "SubscribeTutorials",
+                column: "TutorialId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubscribeTutorials_UserId",
+                table: "SubscribeTutorials",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRating_UserId",
                 table: "UserRating",
                 column: "UserId");
@@ -304,6 +339,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "Steps");
+
+            migrationBuilder.DropTable(
+                name: "SubscribeTutorials");
 
             migrationBuilder.DropTable(
                 name: "UserRating");
