@@ -49,6 +49,28 @@ namespace MelodyCircle.Migrations
                     b.ToTable("Steps");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TutorialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SubscribeTutorials");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
                     b.Property<Guid>("Id")
@@ -348,6 +370,25 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
 
                     b.Navigation("Tutorial");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                        .WithMany()
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
