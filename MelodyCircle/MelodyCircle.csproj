@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\SubscribeTutorial\**" />
+    <Content Remove="Views\SubscribeTutorial\**" />
+    <EmbeddedResource Remove="Views\SubscribeTutorial\**" />
+    <None Remove="Views\SubscribeTutorial\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\img\star-sharp-half-svgrepo-com.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com-filled.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com.svg" />
@@ -40,10 +47,6 @@
 
   <ItemGroup>
     <None Include="wwwroot\img\default_pf.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\SubscribeTutorial\" />
   </ItemGroup>
 
 </Project>
