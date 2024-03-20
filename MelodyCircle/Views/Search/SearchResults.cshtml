@@ -1,0 +1,78 @@
+﻿@model SearchResultViewModel
+
+<form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
+    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1 w-50" />
+    <select name="searchType" class="border-0 bg-lightBlue p-1">
+        <option value="None">Nenhum filtro</option>
+        <option value="User">Utilizador</option>
+        <option value="Tutorial">Tutorial</option>
+        <option value="Collaboration">Colaboração</option>
+    </select>
+    <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
+</form>
+
+<h2 class="text-center mb-4">Resultados da Pesquisa</h2>
+
+@if (Model.Users.Any() || Model.Tutorials.Any() || Model.Collaborations.Any())
+{
+    <div class="container">
+        <div class="row">
+            @if (Model.Users.Any())
+            {
+                <div class="col-md-4">
+                    <h3>Utilizadores</h3>
+                    <div class="row">
+                        @foreach (var user in Model.Users)
+                        {
+                            <div class="col-md-12">
+                                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 justify-content-center align-items-center">
+                                    <h4><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></h4>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.Tutorials.Any())
+            {
+                <div class="col-md-4">
+                    <h3>Tutoriais</h3>
+                    <div class="row">
+                        @foreach (var tutorial in Model.Tutorials)
+                        {
+                            <div class="col-md-12">
+                                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 justify-content-center align-items-center">
+                                    <h4><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
+                                    <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">Inscrever-se</a>
+                                    <p>@tutorial.Description</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.Collaborations.Any())
+            {
+                <div class="col-md-4">
+                    <h3>Colaborações</h3>
+                    <div class="row">
+                        @foreach (var collaboration in Model.Collaborations)
+                        {
+                            <div class="col-md-12">
+                                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 justify-content-center align-items-center">
+                                    <h4>@collaboration.Title</h4>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <p>Nenhum resultado encontrado.</p>
+}

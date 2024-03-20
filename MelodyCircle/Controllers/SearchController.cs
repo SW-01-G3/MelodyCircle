@@ -26,9 +26,7 @@ namespace MelodyCircle.Controllers
                 .Where(t => t.Title.Contains(search.SearchTerm))
                 .ToListAsync();
 
-            var limitedTutorials = tutorials.Take(10).ToList();
-
-            return View("TutorialSearchResult", limitedTutorials);
+            return View("TutorialSearchResult");
         }
 
         public IActionResult SearchUser(Search search)
@@ -37,9 +35,7 @@ namespace MelodyCircle.Controllers
                 .Where(u => u.UserName.Contains(search.SearchTerm))
                 .ToList();
 
-            var limitedUsers = users.Take(10).ToList();
-
-            return View("UserSearchResult", limitedUsers);
+            return View("UserSearchResult");
         }
     }
 }

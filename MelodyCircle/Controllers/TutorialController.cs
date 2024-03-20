@@ -23,9 +23,8 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> Index()
         {
             if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
-            {
                 return RedirectToAction("EditMode");
-            }
+
             return RedirectToAction("ViewMode");
         }
 

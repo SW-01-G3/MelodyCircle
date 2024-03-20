@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Tutorial>
+﻿@model List<Collaboration>
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
     <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1 w-50" />
@@ -11,20 +11,18 @@
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
 
-<h2 class="text-center mb-4">Tutorial Search Results</h2>
+<h2 class="text-center mb-4">Collaboration Search Results</h2>
 
 @if (Model != null && Model.Any())
 {
-    @foreach (var tutorial in Model)
+    @foreach (var collab in Model)
     {
         <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
-            <h4><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
-            <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">Inscrever-se</a>
-            <p>@tutorial.Description</p>
+            <h4>@collab.Title</h4>
         </div>
     }
 }
 else
 {
-    <p>Nenhum tutorial encontrado</p>
+    <p>Nenhuma colaboração encontrada</p>
 }

@@ -93,8 +93,9 @@ using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();  
 
-    await DataSeeder.SeedData(userManager, roleManager);
+    await DataSeeder.SeedData(context, userManager, roleManager);
 }
 
 app.Run();
