@@ -128,27 +128,24 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial/*, IFormFile photo*/)
         {
-            if (id != tutorial.Id)
-                return NotFound();
-
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0)
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) /*|| photo == null || photo.Length == 0*/)
             {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
+                //ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
             }
 
             else
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await photo.CopyToAsync(memoryStream);
-                    tutorial.Photo = memoryStream.ToArray();
-                    tutorial.PhotoFileName = photo.FileName;
-                    tutorial.PhotoContentType = photo.ContentType;
-                }
+                //using (var memoryStream = new MemoryStream())
+                //{
+                //    await photo.CopyToAsync(memoryStream);
+                //    tutorial.Photo = memoryStream.ToArray();
+                //    tutorial.PhotoFileName = photo.FileName;
+                //    tutorial.PhotoContentType = photo.ContentType;
+                //}
 
                 _context.Update(tutorial);
                 await _context.SaveChangesAsync();
