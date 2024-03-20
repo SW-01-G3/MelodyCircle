@@ -73,5 +73,5 @@ export default defineConfig({
   //	command: 'npm run start',
   //	 url: 'https://localhost:7237',
   //	reuseExistingServer: !process.env.CI,
-   },
+  // },
 });
