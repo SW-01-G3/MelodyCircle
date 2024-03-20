@@ -19,6 +19,7 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
+        // GET: Tutorial/Index
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
@@ -29,6 +30,18 @@ namespace MelodyCircle.Controllers
             {
                 var tutoriais = await _context.Tutorials
                     .Where(t => t.Creator == User.Identity.Name)
+                    .Select(t => new Tutorial
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        Description = t.Description,
+                        Creator = t.Creator,
+                        Photo = t.Photo,
+                        PhotoFileName = t.PhotoFileName,
+                        PhotoContentType = t.PhotoContentType,
+                        StepCount = t.Steps.Count,
+                        SubscribersCount = t.SubscribersCount
+                    })
                     .ToListAsync();
 
                 return View(tutoriais);
@@ -38,6 +51,18 @@ namespace MelodyCircle.Controllers
                 var tutoriaisInscritos = await _context.SubscribeTutorials
                     .Where(s => s.User.Id.ToString() == userId)
                     .Select(s => s.Tutorial)
+                    .Select(t => new Tutorial
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        Description = t.Description,
+                        Creator = t.Creator,
+                        Photo = t.Photo,
+                        PhotoFileName = t.PhotoFileName,
+                        PhotoContentType = t.PhotoContentType,
+                        StepCount = t.Steps.Count,
+                        SubscribersCount = t.SubscribersCount
+                    })
                     .ToListAsync();
 
                 return View(tutoriaisInscritos);
@@ -103,19 +128,28 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
         {
             if (id != tutorial.Id)
                 return NotFound();
 
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0)
+            {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-
-            if (string.IsNullOrWhiteSpace(tutorial.Description) || string.IsNullOrWhiteSpace(tutorial.Title))
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
+            }
 
             else
             {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photo.CopyToAsync(memoryStream);
+                    tutorial.Photo = memoryStream.ToArray();
+                    tutorial.PhotoFileName = photo.FileName;
+                    tutorial.PhotoContentType = photo.ContentType;
+                }
+
                 _context.Update(tutorial);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

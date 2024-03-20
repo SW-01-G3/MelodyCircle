@@ -61,41 +61,6 @@
     </button>
 </div> *@
 
-@* @model IEnumerable<Tutorial>
-
-@{
-    ViewData["Title"] = "My Tutorials";
-}
-
-<h1>@ViewData["Title"]</h1>
-
-<div class="container d-flex justify-content-center">
-    <div class="row justify-content-between">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var item in Model)
-            {
-                <div class="card col-lg-3 m-4 rounded border border-purple" style="width: 300px;">
-                    <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" alt="Imagem do tutorial" />
-                    <div class="card-body align-content-center text-center">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-                        <h5 class="card-title">Nº de passos</h5>
-                        <h6>@item.StepCount</h6>
-                        <h5 class="card-title">Nº de inscritos</h5>
-                        <h6>@item.SubscribersCount</h6>
-                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <h1>Não está inscrito em nenhum tutorial</h1>
-        }
-    </div>
-</div>
-</div> *@
-
 @model IEnumerable<Tutorial>
 
 @{
@@ -122,6 +87,7 @@
                     <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" alt="Imagem do tutorial" />
                     <div class="card-body align-content-center text-center">
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+
                         <h5 class="card-title">Nº de passos</h5>
                         <h6>@item.StepCount</h6>
 
