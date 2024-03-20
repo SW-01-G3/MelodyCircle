@@ -23,12 +23,10 @@ namespace MelodyCircle.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            // Verifica se o usuário é um Teacher, Mod ou Admin
             var isTeacherOrHigher = User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin");
 
             if (isTeacherOrHigher)
             {
-                // Se o usuário for Teacher ou superior, mostra apenas os tutoriais que ele criou
                 var tutoriais = await _context.Tutorials
                     .Where(t => t.Creator == User.Identity.Name)
                     .ToListAsync();
@@ -37,7 +35,6 @@ namespace MelodyCircle.Controllers
             }
             else
             {
-                // Caso contrário, mostra apenas os tutoriais que o usuário se inscreveu
                 var tutoriaisInscritos = await _context.SubscribeTutorials
                     .Where(s => s.User.Id.ToString() == userId)
                     .Select(s => s.Tutorial)
@@ -46,7 +43,6 @@ namespace MelodyCircle.Controllers
                 return View(tutoriaisInscritos);
             }
         }
-
 
         // GET: Tutorial/Create
         public IActionResult Create()
@@ -58,33 +54,29 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0) 
+            {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-
-            if (string.IsNullOrWhiteSpace(tutorial.Description) || string.IsNullOrWhiteSpace(tutorial.Title))
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
+            }
 
             else
             {
-                if (photo != null && photo.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        tutorial.Photo = memoryStream.ToArray();
-                        tutorial.PhotoFileName = photo.FileName;
-                        tutorial.PhotoContentType = photo.ContentType;
-                    }
-                }
-                else
-                    ModelState.AddModelError(nameof(tutorial.Photo), "Only JPEG files are allowed");
-
                 tutorial.Id = Guid.NewGuid();
 
                 var user = await _userManager.GetUserAsync(User);
 
                 if (user != null)
                     tutorial.Creator = user.UserName;
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photo.CopyToAsync(memoryStream);
+                    tutorial.Photo = memoryStream.ToArray();
+                    tutorial.PhotoFileName = photo.FileName;
+                    tutorial.PhotoContentType = photo.ContentType;
+                }
 
                 _context.Add(tutorial);
                 await _context.SaveChangesAsync();

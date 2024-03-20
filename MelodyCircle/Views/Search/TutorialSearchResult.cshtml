@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Tutorial>
+
+<h2>Tutorial Search Results</h2>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var tutorial in Model)
+    {
+        <div>
+            <h4><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
+            <p>@tutorial.Description</p>
+        </div>
+        <hr />
+    }
+}
+else
+{
+    <p>Nenhum tutorial encontrado</p>
+}

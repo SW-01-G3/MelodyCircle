@@ -1,0 +1,18 @@
+﻿@model List<User>
+
+<h2>User Search Result</h2>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var user in Model)
+    {
+        <div>
+            <h4><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></h4>
+        </div>
+        <hr />
+    }
+}
+else
+{
+    <p>Nenhum utilizador encontrado</p>
+}

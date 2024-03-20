@@ -30,6 +30,7 @@
             <div class="form-group text-center">
                 <label asp-for="Photo" class="control-label border-purple"></label>
                 <input asp-for="Photo" type="file" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
             <div class="form-group text-center my-3">
                 <input type="submit" value="Adicionar" class="btn bg-purple text-white" />

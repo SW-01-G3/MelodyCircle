@@ -1,8 +1,5 @@
-﻿using MelodyCircle.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.Numerics;
 
 namespace MelodyCircle.Models
 {

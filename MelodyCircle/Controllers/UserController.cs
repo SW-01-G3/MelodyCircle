@@ -1,17 +1,9 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
 using MelodyCircle.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
-using SendGrid.Helpers.Mail;
-using System;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace MelodyCircle.Controllers
