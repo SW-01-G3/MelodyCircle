@@ -68,12 +68,12 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: Step/Delete/tutorialId
-        public async Task<IActionResult> Delete(Guid? tutorialId)
+        public async Task<IActionResult> Delete(Guid? id)
         {
-            if (tutorialId == null)
+            if (id == null)
                 return NotFound();
 
-            var step = await _context.Steps.FirstOrDefaultAsync(m => m.TutorialId == tutorialId);
+            var step = await _context.Steps.FirstOrDefaultAsync(m => m.Id == id);
 
             if (step == null)
                 return NotFound();
@@ -98,14 +98,14 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: Step/Edit/tutorialId
-        public async Task<IActionResult> Edit(Guid? tutorialId)
+        public async Task<IActionResult> Edit(Guid? id)
         {
-            ViewBag.TutorialId = tutorialId;
+            ViewBag.id = id;
 
-            if (tutorialId == null)
+            if (id == null)
                 return NotFound();
 
-            var step = await _context.Steps.FirstOrDefaultAsync(m => m.TutorialId == tutorialId);
+            var step = await _context.Steps.FirstOrDefaultAsync(m => m.Id == id);
 
             if (step == null)
                 return NotFound();
