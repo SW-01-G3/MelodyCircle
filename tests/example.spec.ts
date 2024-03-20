@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('has title', async ({ page }) => {
-  await page.goto('https://melodycircle20240224155113.azurewebsites.net/');
+  await page.goto('https://melodycircle.azurewebsites.net/');
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/MelodyCircle/);
