@@ -1,25 +1,23 @@
 :root {
-    --darkPurple: #7752FE;
-    --purple: #8E8FFA;
-    --lightBlue: #C2D9FF;
+  --darkPurple: #7752fe;
+  --purple: #8e8ffa;
+  --lightBlue: #c2d9ff;
 }
 
 * {
-    font-family: 'Lexend', serif !important;
+  font-family: "Lexend", serif !important;
 }
 
 html {
-    font-size: 14px;
-    position: relative;
-    min-height: 100%;
-    scrollbar-width: none;
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+  scrollbar-width: none;
 }
 
 .unselectable {
-    user-select: none;
+  user-select: none;
 }
-
-
 
 @media (min-width: 768px) {
   html {
@@ -27,10 +25,13 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
-
 
 body {
   margin-bottom: 60px;
@@ -40,153 +41,161 @@ body {
 /* -------------------------------------------- */
 
 .bg-darkPurple {
-    background-color: var(--darkPurple) !important;
+  background-color: var(--darkPurple) !important;
 }
 
 .text-darkPurple {
-    color: var(--darkPurple) !important;
+  color: var(--darkPurple) !important;
 }
 
 .border-darkPurple {
-    border-color: var(--darkPurple) !important;
-    border-width: 2px !important;
-    border-style: solid !important;
+  border-color: var(--darkPurple) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }
 
 /* -------------------------------------------- */
 
 .bg-purple {
-    background-color: var(--purple) !important;
+  background-color: var(--purple) !important;
 }
 
 .text-purple {
-    color: var(--darkPurple) !important;
-    
+  color: var(--darkPurple) !important;
 }
 
 .text-purple2 {
-    color: var(--purple) !important;
+  color: var(--purple) !important;
 }
 
 .border-purple {
-    border-color: var(--purple) !important;
-    border-width: 2px !important;
-    border-style: solid !important;
+  border-color: var(--purple) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }
 
 /* -------------------------------------------- */
 
 .bg-lightPurple {
-    background-color: var(--lightPurple) !important;
+  background-color: var(--lightPurple) !important;
 }
 
 .text-lightPurple {
-    color: var(--lightPurple) !important;
+  color: var(--lightPurple) !important;
 }
 
 .border-lightPurple {
-    border-color: var(--lightPurple) !important;
-    border-width: 2px !important;
-    border-style: solid !important;
+  border-color: var(--lightPurple) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }
 
 .btn-lightPurple {
-    background-color: var(--lightPurple) !important;
-    color: white !important;
+  background-color: var(--lightPurple) !important;
+  color: white !important;
 }
 
 /* -------------------------------------------- */
 
 .bg-lightBlue {
-    background-color: var(--lightBlue) !important;
+  background-color: var(--lightBlue) !important;
 }
 
 .text-lightBlue {
-    color: var(--lightBlue) !important;
+  color: var(--lightBlue) !important;
 }
 
 .border-lightBlue {
-    border-color: var(--lightBlue) !important;
-    border-width: 2px !important;
-    border-style: solid !important;
+  border-color: var(--lightBlue) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
 }
 
 .foto {
-    height: 100px;
-    width: 100px;
-    padding: 0px;
+  height: 100px;
+  width: 100px;
+  padding: 0px;
 }
 .custom-file-input {
-    display: none; /* Esconde o botão padrão de seleção de arquivos */
+  display: none; /* Esconde o botï¿½o padrï¿½o de seleï¿½ï¿½o de arquivos */
 }
 
 .profile-link {
-    text-decoration: none; /* Remove underline */
-    color: black; /* Change color */
+  text-decoration: none; /* Remove underline */
+  color: black; /* Change color */
 }
 
-    /* Style for when the hyperlink is hovered */
-    .profile-link:hover {
-        text-decoration: none; /* Remove underline on hover */
-        color: blue; /* Change color on hover */
-    }
+/* Style for when the hyperlink is hovered */
+.profile-link:hover {
+  text-decoration: none; /* Remove underline on hover */
+  color: blue; /* Change color on hover */
+}
 
 .floating-button {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    height: 40px;
-    width: 40px;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  height: 40px;
+  width: 40px;
 }
 
 .floating-button-left {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    height: 40px;
-    width: 40px;
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  height: 40px;
+  width: 40px;
 }
 
 .floating-button-center {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 50%;
-    left: 50%;
-    height: 40px;
-    width: 100px;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 50%;
+  left: 50%;
+  height: 40px;
+  width: 100px;
 }
 
 .fill-purple {
-    fill: var(--purple) !important;
+  fill: var(--purple) !important;
 }
 
 .fill-lightBlue {
-    fill: var(--lightBlue) !important;
+  fill: var(--lightBlue) !important;
 }
 
-.fill-white{
-    fill: #ffffff !important;
+.fill-white {
+  fill: #ffffff !important;
 }
 
 .dropdown-icon {
-    position: absolute;
-    right: 10px; 
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .dropdown-toggle:focus {
-    background-color: white; /* Cor quando o botão é clicado */
-    color: #fff; /* Cor do texto quando o botão é clicado */
+  background-color: white; /* Cor quando o botï¿½o ï¿½ clicado */
+  color: #fff; /* Cor do texto quando o botï¿½o ï¿½ clicado */
 }
 
 .active {
-    /* Adicione os estilos desejados para o background e fill dos ícones quando o botão dropdown está ativado */
-    background-color: #ffffff; /* exemplo de cor de fundo branca */
-    fill: #000000; /* exemplo de cor de preenchimento preta */
+  /* Adicione os estilos desejados para o background e fill dos ï¿½cones quando o botï¿½o dropdown estï¿½ ativado */
+  background-color: #ffffff; /* exemplo de cor de fundo branca */
+  fill: #000000; /* exemplo de cor de preenchimento preta */
 }
 
 .selected {
-    background-color: var(--purple) !important;
-    color: white !important;
+  background-color: var(--purple) !important;
+  color: white !important;
+}
+
+.removeSelection {
+  selection: none;
+}
+
+.addStepButton {
+  height: 20px;
+  width: 20px;
 }
