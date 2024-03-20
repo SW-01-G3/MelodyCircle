@@ -39,6 +39,14 @@
                                 <a class="nav-link text-center" asp-controller="User" asp-action="" asp-route-id="@User.Identity.Name"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
                             </li>
                         }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <a class="nav-link text-center" asp-area="" asp-controller="Admin" asp-action="Index"><img src="~/img/adminIcon.svg" alt="Admin." class="icon" /></a>
+	                        </li>
+                        } 
+
                         @if (currentController != null && currentController.Equals("Home"))
                         {
                             <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
@@ -83,12 +91,6 @@
                                 </li>
                             }
                         }
-@*                      @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">All Users</a>
-                            </li>
-                        } *@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @if ((currentAction != null && currentAction.Equals("Profile")) || (currentPage != null && currentPage.Equals("/Account/Manage/Index")))
