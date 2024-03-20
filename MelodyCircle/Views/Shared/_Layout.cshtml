@@ -61,10 +61,21 @@
                                 <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome.svg" alt="Home." class="icon fill-white" /></a>
                             </li>
                         }
+                        
+                        
+                        @if (currentController != null && currentController.Equals("Search"))
+                        {
+                            <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar2.svg" alt="Procurar." class="icon fill-white" /></a>
+	                        </li>                            
+                        }
+                        else
+                        {
+	                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar.svg" alt="Procurar." class="icon fill-white" /></a>
+	                        </li>
+                        }
 
-                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
-                            <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar.svg" alt="Procurar." class="icon fill-white" /></a></a>
-                        </li>
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -124,7 +135,7 @@
                                 </a>
                                 <div class="dropdown-menu rounded-bottom border border-purple" aria-labelledby="navbarDropdown">
                                     <form class="form-inline" asp-controller="User" asp-action="Profile" asp-route-id="@User.Identity.Name">
-                                        <button type="submit" class="dropdown-item">Pefil</button>
+                                        <button type="submit" class="dropdown-item">Perfil</button>
                                     </form>
                                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Definições</a>
                                     @* <form class="form-inline" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name">
@@ -136,9 +147,19 @@
                                 </div>
                             </li>
                             }
-                             <li id="connectionBtn" class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
-                                <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem.svg" alt="Drop." class="icon" /></a>
-                            </li>
+                            @if (currentController != null && currentController.Equals("User") && currentAction.Equals("ListConnections"))
+                            {
+	                            <li id="connectionBtn" class="nav-item rounded-pill bg-white text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+		                            <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem2.svg" alt="Conn." class="icon" /></a>
+	                            </li>
+                            }
+                            else
+                            {
+	                            <li id="connectionBtn" class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+		                            <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem.svg" alt="Conn." class="icon" /></a>
+	                            </li>
+                            }
+
                         }
                     </ul>
                     <partial name="_LoginPartial" />
