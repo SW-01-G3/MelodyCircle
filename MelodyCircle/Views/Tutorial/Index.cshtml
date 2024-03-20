@@ -64,7 +64,7 @@
 @model IEnumerable<Tutorial>
 
 @{
-    ViewData["Title"] = "Tutoriais";
+    ViewData["Title"] = "Tutoriais Inscritos";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -80,8 +80,8 @@
 <div class="text-end">
     @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
     {
-        <a asp-action="EditMode" class="btn btn-dark">Modo Edição</a>
-        <a asp-action="ViewMode" class="btn btn-dark">Modo Visualização</a>
+	    <a asp-action="EditMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/mudar_foto.svg" /></a>
+        <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/edit.svg" /></a>
     }
 </div>
 
