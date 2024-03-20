@@ -1,18 +1,12 @@
 ﻿@model IEnumerable<Tutorial>
 
 @{
-    ViewData["Title"] = "Tutoriais";
+    ViewData["Title"] = "Tutoriais Inscritos";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2 class="text-center">@ViewData["Title"]</h2>
 
-<div class="text-end">
-    @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
-    {
-        <a asp-action="EditMode" class="btn btn-dark">Modo Edição</a>
-        <a asp-action="ViewMode" class="btn btn-dark">Modo Visualização</a>
-    }
-</div>
+
 
 <div class="container d-flex justify-content-center">
     <div class="row justify-content-between">
@@ -38,14 +32,22 @@
         }
         else
         {
-            <h1>Não existem tutoriais disponiveis.</h1>
+            <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+	            <h1>Não existem tutoriais disponiveis.</h1>
+	            </div>
         }
     </div>
 </div>
 
 <div class="text-end">
-    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</p>">
-        ?
-    </button>
+	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+	        title="<p>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</p>">
+		?
+	</button>
+</div>
+<div class="text-end">
+	@if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+	{
+        <a asp-action="EditMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/edit-white.svg" class="icon text-white" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
+	}
 </div>

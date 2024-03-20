@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Tutorial>
 
 @{
-    ViewData["Title"] = "Tutoriais";
+    ViewData["Title"] = "Tutoriais Criados";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2 class="text-center">@ViewData["Title"]</h2>
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -14,13 +14,7 @@
     }
 }
 
-<div class="text-end">
-    @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
-    {
-        <a asp-action="EditMode" class="btn btn-dark">Modo Edição</a>
-        <a asp-action="ViewMode" class="btn btn-dark">Modo Visualização</a>
-    }
-</div>
+
 
 <div class="container d-flex justify-content-center">
     <div class="row justify-content-between">
@@ -57,15 +51,25 @@
         }
         else
         {
-            <h1>Não existem tutoriais disponiveis.</h1>
+	        <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+		        <h1>Não existem tutoriais disponiveis.</h1>
+	        </div>
         }
     </div>
 </div>
 
 <div class="text-end">
-    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'.
+	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+	        title="<p>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'.
             Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</p>">
-        ?
-    </button>
+		?
+	</button>
+</div>
+
+<div class="text-end">
+	@if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+	{
+		<a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
+
+	}
 </div>
