@@ -20,25 +20,54 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: Tutorial/Index
+        //public async Task<IActionResult> Index()
+        //{
+        //    var tutorials = await _context.Tutorials
+        //        .Select(t => new Tutorial
+        //        {
+        //            Id = t.Id,
+        //            Title = t.Title,
+        //            Description = t.Description,
+        //            Creator = t.Creator,
+        //            Photo = t.Photo,
+        //            PhotoFileName = t.PhotoFileName,
+        //            PhotoContentType = t.PhotoContentType,
+        //            StepCount = t.Steps.Count,
+        //            SubscribersCount = t.SubscribersCount
+        //        })
+        //        .ToListAsync();
+
+        //    return View(tutorials);
+        //}
+
         public async Task<IActionResult> Index()
         {
-            var tutorials = await _context.Tutorials
-                .Select(t => new Tutorial
-                {
-                    Id = t.Id,
-                    Title = t.Title,
-                    Description = t.Description,
-                    Creator = t.Creator,
-                    Photo = t.Photo,
-                    PhotoFileName = t.PhotoFileName,
-                    PhotoContentType = t.PhotoContentType,
-                    StepCount = t.Steps.Count,
-                    SubscribersCount = t.SubscribersCount
-                })
-                .ToListAsync();
+            var userId = _userManager.GetUserId(User);
 
-            return View(tutorials);
+            // Verifica se o usuário é um Teacher, Mod ou Admin
+            var isTeacherOrHigher = User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin");
+
+            if (isTeacherOrHigher)
+            {
+                // Se o usuário for Teacher ou superior, mostra apenas os tutoriais que ele criou
+                var tutoriais = await _context.Tutorials
+                    .Where(t => t.Creator == User.Identity.Name)
+                    .ToListAsync();
+
+                return View(tutoriais);
+            }
+            else
+            {
+                // Caso contrário, mostra apenas os tutoriais que o usuário se inscreveu
+                var tutoriaisInscritos = await _context.SubscribeTutorials
+                    .Where(s => s.User.Id.ToString() == userId)
+                    .Select(s => s.Tutorial)
+                    .ToListAsync();
+
+                return View(tutoriaisInscritos);
+            }
         }
+
 
         // GET: Tutorial/Create
         public IActionResult Create()
