@@ -91,9 +91,6 @@ namespace MelodyCircle.Migrations
                     b.Property<string>("PhotoContentType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhotoFileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("StepCount")
                         .HasColumnType("int");
 

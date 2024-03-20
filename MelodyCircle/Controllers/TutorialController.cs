@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MelodyCircle.Controllers
 {
@@ -37,7 +38,6 @@ namespace MelodyCircle.Controllers
                         Description = t.Description,
                         Creator = t.Creator,
                         Photo = t.Photo,
-                        PhotoFileName = t.PhotoFileName,
                         PhotoContentType = t.PhotoContentType,
                         StepCount = t.Steps.Count,
                         SubscribersCount = t.SubscribersCount
@@ -58,7 +58,6 @@ namespace MelodyCircle.Controllers
                         Description = t.Description,
                         Creator = t.Creator,
                         Photo = t.Photo,
-                        PhotoFileName = t.PhotoFileName,
                         PhotoContentType = t.PhotoContentType,
                         StepCount = t.Steps.Count,
                         SubscribersCount = t.SubscribersCount
@@ -99,7 +98,6 @@ namespace MelodyCircle.Controllers
                 {
                     await photo.CopyToAsync(memoryStream);
                     tutorial.Photo = memoryStream.ToArray();
-                    tutorial.PhotoFileName = photo.FileName;
                     tutorial.PhotoContentType = photo.ContentType;
                 }
 
@@ -128,30 +126,35 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial/*, IFormFile photo*/)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile image)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) /*|| photo == null || photo.Length == 0*/)
+            if (id != tutorial.Id)
+                return NotFound();
+
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
             {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
-                //ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
             }
 
-            else
+            else 
             {
-                //using (var memoryStream = new MemoryStream())
-                //{
-                //    await photo.CopyToAsync(memoryStream);
-                //    tutorial.Photo = memoryStream.ToArray();
-                //    tutorial.PhotoFileName = photo.FileName;
-                //    tutorial.PhotoContentType = photo.ContentType;
-                //}
+                _context.Entry(tutorial).State = EntityState.Detached;
 
-                _context.Update(tutorial);
+                _context.Attach(tutorial);
+                _context.Entry(tutorial).Property("Title").IsModified = true;
+                _context.Entry(tutorial).Property("Description").IsModified = true;
+
+                if (tutorial.Photo != null && tutorial.Photo.Length > 0)
+                {
+                    _context.Entry(tutorial).Property("Photo").IsModified = true;
+                    _context.Entry(tutorial).Property("PhotoContentType").IsModified = true;
+                }
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-
             return View(tutorial);
         }
 
