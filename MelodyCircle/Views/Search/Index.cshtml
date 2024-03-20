@@ -4,3 +4,18 @@
     <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1  w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
+
+<div class="unselectable sidebar rounded position-fixed top-50 start-0 translate-middle-y w-10 p-2 bg-white ">
+    <div class="filters justify-content-center align-items-center">
+        <div class="filter-header">
+            <h2 class="text-center">Filtros</h2>
+            <button id="toggleFilters" class="toggle-btn bg-white border-0">&#x25B2;</button>
+        </div>
+        <div class="filter-content">
+            <p for="filter1">Filtro 1:</p>
+            <p for="filter2">Filtro 2:</p>
+            <!-- Adicione mais filtros conforme necessário -->
+            <button id="applyFilters" class="bg-purple border-0 text-white rounded w-100 p-2">Aplicar</button>
+        </div>
+    </div>
+</div>
