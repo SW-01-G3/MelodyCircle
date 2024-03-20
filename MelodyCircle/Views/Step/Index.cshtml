@@ -1,93 +1,98 @@
 ﻿@model IEnumerable<MelodyCircle.Models.Step>
 
 @{
-    ViewData["Title"] = "Lista de Passos";
+    ViewData["Title"] = "Titulo do tutorial";
 }
 
-<h1>@ViewData["Title"]</h1>
 
 @section scripts {
-    <script>
-        function logContents(contents) {
-            console.log(contents);
-        }
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
-        var quill = new Quill('#editor', {
-            theme: 'snow'
-        });
+        let stepDivs = document.getElementsByName("stepDiv");
+        let stepData = [];
 
-        quill.on('text-change', function (delta, oldDelta, source) {
-            if (source === 'user') { // Check if the change was made by the user
-                var contents = quill.getContents(); // Get the contents every time the text is changed
-                convertToHtml(contents).then(html => {
-                    console.log(html);
-                });
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var step in Model)
+            {
+                Console.WriteLine(step.Content);
+                @:stepData.push(@Html.Raw(step.Content));
             }
-        });
+        }
+        console.log(stepDivs);
+        console.log(stepData);
+        var quill = new Quill('#editor');
 
-        function convertToHtml(contents) {
-            return quill.clipboard.convert(contents);
+        for (let cnt = 0; cnt < stepData.length; cnt++) {
+            console.log(convertToHtml(quill, stepData[cnt]))
+            stepDivs[cnt].innerHTML = convertToHtml(quill, stepData[cnt]);
+        }
+
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
         }
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
 
-<p style="display: none;">
-    @ViewBag.TutorialId
-</p>
-<p style="display: none;">
-    @ViewBag.Creator
-</p>
-
-<p>
-    @if (User.Identity.Name == ViewBag.Creator)
-    {
-        <a asp-action="Create" asp-route-tutorialId="@ViewBag.TutorialId">Adicionar Passo</a>
-    }
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Título</th>
-            <th>Conteúdo</th>
-            <th>Ordem</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="row justify-content-around">
+    <aside class="col-md-2 h-100 bg-white rounded-3 border-purple">
         @if (Model != null && Model.Any())
         {
             @foreach (var step in Model)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => step.Title)</td>
-                    <td>@Html.DisplayFor(modelItem => step.Content)</td>
-                    <td>@Html.DisplayFor(modelItem => step.Order)</td>
+                <div class="col justify-content-evenly mt-3">
+                    <span>@Html.DisplayFor(modelItem => step.Title)</span>
+                        <a asp-action="Edit" asp-route-tutorialId="@step.TutorialId"><img src="~/img/edit.svg" alt="Edit step." class="icon fill-purple" /></a>
+                        <a asp-action="Delete" asp-route-tutorialId="@step.TutorialId"><img src="~/img/delete.svg" alt="Delete step." class="icon" /></a>
+                </div>
 
-                    @if (User.Identity.Name == ViewBag.Creator)
-                    {
-                        <td>
-                            <a asp-action="Edit" asp-route-tutorialId="@step.TutorialId">Editar</a> |
-                            <a asp-action="Delete" asp-route-tutorialId="@step.TutorialId">Excluir</a>
-                            <button onClick="javascript:logContents(@step.Content)">Log</button>
-                        </td>
-                    }
-                </tr>
+            }
+        } else
+        {
+            <p class="mt-3">Ainda não foi adicionado conteudo.</p>
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            @if (User.Identity.Name == ViewBag.Creator)
+            {
+                <div class="d-flex justify-content-center my-3">
+                    <a asp-action="Create" class="btn bg-purple text-white rounded-circle addStepbutton" asp-route-tutorialId="@ViewBag.TutorialId">+</a>
+                </div>
+                
             }
         }
-        else
+    </aside>
+    <div class="col-md-8">
+        <div class="row d-flex justify-content-center">
+            <h2 class="align-self-center">@ViewData["Title"]</h2>
+            <h3 class="align-self-center">@ViewBag.Creator</h3>
+        </div>
+        
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td colspan="4">Não há passos</td>
-            </tr>
+            @foreach (var step in Model)
+            {
+                <div class="my-3">
+                    <div class="d-flex justify-content-center">
+                        <h4>@Html.DisplayFor(modelItem => step.Title)</h4>
+                    </div>
+                    
+                    <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
+                </div>
+
+            }
         }
-    </tbody>
-</table>
+    </div>
+
+    <input type="hidden" id="editor" name="editor" value="" />
+</div>
+
+
+
+
 
 <div>
     <a asp-action="Index" asp-controller="Tutorial">Voltar à lista de Passos</a>
@@ -99,3 +104,4 @@
         ?
     </button>
 </div>
+

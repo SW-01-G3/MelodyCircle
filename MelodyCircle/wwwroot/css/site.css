@@ -185,3 +185,8 @@ body {
 .removeSelection{
     selection
 }
+
+addStepButton {
+    height: 20px;
+    width: 20px;
+}
