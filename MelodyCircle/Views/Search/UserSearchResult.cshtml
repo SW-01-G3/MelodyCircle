@@ -1,15 +1,14 @@
 ﻿@model List<User>
 
-<h2>User Search Result</h2>
+<h2 class="text-center mb-4">   Pesquisar</h2>
 
 @if (Model != null && Model.Any())
 {
     @foreach (var user in Model)
     {
-        <div>
+        <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50  justify-content-center align-items-center">
             <h4><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></h4>
         </div>
-        <hr />
     }
 }
 else

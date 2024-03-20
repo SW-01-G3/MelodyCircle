@@ -1,11 +1,6 @@
 ﻿@model Search
 
-<form asp-action="SearchTutorial" method="post">
-    <input type="text" name="searchTerm" placeholder="Pesquisar por tutoriais..." />
-    <button type="submit">Pesquisar</button>
-</form>
-
-<form asp-action="SearchUser" method="get">
-    <input type="text" name="searchTerm" placeholder="Pesquisar por utilizadores..." />
-    <button type="submit">Pesquisar</button>
+<form asp-action="SearchTutorial" method="post" class="text-center mx-auto w-50  d-flex justify-content-center align-items-center">
+    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1  w-50" />
+    <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
