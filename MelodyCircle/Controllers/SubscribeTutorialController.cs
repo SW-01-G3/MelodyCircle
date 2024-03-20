@@ -26,7 +26,6 @@ namespace MelodyCircle.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            // Verificar se o usuário já está inscrito neste tutorial
             var alreadySubscribed = await _context.SubscribeTutorials
                 .AnyAsync(s => s.User.Id.ToString() == userId && s.TutorialId == tutorialId);
 
@@ -41,7 +40,6 @@ namespace MelodyCircle.Controllers
             _context.Add(inscricao);
             await _context.SaveChangesAsync();
 
-            // Incrementar o contador de inscritos no tutorial
             var tutorial = await _context.Tutorials.FindAsync(tutorialId);
             if (tutorial != null)
             {
@@ -49,7 +47,14 @@ namespace MelodyCircle.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Tutorial");
+        }
+
+        [HttpGet]
+        public IActionResult SubscribeConfirmation(Guid tutorialId)
+        {
+            ViewData["TutorialId"] = tutorialId;
+            return View();
         }
 
         // GET: SubscribeTutorial/MyTutorials

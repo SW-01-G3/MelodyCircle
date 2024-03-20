@@ -20,52 +20,36 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
-        // GET: Tutorial/Index
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+            {
+                return RedirectToAction("EditMode");
+            }
+            return RedirectToAction("ViewMode");
+        }
+
+        // GET: Tutorial/EditMode
+        public async Task<IActionResult> EditMode()
+        {
             var userId = _userManager.GetUserId(User);
+            var tutoriaisCriados = await _context.Tutorials
+                .Where(t => t.Creator == User.Identity.Name)
+                .ToListAsync();
 
-            var isTeacherOrHigher = User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin");
+            return View("EditMode", tutoriaisCriados);
+        }
 
-            if (isTeacherOrHigher)
-            {
-                var tutoriais = await _context.Tutorials
-                    .Where(t => t.Creator == User.Identity.Name)
-                    .Select(t => new Tutorial
-                    {
-                        Id = t.Id,
-                        Title = t.Title,
-                        Description = t.Description,
-                        Creator = t.Creator,
-                        Photo = t.Photo,
-                        PhotoContentType = t.PhotoContentType,
-                        StepCount = t.Steps.Count,
-                        SubscribersCount = t.SubscribersCount
-                    })
-                    .ToListAsync();
+        // GET: Tutorial/ViewMode
+        public async Task<IActionResult> ViewMode()
+        {
+            var userId = _userManager.GetUserId(User);
+            var tutoriaisInscritos = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Select(s => s.Tutorial)
+                .ToListAsync();
 
-                return View(tutoriais);
-            }
-            else
-            {
-                var tutoriaisInscritos = await _context.SubscribeTutorials
-                    .Where(s => s.User.Id.ToString() == userId)
-                    .Select(s => s.Tutorial)
-                    .Select(t => new Tutorial
-                    {
-                        Id = t.Id,
-                        Title = t.Title,
-                        Description = t.Description,
-                        Creator = t.Creator,
-                        Photo = t.Photo,
-                        PhotoContentType = t.PhotoContentType,
-                        StepCount = t.Steps.Count,
-                        SubscribersCount = t.SubscribersCount
-                    })
-                    .ToListAsync();
-
-                return View(tutoriaisInscritos);
-            }
+            return View("ViewMode", tutoriaisInscritos);
         }
 
         // GET: Tutorial/Create
