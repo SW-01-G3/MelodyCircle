@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MelodyCircle.Models
 {
@@ -16,7 +17,6 @@ namespace MelodyCircle.Models
         public virtual List<Step>? Steps { get; set; }
         public int? StepCount { get; set; }
         public byte[]? Photo { get; set; }
-        public string? PhotoFileName { get; set; }
         public string? PhotoContentType { get; set; }
         public int? SubscribersCount { get; set; } = 0;
     }

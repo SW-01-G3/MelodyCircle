@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Tutorial>
+
+@{
+    ViewData["Title"] = "Tutoriais";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="text-end">
+    @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+    {
+        <a asp-action="EditMode" class="btn btn-dark">Modo Edição</a>
+        <a asp-action="ViewMode" class="btn btn-dark">Modo Visualização</a>
+    }
+</div>
+
+<div class="container d-flex justify-content-center">
+    <div class="row justify-content-between">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="card col-lg-3 m-4 rounded border border-purple" style="width: 300px;">
+                    <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" />
+                    <div class="card-body align-content-center text-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+
+                        <h5 class="card-title">Nº de passos</h5>
+                        <h6>@item.StepCount</h6>
+
+                        <h5 class="card-title">Nº de inscritos</h5>
+                        <h6>@item.SubscribersCount</h6>
+
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h1>Não existem tutoriais disponiveis.</h1>
+        }
+    </div>
+</div>
+
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</p>">
+        ?
+    </button>
+</div>
