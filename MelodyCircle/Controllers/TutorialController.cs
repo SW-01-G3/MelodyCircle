@@ -19,27 +19,6 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
-        // GET: Tutorial/Index
-        //public async Task<IActionResult> Index()
-        //{
-        //    var tutorials = await _context.Tutorials
-        //        .Select(t => new Tutorial
-        //        {
-        //            Id = t.Id,
-        //            Title = t.Title,
-        //            Description = t.Description,
-        //            Creator = t.Creator,
-        //            Photo = t.Photo,
-        //            PhotoFileName = t.PhotoFileName,
-        //            PhotoContentType = t.PhotoContentType,
-        //            StepCount = t.Steps.Count,
-        //            SubscribersCount = t.SubscribersCount
-        //        })
-        //        .ToListAsync();
-
-        //    return View(tutorials);
-        //}
-
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(User);
