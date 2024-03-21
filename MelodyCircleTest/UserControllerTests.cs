@@ -33,6 +33,7 @@ namespace MelodyCircleTest
             _controller = new UserController(_mockUserManager.Object, _context);
         }
 
+
         [Fact]
         public async Task Profile_WithValidId_ShouldReturnViewWithViewModel()
         {
