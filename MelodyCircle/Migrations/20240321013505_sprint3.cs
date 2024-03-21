@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MelodyCircle.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class sprint3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -64,6 +64,18 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Collaborations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Collaborations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tutorials",
                 columns: table => new
                 {
@@ -73,8 +85,8 @@ namespace MelodyCircle.Migrations
                     Creator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StepCount = table.Column<int>(type: "int", nullable: true),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    PhotoFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SubscribersCount = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -229,6 +241,31 @@ namespace MelodyCircle.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SubscribeTutorials",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubscribeTutorials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubscribeTutorials_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubscribeTutorials_Tutorials_TutorialId",
+                        column: x => x.TutorialId,
+                        principalTable: "Tutorials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -279,6 +316,16 @@ namespace MelodyCircle.Migrations
                 column: "TutorialId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SubscribeTutorials_TutorialId",
+                table: "SubscribeTutorials",
+                column: "TutorialId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubscribeTutorials_UserId",
+                table: "SubscribeTutorials",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRating_UserId",
                 table: "UserRating",
                 column: "UserId");
@@ -303,7 +350,13 @@ namespace MelodyCircle.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Collaborations");
+
+            migrationBuilder.DropTable(
                 name: "Steps");
+
+            migrationBuilder.DropTable(
+                name: "SubscribeTutorials");
 
             migrationBuilder.DropTable(
                 name: "UserRating");

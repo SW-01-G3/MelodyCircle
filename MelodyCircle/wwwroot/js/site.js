@@ -26,3 +26,19 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         }
 }
 
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleFiltersButton = document.getElementById('toggleFilters');
+    const filterContent = document.querySelector('.filter-content');
+
+    toggleFiltersButton.addEventListener('click', function () {
+        filterContent.classList.toggle('active');
+        // Alterna entre a exibição e a ocultação do conteúdo dos filtros ao clicar no botão de alternância
+        if (toggleFiltersButton.innerHTML === '▲') {
+            toggleFiltersButton.innerHTML = '▼';
+        } else {
+            toggleFiltersButton.innerHTML = '▲';
+        }
+    });
+});

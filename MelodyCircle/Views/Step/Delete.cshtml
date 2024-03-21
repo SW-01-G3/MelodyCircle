@@ -3,25 +3,15 @@
 @{
     ViewData["Title"] = "Delete";
 }
-
-<h2>Delete</h2>
-
-<h3>Tem a certeza que pretende eliminar este Passo?</h3>
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
+<div class="row justify-content-center">
+    <div class="col-7 bg-white text-center rounded-3 border border-purple">
 
     <form asp-action="DeleteConfirmed" asp-route-stepid="@Model.Id">
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-danger" />
-            <a asp-action="Index" asp-controller="Step" class="btn btn-default">Cancelar</a>
+            <h4 class="mt-3">Tem certeza que deseja apagar este passo?</h4>
+            <div class="mb-3">
+                <input type="submit" value="Sim" class="btn btn-danger px-4 mx-2" />
+                <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@Model.TutorialId" class="btn px-4 btn-primary mx-2">Não</a>
         </div>
     </form>
+    </div>
 </div>

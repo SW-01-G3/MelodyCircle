@@ -5,12 +5,13 @@ namespace MelodyCircle.Data
 {
     public class DataSeeder
     {
-        public static async Task SeedData(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedData(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             await SeedRoles(roleManager);
             await SeedAdminUser(userManager);
             await SeedModUser(userManager);
             await SeedModUser2(userManager);
+            await SeedCollaborations(context);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -142,6 +143,36 @@ namespace MelodyCircle.Data
             if (result2.Succeeded)
             {
                 await userManager.AddToRoleAsync(user2, "Mod");
+            }
+        }
+
+        private static async Task SeedCollaborations(ApplicationDbContext context)
+        {
+            if (!context.Collaborations.Any())
+            {
+                var collaboration1 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Collaboration 1"
+                };
+
+                var collaboration2 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Collaboration 2"
+                };
+
+                var collaboration3 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "ad"
+                };
+
+                context.Collaborations.Add(collaboration1);
+                context.Collaborations.Add(collaboration2);
+                context.Collaborations.Add(collaboration3);
+
+                await context.SaveChangesAsync();
             }
         }
     }

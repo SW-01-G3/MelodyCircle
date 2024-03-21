@@ -1,16 +1,18 @@
-﻿@using MelodyCircle.Models;
+﻿@using MelodyCircle.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
 <ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
-    }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.IndexNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/Index" ? "selected" : "")" id="profile" asp-page="./Index">Perfil</a></li>
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.EmailNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/Email" ? "selected" : "")" id="email" asp-page="./Email">Email</a></li>
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.ChangePasswordNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/ChangePassword" ? "selected" : "")" id="change-password" asp-page="./ChangePassword">Palavra-Passe</a></li>
+	@if (hasExternalLogins)
+	{
+		<li id="external-logins" class="nav-item"><a id="external-login" class="nav-link text-dark @(ManageNavPages.ExternalLoginsNavClass(ViewContext)) @(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Manage/ExternalLogins" ? "selected" : "")" asp-page="./ExternalLogins">Logins Externos</a></li>
+	}
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/TwoFactorAuthentication" ? "selected" : "")" id="two-factor" asp-page="./TwoFactorAuthentication">Autenticação de dois-fatores</a></li>
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.PersonalDataNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/PersonalData" ? "selected" : "")" id="personal-data" asp-page="./PersonalData">Dados Pessoais</a></li>
+	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.LanguageNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/Language" ? "selected" : "")" id="language" asp-page="./Language">Língua</a></li>
 </ul>

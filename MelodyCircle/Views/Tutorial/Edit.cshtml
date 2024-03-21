@@ -8,16 +8,17 @@
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <div class="text-end">
             <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                    title="<p>Pode editar tutoriais através a inserção obrigatória de um título e uma descrição.</p>">
+                    title="<p>Pode editar o título e a descrição do tutorial.</p>">
                 ?
             </button>
-        <form asp-action="Edit">
+        </div>
+        <form asp-action="Edit" method="post">
             <div class="form-group text-center mt-3">
                 <h1>@ViewData["Title"]</h1>
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group text-center">
-                <label asp-for="Title" class="control-label"></label>
+                <label asp-for="Title" class="control-label "></label>
                 <input asp-for="Title" class="form-control border-purple" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
@@ -26,13 +27,13 @@
                 <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group" style="display: none;">
-                <label asp-for="Creator" class="control-label"></label>
-                <input asp-for="Creator" class="form-control border-purple" />
-                <span asp-validation-for="Creator" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="Creator" />
+            @* <div class="form-group text-center">
+                <label asp-for="Photo" class="control-label"></label>
+                <input asp-for="Photo" type="file" class="form-control" />
+            </div> *@
             <div class="form-group text-center my-3">
-                <input type="submit" value="Alterar" class="btn bg-purple text-white" />
+                <input type="submit" value="Guardar" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>

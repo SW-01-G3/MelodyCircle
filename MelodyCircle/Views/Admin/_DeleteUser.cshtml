@@ -1,0 +1,11 @@
+@model User
+
+<h2>Delete User</h2>
+
+<p>Are you sure you want to delete user @Model.UserName?</p>
+
+<form asp-action="DeleteUserConfirmed" asp-controller="Admin">
+    <input type="hidden" name="userId" value="@Model.UserName" />
+    <button type="submit" class="btn btn-danger">Yes</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+</form>

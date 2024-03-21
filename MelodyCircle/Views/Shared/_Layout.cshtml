@@ -14,7 +14,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
     @RenderSection("head", false)
+    @Html.Partial("_Favicon")
 </head>
 @{
     // Obtém o nome do controlador e da ação da página atual
@@ -24,7 +26,7 @@
 }   
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-purple border-bottom box-shadow mb-3">
+        <nav class="unselectable navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-purple border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand text-white me-auto">MelodyCircle</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -39,6 +41,14 @@
                                 <a class="nav-link text-center" asp-controller="User" asp-action="" asp-route-id="@User.Identity.Name"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
                             </li>
                         }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <a class="nav-link text-center" asp-area="" asp-controller="Admin" asp-action="Index"><img src="~/img/adminIcon.svg" alt="Admin." class="icon" /></a>
+	                        </li>
+                        } 
+
                         @if (currentController != null && currentController.Equals("Home"))
                         {
                             <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
@@ -51,10 +61,22 @@
                                 <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome.svg" alt="Home." class="icon fill-white" /></a>
                             </li>
                         }
+                        
+                        
+                        @if (currentController != null && currentController.Equals("Search"))
+                        {
+                            <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar2.svg" alt="Procurar." class="icon fill-white" /></a>
+	                        </li>                            
+                        }
+                        else
+                        {
+	                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar.svg" alt="Procurar." class="icon fill-white" /></a>
+	                        </li>
+                        }
 
-                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
-                            <a class="nav-link text-center" asp-area="" asp-controller="User" asp-action=""><img src="~/img/IconProcurar.svg" alt="Home." class="icon fill-white" /></a></a>
-                        </li>
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (currentController != null && currentController.Equals("Tutorial"))
@@ -82,12 +104,6 @@
                                 </li>
                             }
                         }
-@*                      @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">All Users</a>
-                            </li>
-                        } *@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @if ((currentAction != null && currentAction.Equals("Profile")) || (currentPage != null && currentPage.Equals("/Account/Manage/Index")))
@@ -95,11 +111,11 @@
                                 <li class="nav-item dropdown rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;">
                                     <img src="~/img/IconPerfil2.svg" alt="Home." class="icon fill-lightBlue" style="margin-right: 5px;" />
-                                    <img src="~/img/IconDropdown2.svg" alt="Drop." class="icon dropdown-icon fill-lightBlue" />
+                                    <img src="~/img/IconDropdown2.svg" alt="Drop." class="icon dropdown-icon fill-purple" />
                                 </a>
                                 <div class="dropdown-menu rounded-bottom border border-purple" aria-labelledby="navbarDropdown">
                                     <form class="form-inline" asp-controller="User" asp-action="Profile" asp-route-id="@User.Identity.Name">
-                                        <button type="submit" class="dropdown-item">Pefil</button>
+                                        <button type="submit" class="dropdown-item">Perfil</button>
                                     </form>
                                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Definições</a>
                                     @* <form class="form-inline" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name">
@@ -119,7 +135,7 @@
                                 </a>
                                 <div class="dropdown-menu rounded-bottom border border-purple" aria-labelledby="navbarDropdown">
                                     <form class="form-inline" asp-controller="User" asp-action="Profile" asp-route-id="@User.Identity.Name">
-                                        <button type="submit" class="dropdown-item">Pefil</button>
+                                        <button type="submit" class="dropdown-item">Perfil</button>
                                     </form>
                                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Definições</a>
                                     @* <form class="form-inline" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name">
@@ -131,9 +147,19 @@
                                 </div>
                             </li>
                             }
-                             <li id="connectionBtn" class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
-                                <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem.svg" alt="Drop." class="icon" /></a>
-                            </li>
+                            @if (currentController != null && currentController.Equals("User") && currentAction.Equals("ListConnections"))
+                            {
+	                            <li id="connectionBtn" class="nav-item rounded-pill bg-white text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+		                            <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem2.svg" alt="Conn." class="icon" /></a>
+	                            </li>
+                            }
+                            else
+                            {
+	                            <li id="connectionBtn" class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+		                            <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem.svg" alt="Conn." class="icon" /></a>
+	                            </li>
+                            }
+
                         }
                     </ul>
                     <partial name="_LoginPartial" />
