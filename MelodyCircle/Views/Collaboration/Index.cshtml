@@ -2,22 +2,30 @@
 @{
     ViewData["Title"] = "Collaboration";
 }
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var maxTitleWidth = 0;
+            $('.title-width').each(function () {
+                var titleWidth = $(this).width();
+                if (titleWidth > maxTitleWidth) {
+                    maxTitleWidth = titleWidth;
+                }
+            });
+            $('.title-width').width(maxTitleWidth);
+        });
+    </script>
+}
 
-<div class="container">
-    <h1>List of Collaborations</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var collaboration in Model)
-            {
-                <tr>
-                    <td>@collaboration.Title</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<div class="text-center text-purple"><h1>Colaborações</h1></div>
+
+@foreach (var collaboration in Model)
+{
+    <div class="w-100 bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+        <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
+        <div class="px-3 title-width">@collaboration.Title</div>
+        <div class="px-3">dd-mm-aaaa</div>
+        <div class="px-3">tag</div>
+        <a href="#" class="btn bg-purple text-white">Abrir</a>
+    </div>
+}
