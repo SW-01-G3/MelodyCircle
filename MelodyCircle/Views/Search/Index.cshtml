@@ -1,31 +1,14 @@
 ﻿@model MelodyCircle.Models.Search
 
-@*<form asp-action="SearchTutorial" method="post" class="text-center mx-auto w-50  d-flex justify-content-center align-items-center">
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1  w-50" />
-    <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
-</form>
-
-<div class="unselectable sidebar rounded position-fixed top-50 start-0 translate-middle-y w-10 p-2 bg-white ">
-    <div class="filters justify-content-center align-items-center">
-        <div class="filter-header">
-            <h2 class="text-center">Filtros</h2>
-            <button id="toggleFilters" class="toggle-btn bg-white border-0">&#x25B2;</button>
-        </div>
-        <div class="filter-content">
-            <p for="filter1">Filtro 1:</p>
-            <p for="filter2">Filtro 2:</p>
-            <button id="applyFilters" class="bg-purple border-0 text-white rounded w-100 p-2">Aplicar</button>
-        </div>
-    </div>
-</div>*@
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-0 rounded p-1 w-50" />
-    <select name="searchType" class="border-0 bg-lightBlue p-1">
+
+    <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
         <option value="None">Nenhum filtro</option>
-        <option value="User">Utilizador</option>
+        <option value="User">Artista</option>
         <option value="Tutorial">Tutorial</option>
         <option value="Collaboration">Colaboração</option>
     </select>
+    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
