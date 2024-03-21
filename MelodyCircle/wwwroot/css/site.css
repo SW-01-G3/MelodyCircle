@@ -199,22 +199,3 @@ body {
   height: 20px;
   width: 20px;
 }
-
-/*sidebar*/
-.filter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
-
-.filter-content {
-    display: none;
-}
-
-    .filter-content.active {
-        display: block;
-    }
-.sidebar {
-    transform: translateX(-50%);
-}
