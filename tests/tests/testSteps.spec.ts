@@ -1,27 +1,28 @@
 import { test, expect } from "@playwright/test";
 import randomNumber from "../helper/randomNumber";
 
-let tutorialTitle: string =
-  "UmTutorialDeTeste" + randomNumber(0, 9999).toString();
+let stepText: string = "TestStep" + randomNumber(0, 9999).toString();
 
-test("Testar listagem e adição de tutoriais.", async ({ page }) => {
+test("Adicionar passo a um tutorial e listar passos.", async ({ page }) => {
   await page.goto("https://melodycircle.azurewebsites.net/");
   await page.getByRole("link", { name: "Login" }).click();
   await page.getByPlaceholder("nome@email.com").fill("mod@melodycircle.pt");
   await page.getByPlaceholder("Palavra-passe").fill("Password-123");
   await page.getByRole("button", { name: "Log in" }).click();
   await page.getByRole("link", { name: "Tuto." }).click();
+  await page.getByRole("link", { name: "Abrir" }).first().click();
   await page.getByRole("link", { name: "+" }).click();
-  await page.getByLabel("Title").fill(tutorialTitle);
-  await page.getByLabel("Description").fill("Com descrição");
+  await page.getByLabel("Title").fill(stepText);
   await page
-    .locator('input[name="photo"]')
-    .setInputFiles("Audi_R18_TDI_-_Le_Mans_test_2011.jpg");
+    .locator("#editor div")
+    .filter({ hasText: "Hello, World" })
+    .fill(stepText);
+  await page.getByLabel("Order", { exact: true }).fill("3");
   await page.getByRole("button", { name: "Adicionar" }).click();
-  await expect(page).toHaveURL(
-    "https://melodycircle.azurewebsites.net/Tutorial/EditMode"
-  );
   await expect(
-    page.getByRole("heading", { name: tutorialTitle }).first()
+    await page
+      .locator("section")
+      .filter({ hasText: stepText })
+      .getByRole("paragraph")
   ).toBeVisible();
 });
