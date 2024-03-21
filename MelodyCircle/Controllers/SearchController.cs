@@ -20,22 +20,62 @@ namespace MelodyCircle.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SearchTutorial(Search search)
+        public async Task<IActionResult> Search(Search search)
         {
-            var tutorials = await _context.Tutorials
-                .Where(t => t.Title.Contains(search.SearchTerm))
-                .ToListAsync();
+            if (!string.IsNullOrEmpty(search.SearchTerm))
+            {
+                if (search.SearchType == SearchType.None)
+                {
+                    var users = await _context.Users
+                         .Where(u => u.UserName.Contains(search.SearchTerm))
+                         .ToListAsync();
 
-            return View("TutorialSearchResult");
-        }
+                    var tutorials = await _context.Tutorials
+                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .ToListAsync();
 
-        public IActionResult SearchUser(Search search)
-        {
-            var users = _context.Users
-                .Where(u => u.UserName.Contains(search.SearchTerm))
-                .ToList();
+                    var collabs = await _context.Collaborations
+                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .ToListAsync();
 
-            return View("UserSearchResult");
+                    var viewModel = new SearchResultViewModel
+                    {
+                        Users = users,
+                        Tutorials = tutorials,
+                        Collaborations = collabs
+                    };
+
+                    return View("SearchResults", viewModel);
+                }
+
+                if (search.SearchType == SearchType.User)
+                {
+                    var users = await _context.Users
+                        .Where(u => u.UserName.Contains(search.SearchTerm))
+                        .ToListAsync();
+
+                    return View("UserSearchResult", users);
+                }
+
+                if (search.SearchType == SearchType.Tutorial)
+                {
+                    var tutorials = await _context.Tutorials
+                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .ToListAsync();
+
+                    return View("TutorialSearchResult", tutorials);
+                }
+
+                if (search.SearchType == SearchType.Collaboration)
+                {
+                    var collabs = await _context.Collaborations
+                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .ToListAsync();
+
+                    return View("CollaborationSearchResult", collabs);
+                }
+            }
+            return View("Index");
         }
     }
 }
