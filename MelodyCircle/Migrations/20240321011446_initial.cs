@@ -85,8 +85,13 @@ namespace MelodyCircle.Migrations
                     Creator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StepCount = table.Column<int>(type: "int", nullable: true),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+<<<<<<<< HEAD:MelodyCircle/Migrations/20240321011446_initial.cs
                     PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubscribersCount = table.Column<int>(type: "int", nullable: true)
+========
+                    PhotoFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+>>>>>>>> deploy:MelodyCircle/Migrations/20240317181845_initial.cs
                 },
                 constraints: table =>
                 {

@@ -8,6 +8,7 @@
 }
 
 <h1>@ViewData["Title"]</h1>
+
 @if (User.Identity.IsAuthenticated)
 {
     @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
