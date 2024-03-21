@@ -39,7 +39,7 @@
                 <h1>@ViewData["Title"]</h1>
             </div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="TutorialId" value="@ViewBag.TutorialId" />
+            <input type="hidden" asp-for="TutorialId" value="@Model.TutorialId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group text-center">
                 <label asp-for="Title" class="control-label"></label>
