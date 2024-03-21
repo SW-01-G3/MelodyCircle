@@ -1,0 +1,51 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<table class="table">
+	<thead>
+	<tr>
+		<th>Username</th>
+		<th>Email</th>
+		<th>Role</th>
+		<th>Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var user in Model)
+	{
+		<tr>
+			<td>@user.UserName</td>
+			<td>@user.Email</td>
+			<td>
+				@{
+					var userRoles = await UserManager.GetRolesAsync(user);
+					var rolesString = string.Join(", ", userRoles);
+				}
+				@rolesString
+			</td>
+			<td>
+				<a asp-action="EditUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName">Edit</a> |
+				<a asp-action="DeleteUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName">Delete</a>
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+<div>
+	<form method="post" asp-action="CreateMultipleUsers">
+		<div class="form-group">
+			<label for="numberOfUsers">Número de Utilizadores:</label>
+			<input type="number" class="form-control" id="numberOfUsers" name="numberOfUsers" value="100">
+		</div>
+		<button type="submit" class="btn bg-purple text-white">Criar Users</button>
+	</form>
+	<p></p>
+	<form asp-action="DeleteAddedUsers" method="post" asp-controller="Admin">
+		<button type="submit" class="btn bg-purple text-white">Excluir Users Criados</button>
+	</form>
+</div>

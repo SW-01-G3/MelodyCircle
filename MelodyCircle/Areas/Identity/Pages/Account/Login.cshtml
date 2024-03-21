@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-4 mx-auto">
-        <section class="border bg-lightPurple p-2 p-sm-2 p-md-3 p-lg-5 rounded-3">
+        <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3">
             <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div class="text-end">
                     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
@@ -17,30 +17,30 @@
                         ?
                     </button>
                 </div>
-                <h2 class="text-white text-center mb-3">Log In</h2>
+                <h2 class="text-dark text-center mb-3">Log In</h2>
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3 text-center">
-                    <label asp-for="Input.Email" class="form-label text-white fs-md-4 fs-lg-3">Email ou Username</label>
+                    <label asp-for="Input.Email" class="form-label text-dark fs-md-4 fs-lg-3">Email ou Username</label>
                     <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nome@email.com" />
                     <span asp-validation-for="Input.Email" class="bg-danger text-white"></span>
                 </div>
                 <div class="mb-3 text-center">
-                    <label asp-for="Input.Password" class="form-label text-white fs-md-4 fs-lg-3">Palavra-passe</label>
+                    <label asp-for="Input.Password" class="form-label text-dark fs-md-4 fs-lg-3">Palavra-passe</label>
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Palavra-passe" />
                     <span asp-validation-for="Input.Password" class="bg-danger text-white"></span>
                 </div>
                 <div class="checkbox mb-3 text-center">
-                    <label asp-for="Input.RememberMe" class="form-label text-white fs-md-4 fs-lg-3">
+                    <label asp-for="Input.RememberMe" class="form-label text-dark fs-md-4 fs-lg-3">
                         <input class="form-check-input bg-purple " asp-for="Input.RememberMe" />
                         @Html.DisplayNameFor(m => m.Input.RememberMe)
                     </label>
                 </div>
                 <div class="mb-3 text-center">
                     <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-white fs-md-4 fs-lg-3">Esqueceu-se da palavra-passe?</a>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-dark fs-md-4 fs-lg-3">Esqueceu-se da palavra-passe?</a>
                     </p>
                 <div>
-                    <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">Log in</button>
+                        <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">Log in</button>
                 </div>
                     <div class="text-center">
                         <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="w-75 mt-2 btn btn-lg bg-purple text-white">Register</a>
@@ -71,7 +71,7 @@
                                     <p>
                                         @foreach (var provider in Model.ExternalLogins!)
                                         {
-                                            <button type="submit" class="w-80 mt-2 btn btn-lg bg-primary text-white" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                            <button type="submit" class="w-80 mt-2 btn btn-lg bg-purple text-white" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                                         }
                                     </p>
                                 </div>

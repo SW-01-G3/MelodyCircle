@@ -1,0 +1,14 @@
+﻿@model MelodyCircle.Models.Search
+
+
+<form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
+
+    <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
+        <option value="None">Nenhum filtro</option>
+        <option value="User">Artista</option>
+        <option value="Tutorial">Tutorial</option>
+        <option value="Collaboration">Colaboração</option>
+    </select>
+    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
+    <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
+</form>

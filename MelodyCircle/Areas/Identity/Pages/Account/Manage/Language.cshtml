@@ -1,0 +1,27 @@
+﻿@page
+@model LanguageModel
+@{
+    ViewData["Title"] = "Língua";
+    ViewData["ActivePage"] = ManageNavPages.Language;
+}
+
+<h4 class="text-white ">@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+	<div class="col-md-6">
+		<p>Pode colocar o site me Português ou Inglês.</p>
+
+		<form id="pt-pt" asp-page="" method="post">
+			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Português</button>
+		</form>
+		<p>
+		<form id="gb-gb" asp-page="" method="post">
+			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Inglês</button>
+		</form>
+		</p>
+	</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

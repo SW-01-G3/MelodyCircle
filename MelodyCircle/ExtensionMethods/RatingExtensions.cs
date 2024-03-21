@@ -6,7 +6,7 @@ namespace MelodyCircle.ExtensionMethods
     {
         public static double CalculateAverageRating(this List<UserRating> ratings)
         {
-            if (ratings == null || ratings.Count == 0)
+            if (ratings == null || ratings.Count < 1)
             {
                 return 0; // No ratings
             }

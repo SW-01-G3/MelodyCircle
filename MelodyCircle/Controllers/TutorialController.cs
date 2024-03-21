@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MelodyCircle.Controllers
 {
@@ -19,11 +20,35 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
-        // GET: Tutorial/Index
         public async Task<IActionResult> Index()
         {
-            var tutorials = await _context.Tutorials.ToListAsync();
-            return View(tutorials);
+            if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+                return RedirectToAction("EditMode");
+
+            return RedirectToAction("ViewMode");
+        }
+
+        // GET: Tutorial/EditMode
+        public async Task<IActionResult> EditMode()
+        {
+            var userId = _userManager.GetUserId(User);
+            var tutoriaisCriados = await _context.Tutorials
+                .Where(t => t.Creator == User.Identity.Name)
+                .ToListAsync();
+
+            return View("EditMode", tutoriaisCriados);
+        }
+
+        // GET: Tutorial/ViewMode
+        public async Task<IActionResult> ViewMode()
+        {
+            var userId = _userManager.GetUserId(User);
+            var tutoriaisInscritos = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Select(s => s.Tutorial)
+                .ToListAsync();
+
+            return View("ViewMode", tutoriaisInscritos);
         }
 
         // GET: Tutorial/Create
@@ -34,13 +59,14 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial)
+        public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0) 
+            {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-
-            if (string.IsNullOrWhiteSpace(tutorial.Description) || string.IsNullOrWhiteSpace(tutorial.Title))
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
+            }
 
             else
             {
@@ -51,6 +77,13 @@ namespace MelodyCircle.Controllers
                 if (user != null)
                     tutorial.Creator = user.UserName;
 
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photo.CopyToAsync(memoryStream);
+                    tutorial.Photo = memoryStream.ToArray();
+                    tutorial.PhotoContentType = photo.ContentType;
+                }
+
                 _context.Add(tutorial);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -58,7 +91,6 @@ namespace MelodyCircle.Controllers
 
             return View(tutorial);
         }
-
 
         // GET: Tutorial/Edit/id
         public async Task<IActionResult> Edit(Guid? id)
@@ -77,24 +109,35 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile image)
         {
             if (id != tutorial.Id)
                 return NotFound();
 
             if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
-                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-
-            if (string.IsNullOrWhiteSpace(tutorial.Description) || string.IsNullOrWhiteSpace(tutorial.Title))
-                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
-
-            else
             {
-                _context.Update(tutorial);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
             }
 
+            else 
+            {
+                _context.Entry(tutorial).State = EntityState.Detached;
+
+                _context.Attach(tutorial);
+                _context.Entry(tutorial).Property("Title").IsModified = true;
+                _context.Entry(tutorial).Property("Description").IsModified = true;
+
+                if (tutorial.Photo != null && tutorial.Photo.Length > 0)
+                {
+                    _context.Entry(tutorial).Property("Photo").IsModified = true;
+                    _context.Entry(tutorial).Property("PhotoContentType").IsModified = true;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
             return View(tutorial);
         }
 
@@ -128,14 +171,12 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         // GET: Tutorial/AddStep/id
         public IActionResult AddStep(Guid id)
         {
             return RedirectToAction("Index", "Step", new { tutorialId = id });
         }
 
-        //Método auxiliar
         private bool TutorialExists(Guid id)
         {
             return _context.Tutorials.Any(e => e.Id == id);

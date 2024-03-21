@@ -1,8 +1,5 @@
-﻿using MelodyCircle.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.Numerics;
 
 namespace MelodyCircle.Models
 {
@@ -53,6 +50,8 @@ namespace MelodyCircle.Models
         public virtual List<User>? Connections { get; set; }
 
         public virtual List<UserRating> Ratings { get; set; } = new List<UserRating>();
+
+        public virtual List<string> MusicURI { get; set; } = new List<string>();
 
         //public List<int> Ratings { get; set; } = new List<int>();
     }

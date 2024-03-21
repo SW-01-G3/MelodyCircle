@@ -1,20 +1,23 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MelodyCircle.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MelodyCircle.Controllers
 {
     public class CollaborationController : Controller
     {
-        // GET: CollaborationController
-        public ActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public CollaborationController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        // GET: CollaborationController/Details/5
-        public ActionResult Details(int id)
+        // GET: Collaboration
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var collaborations = await _context.Collaborations.ToListAsync();
+            return View(collaborations);
         }
 
         // GET: CollaborationController/Create

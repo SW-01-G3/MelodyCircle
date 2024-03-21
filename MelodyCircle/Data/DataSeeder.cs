@@ -5,12 +5,13 @@ namespace MelodyCircle.Data
 {
     public class DataSeeder
     {
-        public static async Task SeedData(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedData(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             await SeedRoles(roleManager);
             await SeedAdminUser(userManager);
             await SeedModUser(userManager);
             await SeedModUser2(userManager);
+            await SeedCollaborations(context);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -27,17 +28,6 @@ namespace MelodyCircle.Data
 
         private static async Task SeedAdminUser(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                // Initialize byte array with the length of the file
-                defaultProfilePictureBytes = new byte[fs.Length];
-
-                // Read the file contents into the byte array
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
             if (await userManager.FindByEmailAsync("admin@melodycircle.pt") == null)
             {
                 var user = new User
@@ -50,7 +40,7 @@ namespace MelodyCircle.Data
                     NormalizedEmail = "ADMIN@MELODYCIRCLE.PT",
                     EmailConfirmed = true,
                     Gender = Gender.Male,
-                    ProfilePicture = defaultProfilePictureBytes,
+                    ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
                     Ratings = new List<UserRating>()
@@ -106,14 +96,6 @@ namespace MelodyCircle.Data
 
         private static async Task SeedModUser(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                defaultProfilePictureBytes = new byte[fs.Length];
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
             if (await userManager.FindByEmailAsync("mod@melodycircle.pt") == null)
             {
                 var user = new User
@@ -126,7 +108,7 @@ namespace MelodyCircle.Data
                     NormalizedEmail = "MOD@MELODYCIRCLE.PT",
                     EmailConfirmed = true,
                     Gender = Gender.Other,
-                    ProfilePicture = defaultProfilePictureBytes,
+                    ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
                     Ratings = new List<UserRating>()
@@ -142,15 +124,6 @@ namespace MelodyCircle.Data
 
         private static async Task SeedModUser2(UserManager<User> userManager)
         {
-            byte[] defaultProfilePictureBytes;
-
-            // Open the file stream
-            using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-            {
-                defaultProfilePictureBytes = new byte[fs.Length];
-                fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-            }
-
             var user2 = new User
             {
                 UserName = "mod2",
@@ -161,7 +134,7 @@ namespace MelodyCircle.Data
                 NormalizedEmail = "MOD2@MELODYCIRCLE.PT",
                 EmailConfirmed = true,
                 Gender = Gender.Other,
-                ProfilePicture = defaultProfilePictureBytes,
+                ProfilePicture = [],
                 Locality = "Portugal",
                 Connections = new List<User>(),
                 Ratings = new List<UserRating>()
@@ -171,6 +144,36 @@ namespace MelodyCircle.Data
             if (result2.Succeeded)
             {
                 await userManager.AddToRoleAsync(user2, "Mod");
+            }
+        }
+
+        private static async Task SeedCollaborations(ApplicationDbContext context)
+        {
+            if (!context.Collaborations.Any())
+            {
+                var collaboration1 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Collaboration 1"
+                };
+
+                var collaboration2 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Collaboration 2"
+                };
+
+                var collaboration3 = new Collaboration
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "ad"
+                };
+
+                context.Collaborations.Add(collaboration1);
+                context.Collaborations.Add(collaboration2);
+                context.Collaborations.Add(collaboration3);
+
+                await context.SaveChangesAsync();
             }
         }
     }

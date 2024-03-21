@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Tutorial>
+
+@{
+    ViewData["Title"] = "Tutoriais Criados";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+@if (User.Identity.IsAuthenticated)
+{
+    @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn bg-purple text-white rounded-circle floating-button z-3">+</a>
+    }
+}
+
+
+
+<div class="container d-flex justify-content-center">
+    <div class="row justify-content-between">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="card col-lg-3 m-4 rounded border border-purple" style="width: 300px;">
+                    <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" />
+                    <div class="card-body align-content-center text-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+
+                        <h5 class="card-title">Nº de passos</h5>
+                        <h6>@item.StepCount</h6>
+
+                        <h5 class="card-title">Nº de inscritos</h5>
+                        <h6>@item.SubscribersCount</h6>
+
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
+                        @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id"><img src="~/img/edit.svg" alt="Edit tutorial." class="icon fill-purple" /></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id"><img src="~/img/delete.svg" alt="Delete tutorial." class="icon" /></a>
+                        }
+                        else
+                        {
+                            <form asp-action="Subscribe" asp-route-tutorialId="@item.Id" method="post">
+                                <button type="submit" class="btn bg-purple text-white">Inscrever-se</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+	        <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+		        <h1>Não existem tutoriais disponiveis.</h1>
+	        </div>
+        }
+    </div>
+</div>
+
+<div class="text-end">
+	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+	        title="<p>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'.
+            Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</p>">
+		?
+	</button>
+</div>
+
+<div class="text-end">
+	@if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
+	{
+		<a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
+
+	}
+</div>

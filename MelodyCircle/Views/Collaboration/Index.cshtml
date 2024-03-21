@@ -1,13 +1,31 @@
-﻿
+﻿@model IEnumerable<MelodyCircle.Models.Collaboration>
 @{
     ViewData["Title"] = "Collaboration";
 }
-@section head {
-    <base href="/Collaboration">
-}
-<app-root></app-root>
 @section scripts {
-    <script src="~/js/polyfills-RT5I6R6G.js" type="module"></script>
-    <script src="~/js/main-3JPYQJYI.js" type="module"></script>
+    <script>
+        $(document).ready(function () {
+            var maxTitleWidth = 0;
+            $('.title-width').each(function () {
+                var titleWidth = $(this).width();
+                if (titleWidth > maxTitleWidth) {
+                    maxTitleWidth = titleWidth;
+                }
+            });
+            $('.title-width').width(maxTitleWidth);
+        });
+    </script>
 }
 
+<div class="text-center text-purple"><h1>Colaborações</h1></div>
+
+@foreach (var collaboration in Model)
+{
+    <div class="w-100 bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+        <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
+        <div class="px-3 title-width">@collaboration.Title</div>
+        <div class="px-3">dd-mm-aaaa</div>
+        <div class="px-3">tag</div>
+        <a href="#" class="btn bg-purple text-white">Abrir</a>
+    </div>
+}
