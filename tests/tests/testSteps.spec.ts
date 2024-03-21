@@ -3,7 +3,7 @@ import randomNumber from "../helper/randomNumber";
 
 let stepText: string = "TestStep" + randomNumber(0, 9999).toString();
 
-test("Adicionar passo a um tutorial, listar passos e apagar passo.", async ({
+test("Adicionar passo a um tutorial, listar passos, editar passo e apagar passo.", async ({
   page,
 }) => {
   await page.goto("https://melodycircle.azurewebsites.net/");
@@ -27,12 +27,24 @@ test("Adicionar passo a um tutorial, listar passos e apagar passo.", async ({
       .filter({ hasText: stepText })
       .getByRole("paragraph")
   ).toBeVisible();
+  await page.getByRole("link", { name: "Edit step." }).last().click();
+  await page
+    .locator("#editor div")
+    .filter({ hasText: stepText })
+    .fill(stepText + stepText);
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(
+    await page
+      .locator("section")
+      .filter({ hasText: stepText + stepText })
+      .getByRole("paragraph")
+  ).toBeVisible();
   await page.getByRole("link", { name: "Delete step." }).last().click();
   await page.getByRole("button", { name: "Sim" }).click();
   await expect(
     await page
       .locator("section")
-      .filter({ hasText: stepText })
+      .filter({ hasText: stepText + stepText })
       .getByRole("paragraph")
   ).not.toBeVisible();
 });
