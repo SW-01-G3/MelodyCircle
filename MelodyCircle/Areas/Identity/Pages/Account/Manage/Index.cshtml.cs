@@ -77,18 +77,19 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(User user)
         {
-            //var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var userName = await _userManager.GetUserNameAsync(user);
+            Console.WriteLine(userName);
 
             Input = new InputModel
             {
                 Name = user.Name,
-                PhoneNumber = phoneNumber,
                 BirthDate = user.BirthDate,
+                PhoneNumber = user.PhoneNumber,
                 Locality = user.Locality,
                 Gender = (Gender)user.Gender
-
             };
+
+
         }
 
         public async Task<IActionResult> OnGetAsync()

@@ -31,13 +31,15 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public ExternalLoginModel(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
             IUserStore<User> userStore,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -45,6 +47,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -181,16 +184,28 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 user.Name = Input.Name;
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
+                user.Gender = Gender.Male;
+                byte[] defaultProfilePictureBytes;
+
+                using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
+                {
+                    defaultProfilePictureBytes = new byte[fs.Length];
+
+                    fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
+                }
+
+                user.ProfilePicture = defaultProfilePictureBytes;
 
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        await _userManager.AddToRoleAsync(user, "Student");
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                         var userId = await _userManager.GetUserIdAsync(user);

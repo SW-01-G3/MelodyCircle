@@ -38,9 +38,9 @@
             <div class="mb-3">
                 <div>
                     <label>Género:</label>
-                    <label for="gender-male">M</label><input type="radio"  name="options" asp-for="Input.Gender" value="Male" id="gender-male" />
-                    <label for="gender-female">F</label><input type="radio"  name="options" asp-for="Input.Gender" value="Female" id="gender-female" />
-                    <label for="gender-other">Outro</label><input type="radio" name="options" asp-for="Input.Gender" value="Other" id="gender-other" />
+                    <label for="gender-male">M</label><input type="radio"  asp-for="Input.Gender" value="Male" id="gender-male" />
+                    <label for="gender-female">F</label><input type="radio"   asp-for="Input.Gender" value="Female" id="gender-female" />
+                    <label for="gender-other">Outro</label><input type="radio" asp-for="Input.Gender" value="Other" id="gender-other" />
                 </div>
                 <span asp-validation-for="Input.Gender" class="text-danger"></span>
             </div>
