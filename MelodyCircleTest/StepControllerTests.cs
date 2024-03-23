@@ -92,7 +92,6 @@ namespace MelodyCircle.Tests.Controllers
                 .Options;
             var context = new ApplicationDbContext(options);
 
-            // Adiciona um tutorial e um step fictício ao contexto do banco de dados em memória
             var tutorialId = Guid.NewGuid();
             var stepId = Guid.NewGuid();
             var originalTitle = "Original Step";
@@ -103,7 +102,7 @@ namespace MelodyCircle.Tests.Controllers
             var controller = new StepController(context);
 
             // Act
-            var result = await controller.Edit(tutorialId);
+            var result = await controller.Edit(stepId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);

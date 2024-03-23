@@ -61,7 +61,7 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0) 
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0)
             {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
@@ -86,6 +86,7 @@ namespace MelodyCircle.Controllers
 
                 _context.Add(tutorial);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 

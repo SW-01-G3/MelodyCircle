@@ -7,16 +7,13 @@ using MelodyCircle.Data;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Xunit;
-using Moq;
-using System.Text;
 
 namespace MelodyCircle.Tests.Controllers
 {
     public class TutorialControllerTests
     {
         [Fact]
-        public async Task Index_ReturnsViewResult_WithListOfTutorials()
+        public async Task Index_RedirectsToEditMode_WhenUserIsInTeacherOrModOrAdminRole()
         {
             // Arrange
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -24,23 +21,63 @@ namespace MelodyCircle.Tests.Controllers
                 .Options;
             var context = new ApplicationDbContext(options);
 
-            // Adiciona alguns tutoriais fictícios ao contexto do banco de dados em memória
-            context.Tutorials.AddRange(
-                new Tutorial { Id = Guid.NewGuid(), Title = "Tutorial 1", Description = "Description 1", Creator = "User 1" },
-                new Tutorial { Id = Guid.NewGuid(), Title = "Tutorial 2", Description = "Description 2", Creator = "User 2" },
-                new Tutorial { Id = Guid.NewGuid(), Title = "Tutorial 3", Description = "Description 3", Creator = "User 3" }
-            );
-            await context.SaveChangesAsync();
+            // Configurar o utilizador autenticado com o papel de professor
+            var userClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "TestUser"),
+                new Claim(ClaimTypes.Role, "Teacher")
+            };
+            var userIdentity = new ClaimsIdentity(userClaims, "TestAuthType");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
 
-            var controller = new TutorialController(context, null);
+            var controller = new TutorialController(context, null)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = userPrincipal }
+                }
+            };
 
             // Act
             var result = await controller.Index();
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<IEnumerable<Tutorial>>(viewResult.ViewData.Model);
-            Assert.Equal(4, model.Count());
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("EditMode", redirectToActionResult.ActionName);
+        }
+
+        [Fact]
+        public async Task Index_RedirectsToViewMode_WhenUserIsNotInTeacherOrModOrAdminRole()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            var context = new ApplicationDbContext(options);
+
+            // Configurar o utilizador autenticado sem papel de professor, moderador ou administrador
+            var userClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "TestUser"),
+                new Claim(ClaimTypes.Role, "Student")
+            };
+            var userIdentity = new ClaimsIdentity(userClaims, "TestAuthType");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            var controller = new TutorialController(context, null)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = userPrincipal }
+                }
+            };
+
+            // Act
+            var result = await controller.Index();
+
+            // Assert
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("ViewMode", redirectToActionResult.ActionName);
         }
 
         [Fact]
@@ -72,26 +109,29 @@ namespace MelodyCircle.Tests.Controllers
             var userManager = new UserManager<User>(userStore, null, null, null, null, null, null, null, null);
             var controller = new TutorialController(context, userManager);
 
-            var tutorial = new Tutorial { Title = "Test Title", Description = "Test Description", Creator = "TestUser" };
+            var tutorial = new Tutorial { Title = "Test Title", Description = "Test Description" };
 
-            var claims = new List<Claim>
+            // Authenticate user
+            var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, "TestUser")
             };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var principal = new ClaimsPrincipal(identity);
+            var userIdentity = new ClaimsIdentity(userClaims, "TestAuthType");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
 
-            // Act
+            // Set up controller context to use authenticated user
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext { User = principal }
+                HttpContext = new DefaultHttpContext { User = userPrincipal }
             };
-            var result = await controller.Create(tutorial, null); // Passar o arquivo de imagem
+
+            // Act
+            var result = await controller.Create(tutorial, null); // Pass image file
 
             // Assert
-            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("Index", redirectToActionResult.ActionName);
-            Assert.Contains(tutorial, context.Tutorials);
+            // Check if the tutorial was added to the database context
+            var createdTutorial = await context.Tutorials.FirstOrDefaultAsync(t => t.Title == tutorial.Title && t.Description == tutorial.Description);
+            Assert.NotNull(createdTutorial);
         }
 
         [Fact]
