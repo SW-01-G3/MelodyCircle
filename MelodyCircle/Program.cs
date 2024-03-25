@@ -1,10 +1,16 @@
+using System.Globalization;
+using MelodyCircle;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
 using MelodyCircle.Services;
+using MelodyCircle.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -22,7 +28,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
-
+    
 
 //builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -56,7 +62,30 @@ builder.Services.Configure<IdentityOptions>(options =>
 //      builder.Configuration["EmailSender:Password"]
 //  )
 //);
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("pt-PT")
+
+    };
+
+    options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
+builder.Services.AddMvc()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
+
+builder.Services.AddSingleton<SharedViewLocalizer>();
+builder.Services.AddSingleton<SharedResource>();
+
+builder.Services.AddTransient(typeof(IHtmlLocalizer<>), typeof(HtmlLocalizer<>));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
@@ -97,5 +126,8 @@ using (var scope = app.Services.CreateScope())
 
     await DataSeeder.SeedData(context, userManager, roleManager);
 }
+var locOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(locOptions.Value);
+
 
 app.Run();
