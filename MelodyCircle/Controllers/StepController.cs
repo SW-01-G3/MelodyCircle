@@ -29,8 +29,14 @@ namespace MelodyCircle.Controllers
                 .Select(t => t.Creator)
                 .FirstOrDefaultAsync();
 
+            var title = await _context.Tutorials
+                .Where(t => t.Id == tutorialId)
+                .Select(t => t.Title)
+                .FirstOrDefaultAsync();
+
             ViewBag.TutorialId = tutorialId;
             ViewBag.Creator = creator;
+            ViewBag.Title = title;
 
             return View(steps);
         }
