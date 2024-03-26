@@ -11,7 +11,7 @@ namespace MelodyCircle.Data
             await SeedAdminUser(userManager);
             await SeedModUser(userManager);
             await SeedModUser2(userManager);
-            await SeedCollaborations(context);
+            //await SeedCollaborations(context);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -147,34 +147,34 @@ namespace MelodyCircle.Data
             }
         }
 
-        private static async Task SeedCollaborations(ApplicationDbContext context)
-        {
-            if (!context.Collaborations.Any())
-            {
-                var collaboration1 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Collaboration 1"
-                };
+        //private static async Task SeedCollaborations(ApplicationDbContext context)
+        //{
+        //    if (!context.Collaborations.Any())
+        //    {
+        //        var collaboration1 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "Collaboration 1"
+        //        };
 
-                var collaboration2 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Collaboration 2"
-                };
+        //        var collaboration2 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "Collaboration 2"
+        //        };
 
-                var collaboration3 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "ad"
-                };
+        //        var collaboration3 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "ad"
+        //        };
 
-                context.Collaborations.Add(collaboration1);
-                context.Collaborations.Add(collaboration2);
-                context.Collaborations.Add(collaboration3);
+        //        context.Collaborations.Add(collaboration1);
+        //        context.Collaborations.Add(collaboration2);
+        //        context.Collaborations.Add(collaboration3);
 
-                await context.SaveChangesAsync();
-            }
-        }
+        //        await context.SaveChangesAsync();
+        //    }
+        //}
     }
 }

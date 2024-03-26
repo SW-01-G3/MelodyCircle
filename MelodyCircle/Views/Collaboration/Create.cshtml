@@ -1,0 +1,49 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Criar Colaboração";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form method="post" enctype="multipart/form-data" asp-action="Create">
+    <div class="form-group">
+        <label for="Title">Título:</label>
+        <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Description">Descrição:</label>
+        <textarea class="form-control" id="Description" name="Description">@Model.Description</textarea>
+    </div>
+    <div class="form-group">
+        <label for="MaxUsers">Número Máximo de Utilizadores:</label>
+        <input type="number" class="form-control" id="MaxUsers" name="MaxUsers" value="@Model.MaxUsers">
+        <span asp-validation-for="MaxUsers" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="AccessMode">Modo de Acesso:</label>
+        <select class="form-control" id="AccessMode" name="AccessMode">
+            <option value="Public">Público</option>
+            <option value="Private">Privado</option>
+        </select>
+        <span asp-validation-for="AccessMode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="AccessPassword">Senha de Acesso:</label>
+        <input type="password" class="form-control" id="AccessPassword" name="AccessPassword" value="@Model.AccessPassword">
+    </div>
+    <div class="form-group">
+        <label for="Photo">Foto:</label>
+        <input type="file" class="form-control-file" id="Photo" name="photo">
+        <span asp-validation-for="Photo" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Criar</button>
+</form>

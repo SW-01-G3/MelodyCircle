@@ -68,7 +68,15 @@ namespace MelodyCircle.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MaxUsers = table.Column<int>(type: "int", nullable: false),
+                    AccessPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatorId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccessMode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -221,6 +229,54 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserCollaborations",
+                columns: table => new
+                {
+                    ContributingCollaborationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ContributingUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCollaborations", x => new { x.ContributingCollaborationsId, x.ContributingUsersId });
+                    table.ForeignKey(
+                        name: "FK_UserCollaborations_AspNetUsers_ContributingUsersId",
+                        column: x => x.ContributingUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserCollaborations_Collaborations_ContributingCollaborationsId",
+                        column: x => x.ContributingCollaborationsId,
+                        principalTable: "Collaborations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserWaitingCollaborations",
+                columns: table => new
+                {
+                    WaitingCollaborationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WaitingUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserWaitingCollaborations", x => new { x.WaitingCollaborationsId, x.WaitingUsersId });
+                    table.ForeignKey(
+                        name: "FK_UserWaitingCollaborations_AspNetUsers_WaitingUsersId",
+                        column: x => x.WaitingUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserWaitingCollaborations_Collaborations_WaitingCollaborationsId",
+                        column: x => x.WaitingCollaborationsId,
+                        principalTable: "Collaborations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Steps",
                 columns: table => new
                 {
@@ -326,9 +382,19 @@ namespace MelodyCircle.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserCollaborations_ContributingUsersId",
+                table: "UserCollaborations",
+                column: "ContributingUsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserRating_UserId",
                 table: "UserRating",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWaitingCollaborations_WaitingUsersId",
+                table: "UserWaitingCollaborations",
+                column: "WaitingUsersId");
         }
 
         /// <inheritdoc />
@@ -350,16 +416,19 @@ namespace MelodyCircle.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Collaborations");
-
-            migrationBuilder.DropTable(
                 name: "Steps");
 
             migrationBuilder.DropTable(
                 name: "SubscribeTutorials");
 
             migrationBuilder.DropTable(
+                name: "UserCollaborations");
+
+            migrationBuilder.DropTable(
                 name: "UserRating");
+
+            migrationBuilder.DropTable(
+                name: "UserWaitingCollaborations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -369,6 +438,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Collaborations");
         }
     }
 }

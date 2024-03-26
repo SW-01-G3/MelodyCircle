@@ -22,11 +22,67 @@ namespace MelodyCircle.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CollaborationUser", b =>
+                {
+                    b.Property<Guid>("ContributingCollaborationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContributingUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ContributingCollaborationsId", "ContributingUsersId");
+
+                    b.HasIndex("ContributingUsersId");
+
+                    b.ToTable("UserCollaborations", (string)null);
+                });
+
+            modelBuilder.Entity("CollaborationUser1", b =>
+                {
+                    b.Property<Guid>("WaitingCollaborationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("WaitingUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("WaitingCollaborationsId", "WaitingUsersId");
+
+                    b.HasIndex("WaitingUsersId");
+
+                    b.ToTable("UserWaitingCollaborations", (string)null);
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessMode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccessPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MaxUsers")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Photo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhotoContentType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -374,6 +430,36 @@ namespace MelodyCircle.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("CollaborationUser", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", null)
+                        .WithMany()
+                        .HasForeignKey("ContributingCollaborationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("ContributingUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CollaborationUser1", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", null)
+                        .WithMany()
+                        .HasForeignKey("WaitingCollaborationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("WaitingUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>

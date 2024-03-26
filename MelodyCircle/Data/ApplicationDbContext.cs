@@ -16,6 +16,16 @@ namespace MelodyCircle.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.ContributingCollaborations)
+                .WithMany(c => c.ContributingUsers)
+                .UsingEntity(j => j.ToTable("UserCollaborations"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.WaitingCollaborations)
+                .WithMany(c => c.WaitingUsers)
+                .UsingEntity(j => j.ToTable("UserWaitingCollaborations"));
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

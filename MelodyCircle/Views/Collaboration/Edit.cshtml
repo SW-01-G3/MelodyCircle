@@ -1,0 +1,61 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Editar Colaboração";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data" asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedDate" />
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Título</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label">Descrição</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MaxUsers" class="control-label">Número Máximo de Utilizadores:</label>
+                <input asp-for="MaxUsers" class="form-control" />
+                <span asp-validation-for="MaxUsers" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AccessMode" class="control-label">Modo de Acesso:</label>
+                <select asp-for="AccessMode" class="form-control">
+                    <option value="Public">Público</option>
+                    <option value="Private">Privado</option>
+                </select>
+                <span asp-validation-for="AccessMode" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AccessPassword" class="control-label">Senha de Acesso:</label>
+                <input type="password" asp-for="AccessPassword" class="form-control" />
+                <span asp-validation-for="AccessPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="Photo">Foto:</label>
+                <input type="file" class="form-control-file" id="Photo" name="photo">
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Salvar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,31 +1,44 @@
-﻿@model IEnumerable<MelodyCircle.Models.Collaboration>
+﻿@using System.Security.Claims
+@model IEnumerable<MelodyCircle.Models.Collaboration>
+
 @{
-    ViewData["Title"] = "Collaboration";
-}
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            var maxTitleWidth = 0;
-            $('.title-width').each(function () {
-                var titleWidth = $(this).width();
-                if (titleWidth > maxTitleWidth) {
-                    maxTitleWidth = titleWidth;
-                }
-            });
-            $('.title-width').width(maxTitleWidth);
-        });
-    </script>
+    ViewData["Title"] = "Colaborações";
 }
 
-<div class="text-center text-purple"><h1>Colaborações</h1></div>
+<div class="text-center text-purple">
+    <h1>@ViewData["Title"]</h1>
+</div>
 
-@foreach (var collaboration in Model)
-{
-    <div class="w-100 bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
-        <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
-        <div class="px-3 title-width">@collaboration.Title</div>
-        <div class="px-3">dd-mm-aaaa</div>
-        <div class="px-3">tag</div>
-        <a href="#" class="btn bg-purple text-white">Abrir</a>
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <a href="@Url.Action("Create", "Collaboration")" class="btn btn-primary">Criar</a>
+        </div>
     </div>
-}
+
+    @foreach (var collaboration in Model)
+    {
+        <div class="row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+            <div class="col-2">
+                @if (collaboration.Photo != null && collaboration.Photo.Length > 0)
+                {
+                    <img src="data:@collaboration.PhotoContentType;base64,@Convert.ToBase64String(collaboration.Photo)" alt="Foto da Colaboração" class="img-fluid rounded" style="max-height: 50px; max-width: 50px;" />
+                }
+                else
+                {
+                    <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
+                }
+            </div>
+            <div class="col-6 px-3 title-width">@collaboration.Title</div>
+            <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
+            <div class="col-2 px-3">tag</div>
+            <div class="col-2 px-3">
+                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
+                    <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -53,6 +53,9 @@ namespace MelodyCircle.Models
 
         public virtual List<string> MusicURI { get; set; } = new List<string>();
 
+        public virtual List<Collaboration>? ContributingCollaborations { get; set; }
+        public virtual List<Collaboration>? WaitingCollaborations { get; set; }
+
         //public List<int> Ratings { get; set; } = new List<int>();
     }
 
