@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240321001937_initial")]
+    [Migration("20240326234123_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -246,6 +246,33 @@ namespace MelodyCircle.Migrations
                     b.ToTable("UserRating");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.UserStepProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("StepId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserStepProgresses");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -427,6 +454,17 @@ namespace MelodyCircle.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.UserStepProgress", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany("UserStepProgresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -488,6 +526,8 @@ namespace MelodyCircle.Migrations
                     b.Navigation("Connections");
 
                     b.Navigation("Ratings");
+
+                    b.Navigation("UserStepProgresses");
                 });
 #pragma warning restore 612, 618
         }

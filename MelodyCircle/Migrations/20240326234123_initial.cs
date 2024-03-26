@@ -221,6 +221,27 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserStepProgresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StepId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserStepProgresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserStepProgresses_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Steps",
                 columns: table => new
                 {
@@ -329,6 +350,11 @@ namespace MelodyCircle.Migrations
                 name: "IX_UserRating_UserId",
                 table: "UserRating",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserStepProgresses_UserId",
+                table: "UserStepProgresses",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -360,6 +386,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRating");
+
+            migrationBuilder.DropTable(
+                name: "UserStepProgresses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

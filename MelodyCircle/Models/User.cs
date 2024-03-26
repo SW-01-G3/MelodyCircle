@@ -54,6 +54,8 @@ namespace MelodyCircle.Models
         public virtual List<string> MusicURI { get; set; } = new List<string>();
 
         //public List<int> Ratings { get; set; } = new List<int>();
+
+        public virtual List<UserStepProgress> UserStepProgresses { get; set; } = new List<UserStepProgress>();
     }
 
     public enum Gender

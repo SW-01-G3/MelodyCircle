@@ -1,5 +1,7 @@
-﻿using MelodyCircle.Data;
+﻿using Azure.Identity;
+using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +10,12 @@ namespace MelodyCircle.Controllers
     public class StepController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public StepController(ApplicationDbContext context)
+        public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(Guid? tutorialId)
@@ -159,6 +163,45 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
             return View(step);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CompleteStep(Guid stepId)
+        {
+            // Obter o usuário atual
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound("What");
+            }
+
+            // Verificar se o passo existe
+            var step = await _context.Steps.FindAsync(stepId);
+
+            if (step == null)
+            {
+                return NotFound("Hun?");
+            }
+
+            // Verificar se o usuário já completou este passo
+            bool alreadyCompleted = _context.UserStepProgresses.Any(p => p.UserId == user.UserName && p.StepId == stepId);
+
+            if (!alreadyCompleted)
+            {
+                var userStepProgress = new UserStepProgress
+                {
+                    StepId = stepId,
+                    IsCompleted = true,
+                    UserId = user.UserName,
+                    User = user
+                };
+
+                _context.UserStepProgresses.Add(userStepProgress);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index");
         }
 
         private bool StepExists(Guid tutorialId)
