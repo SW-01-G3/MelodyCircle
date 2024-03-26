@@ -117,7 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LB_010" xml:space="preserve">
+    <value>Avaliação de 0 a 10.</value>
+  </data>
+  <data name="LB_ADD" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="LB_ADD_MUSIC" xml:space="preserve">
+    <value>Adicionar Música</value>
+  </data>
+  <data name="LB_DEFINITIONS" xml:space="preserve">
+    <value>Definições</value>
+  </data>
+  <data name="LB_EDIT" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="LB_EDIT_MUSIC" xml:space="preserve">
+    <value>Alterar a Música</value>
+  </data>
+  <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
+    <value>Músicas Favoritas</value>
+  </data>
+  <data name="LB_GIVESTARS" xml:space="preserve">
+    <value>Dê estrelas!</value>
+  </data>
+  <data name="LB_INSERT_NEWURI" xml:space="preserve">
+    <value>Insira o novo URI da Música</value>
+  </data>
+  <data name="LB_INSERT_URI" xml:space="preserve">
+    <value>Insira URI da Música</value>
+  </data>
+  <data name="LB_LOGOUT" xml:space="preserve">
+    <value>Terminar Sessão</value>
+  </data>
+  <data name="LB_PICTURECHANGE" xml:space="preserve">
+    <value>Alteração da Foto de Perfil</value>
+  </data>
+  <data name="LB_PROFILE" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="LB_REMOVE" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="LB_REMOVECONNECTION" xml:space="preserve">
+    <value>Pretende remover esta conexão?</value>
+  </data>
+  <data name="LB_SAVE" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>
+  </data>
+  <data name="TT_PROFILE" xml:space="preserve">
+    <value>Perfil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</value>
   </data>
 </root>

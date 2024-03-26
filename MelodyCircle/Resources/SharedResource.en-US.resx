@@ -117,7 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LB_010" xml:space="preserve">
+    <value>Rating from 0 to 10.</value>
+  </data>
+  <data name="LB_ADD" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="LB_ADD_MUSIC" xml:space="preserve">
+    <value>Add Music</value>
+  </data>
+  <data name="LB_DEFINITIONS" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="LB_EDIT" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="LB_EDIT_MUSIC" xml:space="preserve">
+    <value>Edit Music</value>
+  </data>
+  <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
+    <value>Favourite Music</value>
+  </data>
+  <data name="LB_GIVESTARS" xml:space="preserve">
+    <value>Give stars!</value>
+  </data>
+  <data name="LB_INSERT_NEWURI" xml:space="preserve">
+    <value>Enter new Song URI</value>
+  </data>
+  <data name="LB_INSERT_URI" xml:space="preserve">
+    <value>Enter Song URI</value>
+  </data>
+  <data name="LB_LOGOUT" xml:space="preserve">
+    <value>Log Out</value>
+  </data>
+  <data name="LB_PICTURECHANGE" xml:space="preserve">
+    <value>Changing Profile Photo</value>
+  </data>
+  <data name="LB_PROFILE" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="LB_REMOVE" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="LB_REMOVECONNECTION" xml:space="preserve">
+    <value>Do you want to remove this connection?</value>
+  </data>
+  <data name="LB_SAVE" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Welcome</value>
+  </data>
+  <data name="TT_PROFILE" xml:space="preserve">
+    <value>User profile. If you wish, you can change your profile photo by clicking the change button. You can also add, edit and remove songs from Spotify.</value>
   </data>
 </root>
