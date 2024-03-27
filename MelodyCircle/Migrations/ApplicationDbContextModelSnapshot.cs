@@ -106,6 +106,9 @@ namespace MelodyCircle.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("SubscribeTutorialId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -114,6 +117,8 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscribeTutorialId");
 
                     b.HasIndex("TutorialId");
 
@@ -470,6 +475,10 @@ namespace MelodyCircle.Migrations
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
+                    b.HasOne("MelodyCircle.Models.SubscribeTutorial", null)
+                        .WithMany("CompletedSteps")
+                        .HasForeignKey("SubscribeTutorialId");
+
                     b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
                         .WithMany("Steps")
                         .HasForeignKey("TutorialId")
@@ -565,6 +574,11 @@ namespace MelodyCircle.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>
+                {
+                    b.Navigation("CompletedSteps");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>

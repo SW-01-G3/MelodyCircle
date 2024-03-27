@@ -1,5 +1,7 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +10,12 @@ namespace MelodyCircle.Controllers
     public class StepController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public StepController(ApplicationDbContext context)
+        public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(Guid? tutorialId)
@@ -153,6 +157,74 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
             return View(step);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CompleteStep(Guid tutorialId, Guid stepId)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+
+            //// Encontre a inscrição do usuário para o tutorial
+            //var subscription = await _context.SubscribeTutorials
+            //    .Include(st => st.CompletedSteps)
+            //    .FirstOrDefaultAsync(st => st.User.Id == user.Id && st.TutorialId == tutorialId);
+            var userId = _userManager.GetUserId(User);
+            //var step = await _context.Steps.FindAsync(stepId);
+
+            var subscription = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+           
+
+            if (subscription == null)
+            {
+                return NotFound(); // Lidar com o caso em que o usuário não está inscrito neste tutorial
+            }
+
+            var step = await _context.Steps.FindAsync(stepId);
+            if (step == null)
+            {
+                return NotFound(); // Lidar com o caso em que o passo não foi encontrado
+            }
+
+            // Verifique se o passo já está marcado como completo
+            bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
+
+            if (!alreadyCompleted)
+            {
+                // Adicione o passo à lista de passos completos
+                subscription.CompletedSteps.Add(step);
+       
+            }
+            else
+            {
+                // Remova o passo da lista de passos completos
+                subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
+            }
+
+
+            //Aqui ainda tem
+
+            int savedChanges =  await _context.SaveChangesAsync();
+
+            var subscriptionAfterSave = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+
+            bool hasCompletedSteps = subscriptionAfterSave?.CompletedSteps != null && subscriptionAfterSave.CompletedSteps.Any();
+
+            // Passar a variável hasCompletedSteps para a view
+            ViewBag.HasCompletedSteps = subscriptionAfterSave;
+
+            //return RedirectToAction("Index");
+
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId }); // Redirecione para a página de tutoriais do usuário
         }
 
         private bool StepExists(Guid tutorialId)

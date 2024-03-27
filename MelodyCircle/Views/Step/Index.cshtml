@@ -1,5 +1,6 @@
-﻿@model IEnumerable<MelodyCircle.Models.Step>
-
+﻿@using MelodyCircle.Data
+@model IEnumerable<MelodyCircle.Models.Step>
+@inject ApplicationDbContext Context
 @{
     ViewData["Title"] = "Titulo do tutorial";
 }
@@ -39,11 +40,19 @@
         {
             @foreach (var step in Model)
             {
-                <div class="col justify-content-evenly mt-3">
-                    <span>@Html.DisplayFor(modelItem => step.Title)</span>
-                        <a asp-action="Edit" asp-route-id="@step.Id"><img src="~/img/edit.svg" alt="Edit step." class="icon fill-purple" /></a>
-                        <a asp-action="Delete" asp-route-id="@step.Id"><img src="~/img/delete.svg" alt="Delete step." class="icon" /></a>
-                </div>
+
+                <p>O utilizador tem @Context.SubscribeTutorials.FirstOrDefault().CompletedSteps.Count() passos completos neste tutorial.</p>
+
+	            <div class="col justify-content-evenly mt-3">
+                    <form method="post"  asp-action="CompleteStep" asp-route-tutorialId="@step.TutorialId" asp-route-stepId="@step.Id">
+			            <button type="submit">
+							Check
+			            </button>
+		            </form>
+		            <span>@Html.DisplayFor(modelItem => step.Title)</span>
+		            <a asp-action="Edit" asp-route-id="@step.Id"><img src="~/img/edit.svg" alt="Edit step." class="icon fill-purple"/></a>
+		            <a asp-action="Delete" asp-route-id="@step.Id"><img src="~/img/delete.svg" alt="Delete step." class="icon"/></a>
+	            </div>
 
             }
         } else

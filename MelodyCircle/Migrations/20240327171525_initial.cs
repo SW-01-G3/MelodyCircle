@@ -279,27 +279,6 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Steps",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Steps", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Steps_Tutorials_TutorialId",
-                        column: x => x.TutorialId,
-                        principalTable: "Tutorials",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SubscribeTutorials",
                 columns: table => new
                 {
@@ -318,6 +297,33 @@ namespace MelodyCircle.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SubscribeTutorials_Tutorials_TutorialId",
+                        column: x => x.TutorialId,
+                        principalTable: "Tutorials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Steps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    SubscribeTutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Steps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Steps_SubscribeTutorials_SubscribeTutorialId",
+                        column: x => x.SubscribeTutorialId,
+                        principalTable: "SubscribeTutorials",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Steps_Tutorials_TutorialId",
                         column: x => x.TutorialId,
                         principalTable: "Tutorials",
                         principalColumn: "Id",
@@ -367,6 +373,11 @@ namespace MelodyCircle.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Steps_SubscribeTutorialId",
+                table: "Steps",
+                column: "SubscribeTutorialId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Steps_TutorialId",
@@ -421,9 +432,6 @@ namespace MelodyCircle.Migrations
                 name: "Steps");
 
             migrationBuilder.DropTable(
-                name: "SubscribeTutorials");
-
-            migrationBuilder.DropTable(
                 name: "UserCollaborations");
 
             migrationBuilder.DropTable(
@@ -436,13 +444,16 @@ namespace MelodyCircle.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Tutorials");
+                name: "SubscribeTutorials");
+
+            migrationBuilder.DropTable(
+                name: "Collaborations");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Collaborations");
+                name: "Tutorials");
         }
     }
 }
