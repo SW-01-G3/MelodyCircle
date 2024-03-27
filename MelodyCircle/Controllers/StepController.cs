@@ -1,5 +1,7 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +10,12 @@ namespace MelodyCircle.Controllers
     public class StepController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public StepController(ApplicationDbContext context)
+        public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(Guid? tutorialId)
@@ -29,8 +33,14 @@ namespace MelodyCircle.Controllers
                 .Select(t => t.Creator)
                 .FirstOrDefaultAsync();
 
+            var title = await _context.Tutorials
+                .Where(t => t.Id == tutorialId)
+                .Select(t => t.Title)
+                .FirstOrDefaultAsync();
+
             ViewBag.TutorialId = tutorialId;
             ViewBag.Creator = creator;
+            ViewBag.Title = title;
 
             return View(steps);
         }
@@ -153,6 +163,58 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
             return View(step);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CompleteStep(Guid tutorialId, Guid stepId)
+        {
+            var userId = _userManager.GetUserId(User);
+
+
+            var subscription = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+            if (subscription == null)
+            {
+                return NotFound(); 
+            }
+
+            var step = await _context.Steps.FindAsync(stepId);
+            if (step == null)
+            {
+                return NotFound(); 
+            }
+
+            bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
+
+            if (!alreadyCompleted)
+            {
+                subscription.CompletedSteps.Add(step);
+            }
+            else
+            {
+                subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
+            }
+
+            int savedChanges =  await _context.SaveChangesAsync();
+
+            var subscriptionAfterSave = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+            int completedStepsCount = subscriptionAfterSave.CompletedSteps.Count;
+            int totalStepsCount = await _context.Steps.Where(s => s.TutorialId == tutorialId).CountAsync();
+
+            ViewBag.CompletedStepsCount = completedStepsCount;
+            ViewBag.TotalStepsCount = totalStepsCount;
+
+
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId }); // Redirecione para a página de tutoriais do usuário
         }
 
         private bool StepExists(Guid tutorialId)

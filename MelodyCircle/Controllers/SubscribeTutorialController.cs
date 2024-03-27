@@ -91,6 +91,5 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MyTutorials));
         }
-
     }
 }
