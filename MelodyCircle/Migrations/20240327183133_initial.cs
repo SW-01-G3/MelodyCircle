@@ -78,7 +78,8 @@ namespace MelodyCircle.Migrations
                     CreatorId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AccessMode = table.Column<int>(type: "int", nullable: false)
+                    AccessMode = table.Column<int>(type: "int", nullable: false),
+                    IsFinished = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

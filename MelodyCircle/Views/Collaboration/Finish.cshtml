@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Finalizar Colaboração";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <h3>Deseja dar como finalizada esta colaboração?</h3>
+    <form method="post" action="@Url.Action("FinishConfirmed", "Collaboration", new { id = ViewBag.CollaborationId })">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn bg-purple text-white">Confirmar</button>
+    </form>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar para a lista de colaborações</a>
+</div>

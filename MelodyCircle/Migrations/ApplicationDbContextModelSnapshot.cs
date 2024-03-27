@@ -75,6 +75,9 @@ namespace MelodyCircle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MaxUsers")
                         .HasColumnType("int");
 

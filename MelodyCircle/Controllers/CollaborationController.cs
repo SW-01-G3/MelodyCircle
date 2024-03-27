@@ -163,6 +163,47 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: /collaboration/finish/{id}
+        public async Task<IActionResult> Finish(Guid? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var collaboration = await _context.Collaborations.FindAsync(id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            if (collaboration.CreatorId != _userManager.GetUserId(User))
+                return Forbid();
+
+            ViewBag.CollaborationId = id;
+
+            return View();
+        }
+
+        // POST: /collaboration/finishconfirmed/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FinishConfirmed(Guid id)
+        {
+            var collaboration = await _context.Collaborations.FindAsync(id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            if (userId != collaboration.CreatorId)
+                return Forbid();
+
+            collaboration.IsFinished = true;
+            _context.Update(collaboration);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private async Task<ActionResult<Collaboration>> GetCollaboration(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);
