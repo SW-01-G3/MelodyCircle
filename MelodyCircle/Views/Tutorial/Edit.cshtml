@@ -12,7 +12,7 @@
                 ?
             </button>
         </div>
-        <form asp-action="Edit" method="post">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div class="form-group text-center mt-3">
                 <h1>@ViewData["Title"]</h1>
             </div>
@@ -27,11 +27,11 @@
                 <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="Creator" />
-            @* <div class="form-group text-center">
-                <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" type="file" class="form-control" />
-            </div> *@
+            <div class="form-group text-center">
+                <label for="Photo" class="control-label border-purple">Foto</label>
+                <input type="file" class="control-label border-purple" id="Photo" name="photo">
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
             <div class="form-group text-center my-3">
                 <input type="submit" value="Guardar" class="btn bg-purple text-white" />
             </div>

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 
 namespace MelodyCircle.Controllers
 {
@@ -61,11 +60,10 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0)
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
             {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
             }
 
             else
@@ -77,11 +75,15 @@ namespace MelodyCircle.Controllers
                 if (user != null)
                     tutorial.Creator = user.UserName;
 
-                using (var memoryStream = new MemoryStream())
+
+                if (photo != null || photo.Length > 0)
                 {
-                    await photo.CopyToAsync(memoryStream);
-                    tutorial.Photo = memoryStream.ToArray();
-                    tutorial.PhotoContentType = photo.ContentType;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await photo.CopyToAsync(memoryStream);
+                        tutorial.Photo = memoryStream.ToArray();
+                        tutorial.PhotoContentType = photo.ContentType;
+                    }
                 }
 
                 _context.Add(tutorial);
@@ -110,7 +112,7 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile image)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
         {
             if (id != tutorial.Id)
                 return NotFound();
@@ -123,20 +125,23 @@ namespace MelodyCircle.Controllers
 
             else 
             {
-                _context.Entry(tutorial).State = EntityState.Detached;
+                var existingTutorial = await _context.Tutorials.FindAsync(id);
 
-                _context.Attach(tutorial);
-                _context.Entry(tutorial).Property("Title").IsModified = true;
-                _context.Entry(tutorial).Property("Description").IsModified = true;
-
-                if (tutorial.Photo != null && tutorial.Photo.Length > 0)
+                if (photo != null && photo.Length > 0)
                 {
-                    _context.Entry(tutorial).Property("Photo").IsModified = true;
-                    _context.Entry(tutorial).Property("PhotoContentType").IsModified = true;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await photo.CopyToAsync(memoryStream);
+                        existingTutorial.Photo = memoryStream.ToArray();
+                        existingTutorial.PhotoContentType = photo.ContentType;
+                    }
                 }
 
-                await _context.SaveChangesAsync();
+                existingTutorial.Title = existingTutorial.Title;
+                existingTutorial.Description = existingTutorial.Description;
 
+                _context.Update(existingTutorial);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(tutorial);
