@@ -56,8 +56,9 @@ namespace MelodyCircle.Models
         public virtual List<Collaboration>? ContributingCollaborations { get; set; }
         public virtual List<Collaboration>? WaitingCollaborations { get; set; }
 
-        //public List<int> Ratings { get; set; } = new List<int>();
-    }
+		public int? LoginCount { get; set; } 
+		public DateTime? LastLoginTime { get; set; }
+	}
 
     public enum Gender
     {

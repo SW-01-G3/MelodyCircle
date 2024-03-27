@@ -202,6 +202,9 @@ namespace MelodyCircle.Migrations
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("LastLoginTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Locality")
                         .HasColumnType("nvarchar(max)");
 
@@ -210,6 +213,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("LoginCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("MusicURI")
                         .IsRequired()
