@@ -91,55 +91,5 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MyTutorials));
         }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CompleteStep(Guid tutorialId, Guid stepId)
-        {
-            var userId = _userManager.GetUserId(User);
-
-            if (!Guid.TryParse(userId, out Guid userIdGuid))
-            {
-                // Tratar o caso em que userId não é um Guid válido
-                // Por exemplo, lançar uma exceção ou retornar uma mensagem de erro
-                // Dependendo dos requisitos do seu aplicativo
-            }
-
-            var subscription = await _context.SubscribeTutorials
-                .Where(s => s.User.Id.ToString() == userId)
-                .Include(st => st.CompletedSteps)
-                .FirstOrDefaultAsync(st => st.TutorialId == tutorialId);
-
-            return RedirectToAction("Index");
-
-            //if (subscription == null)
-            //{
-            //    return NotFound(); // Lidar com o caso em que o usuário não está inscrito neste tutorial
-            //}
-
-            //var step = await _context.Steps.FindAsync(stepId);
-            //if (step == null)
-            //{
-            //    return NotFound(); // Lidar com o caso em que o passo não foi encontrado
-            //}
-
-            //// Verifique se o passo já está marcado como completo
-            //bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
-
-            //if (!alreadyCompleted)
-            //{
-            //    // Adicione o passo à lista de passos completos
-            //    subscription.CompletedSteps.Add(step);
-            //}
-            //else
-            //{
-            //    // Remova o passo da lista de passos completos
-            //    subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
-            //}
-
-            //await _context.SaveChangesAsync();
-
-            //return RedirectToAction(nameof(MyTutorials)); // Redirecione para a página de tutoriais do usuário
-        }
     }
 }

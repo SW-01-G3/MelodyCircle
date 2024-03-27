@@ -33,8 +33,14 @@ namespace MelodyCircle.Controllers
                 .Select(t => t.Creator)
                 .FirstOrDefaultAsync();
 
+            var title = await _context.Tutorials
+                .Where(t => t.Id == tutorialId)
+                .Select(t => t.Title)
+                .FirstOrDefaultAsync();
+
             ViewBag.TutorialId = tutorialId;
             ViewBag.Creator = creator;
+            ViewBag.Title = title;
 
             return View(steps);
         }
@@ -164,50 +170,35 @@ namespace MelodyCircle.Controllers
         [Authorize]
         public async Task<IActionResult> CompleteStep(Guid tutorialId, Guid stepId)
         {
-            //var user = await _userManager.GetUserAsync(User);
-
-            //// Encontre a inscrição do usuário para o tutorial
-            //var subscription = await _context.SubscribeTutorials
-            //    .Include(st => st.CompletedSteps)
-            //    .FirstOrDefaultAsync(st => st.User.Id == user.Id && st.TutorialId == tutorialId);
             var userId = _userManager.GetUserId(User);
-            //var step = await _context.Steps.FindAsync(stepId);
+
 
             var subscription = await _context.SubscribeTutorials
                 .Where(s => s.User.Id.ToString() == userId)
                 .Include(st => st.CompletedSteps)
                 .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
 
-           
-
             if (subscription == null)
             {
-                return NotFound(); // Lidar com o caso em que o usuário não está inscrito neste tutorial
+                return NotFound(); 
             }
 
             var step = await _context.Steps.FindAsync(stepId);
             if (step == null)
             {
-                return NotFound(); // Lidar com o caso em que o passo não foi encontrado
+                return NotFound(); 
             }
 
-            // Verifique se o passo já está marcado como completo
             bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
 
             if (!alreadyCompleted)
             {
-                // Adicione o passo à lista de passos completos
                 subscription.CompletedSteps.Add(step);
-       
             }
             else
             {
-                // Remova o passo da lista de passos completos
                 subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
             }
-
-
-            //Aqui ainda tem
 
             int savedChanges =  await _context.SaveChangesAsync();
 
@@ -216,13 +207,12 @@ namespace MelodyCircle.Controllers
                 .Include(st => st.CompletedSteps)
                 .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
 
+            int completedStepsCount = subscriptionAfterSave.CompletedSteps.Count;
+            int totalStepsCount = await _context.Steps.Where(s => s.TutorialId == tutorialId).CountAsync();
 
-            bool hasCompletedSteps = subscriptionAfterSave?.CompletedSteps != null && subscriptionAfterSave.CompletedSteps.Any();
+            ViewBag.CompletedStepsCount = completedStepsCount;
+            ViewBag.TotalStepsCount = totalStepsCount;
 
-            // Passar a variável hasCompletedSteps para a view
-            ViewBag.HasCompletedSteps = subscriptionAfterSave;
-
-            //return RedirectToAction("Index");
 
             return RedirectToAction("Index", new { tutorialId = step.TutorialId }); // Redirecione para a página de tutoriais do usuário
         }
