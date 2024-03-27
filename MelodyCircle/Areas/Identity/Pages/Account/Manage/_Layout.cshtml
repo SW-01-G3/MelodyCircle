@@ -1,4 +1,7 @@
-﻿@{
+﻿@using MelodyCircle.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject UserManager<User> UserManager
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
     {
         Layout = parentLayout.ToString();
@@ -25,8 +28,35 @@
 				</div>
 			</div>
 		</section>
+		<br/>
+		<br/>
+		<section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
+			<div>
+				<p>Last Login: @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime</p>
+				<p>Login Amount:  @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LoginCount</p>
+				<p id="sessionTime"> </p>
+			</div>
+		</section>
 	</div>
 </div>
+<script>
+    // Function to calculate and update session time
+    function updateSessionTime() {
+        var lastLoginTime = new Date('@UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime');
+
+        var currentTime = new Date();
+        var sessionTimeInSeconds = Math.floor((currentTime - lastLoginTime) / 1000);
+
+        var hours = String(Math.floor(sessionTimeInSeconds / 3600)).padStart(2, '0');
+        var minutes = String(Math.floor((sessionTimeInSeconds % 3600) / 60)).padStart(2, '0');
+        var seconds = String(sessionTimeInSeconds % 60).padStart(2, '0');
+        document.getElementById('sessionTime').textContent = 'Session Time: ' + hours + ' : ' + minutes + ' : ' + seconds;
+    }
+
+    updateSessionTime();
+    setInterval(updateSessionTime, 1000);
+</script>
+
 @section Scripts {
     @RenderSection("Scripts", required: false)
 }
