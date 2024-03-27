@@ -199,3 +199,32 @@ body {
   height: 20px;
   width: 20px;
 }
+
+.sidebar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li strong {
+    font-weight: bold;
+}

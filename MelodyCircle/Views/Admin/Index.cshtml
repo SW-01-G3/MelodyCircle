@@ -1,5 +1,7 @@
 @using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data
 @inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 
 @{
     ViewData["Title"] = "Admin Panel";
@@ -48,4 +50,16 @@
 	<form asp-action="DeleteAddedUsers" method="post" asp-controller="Admin">
 		<button type="submit" class="btn bg-purple text-white">Excluir Users Criados</button>
 	</form>
+</div>
+
+<div class="sidebar">
+	<h2>Informações da Aplicação</h2>
+	<ul>
+		<li><strong>Versão:</strong> 1.0.0</li>
+		<li><strong>Última Atualização:</strong> 27 de Março de 2024</li>
+		<li><strong>Utilizadores</strong> @Context.Users.Count()</li>
+		<li><strong>Tutoriais:</strong> @Context.Tutorials.Count()</li>
+		<li><strong>Steps:</strong> @Context.Steps.Count()</li>
+		<li><strong>Collabs:</strong> @Context.Collaborations.Count()</li>
+	</ul>
 </div>
