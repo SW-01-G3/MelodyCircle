@@ -81,6 +81,9 @@ namespace MelodyCircle.Controllers
             if (collaboration.CreatorId != _userManager.GetUserId(User))
                 return Forbid();
 
+            if(collaboration.IsFinished)
+                return Forbid();
+
             return View(collaboration);
         }
 
@@ -89,43 +92,47 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Collaboration collaboration, IFormFile photo)
         {
-            if (id != collaboration.Id)
-                return NotFound();
-
-            //if (collaboration.CreatorId != _userManager.GetUserId(User))
-            //    return Forbid();
-
-            if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
+            if (!collaboration.IsFinished)
             {
-                ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
-                ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
-            }
+                if (id != collaboration.Id)
+                    return NotFound();
 
-            else
-            {
-                var existingCollaboration = await _context.Collaborations.FindAsync(id);
+                //if (collaboration.CreatorId != _userManager.GetUserId(User))
+                //    return Forbid();
 
-                if (photo != null && photo.Length > 0)
+                if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        existingCollaboration.Photo = memoryStream.ToArray();
-                        existingCollaboration.PhotoContentType = photo.ContentType;
-                    }
+                    ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
+                    ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
                 }
 
-                existingCollaboration.Title = collaboration.Title;
-                existingCollaboration.Description = collaboration.Description;
-                existingCollaboration.MaxUsers = collaboration.MaxUsers;
-                existingCollaboration.AccessMode = collaboration.AccessMode;
-                existingCollaboration.AccessPassword = collaboration.AccessPassword;
+                else
+                {
+                    var existingCollaboration = await _context.Collaborations.FindAsync(id);
 
-                _context.Update(existingCollaboration);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    if (photo != null && photo.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await photo.CopyToAsync(memoryStream);
+                            existingCollaboration.Photo = memoryStream.ToArray();
+                            existingCollaboration.PhotoContentType = photo.ContentType;
+                        }
+                    }
+
+                    existingCollaboration.Title = collaboration.Title;
+                    existingCollaboration.Description = collaboration.Description;
+                    existingCollaboration.MaxUsers = collaboration.MaxUsers;
+                    existingCollaboration.AccessMode = collaboration.AccessMode;
+                    existingCollaboration.AccessPassword = collaboration.AccessPassword;
+
+                    _context.Update(existingCollaboration);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(collaboration);
             }
-            return View(collaboration);
+            return Forbid();
         }
 
         // GET: /collaboration/delete/{id}
@@ -140,6 +147,9 @@ namespace MelodyCircle.Controllers
                 return NotFound();
 
             if (collaboration.CreatorId != _userManager.GetUserId(User))
+                return Forbid();
+
+            if (collaboration.IsFinished)
                 return Forbid();
 
             return View(collaboration);
@@ -158,9 +168,13 @@ namespace MelodyCircle.Controllers
             if (collaboration.CreatorId != _userManager.GetUserId(User))
                 return Forbid();
 
-            _context.Collaborations.Remove(collaboration);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            if (!collaboration.IsFinished)
+            {
+                _context.Collaborations.Remove(collaboration);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return Forbid();
         }
 
         // GET: /collaboration/finish/{id}
@@ -175,6 +189,9 @@ namespace MelodyCircle.Controllers
                 return NotFound();
 
             if (collaboration.CreatorId != _userManager.GetUserId(User))
+                return Forbid();
+
+            if (collaboration.IsFinished)
                 return Forbid();
 
             ViewBag.CollaborationId = id;
@@ -197,11 +214,15 @@ namespace MelodyCircle.Controllers
             if (userId != collaboration.CreatorId)
                 return Forbid();
 
-            collaboration.IsFinished = true;
-            _context.Update(collaboration);
-            await _context.SaveChangesAsync();
+            if (!collaboration.IsFinished)
+            {
+                collaboration.IsFinished = true;
+                _context.Update(collaboration);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            return Forbid();
         }
 
         private async Task<ActionResult<Collaboration>> GetCollaboration(Guid id)
