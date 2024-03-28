@@ -1,8 +1,12 @@
 ﻿using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
+using MelodyCircleTest;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,137 +17,147 @@ namespace MelodyCircle.Tests.Controllers
 {
     public class StepControllerTests
     {
-        //[Fact]
-        //public async Task Index_ReturnsViewResult_WithListOfSteps()
-        //{
-        //    // Arrange
-        //    var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-        //        .UseInMemoryDatabase(databaseName: "TestDatabase")
-        //        .Options;
-        //    var context = new ApplicationDbContext(options);
+        private readonly UserManager<User> _userManager;
 
-        //    // Adiciona um tutorial fictício ao contexto do banco de dados em memória
-        //    var tutorial = new Tutorial
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        Title = "Test Tutorial",
-        //        Creator = "Test Creator", // Defina o Creator como um valor válido
-        //        Description = "Test Description" // Defina a Description como um valor válido
-        //    };
-        //    context.Tutorials.Add(tutorial);
 
-        //    // Adiciona alguns passos fictícios ao contexto do banco de dados em memória
-        //    context.Steps.AddRange(
-        //        new Step { Id = Guid.NewGuid(), TutorialId = tutorial.Id, Title = "Step 1", Content = "Content 1", Order = 1 },
-        //        new Step { Id = Guid.NewGuid(), TutorialId = tutorial.Id, Title = "Step 2", Content = "Content 2", Order = 2 },
-        //        new Step { Id = Guid.NewGuid(), TutorialId = Guid.NewGuid(), Title = "Another Tutorial Step", Content = "Another Content", Order = 1 } // Um passo de outro tutorial
-        //    );
-        //    await context.SaveChangesAsync();
+        public StepControllerTests()
+        {
+            var store = new Mock<IUserStore<User>>();
+            _userManager = new UserManager<User>(store.Object, null, null, null, null, null, null, null, null);
+        }
+           
 
-        //    var controller = new StepController(context);
+        [Fact]
+        public async Task Index_ReturnsViewResult_WithListOfSteps()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            var context = new ApplicationDbContext(options);
 
-        //    // Act
-        //    var result = await controller.Index(tutorial.Id);
+            // Adiciona um tutorial fictício ao contexto do banco de dados em memória
+            var tutorial = new Tutorial
+            {
+                Id = Guid.NewGuid(),
+                Title = "Test Tutorial",
+                Creator = "Test Creator", // Defina o Creator como um valor válido
+                Description = "Test Description" // Defina a Description como um valor válido
+            };
+            context.Tutorials.Add(tutorial);
 
-        //    // Assert
-        //    var viewResult = Assert.IsType<ViewResult>(result);
-        //    var model = Assert.IsAssignableFrom<List<Step>>(viewResult.ViewData.Model);
-        //    Assert.Equal(2, model.Count); // Verifica se há dois passos para o tutorial especificado
-        //    Assert.All(model, item => Assert.Equal(tutorial.Id, item.TutorialId)); // Verifica se todos os passos pertencem ao tutorial especificado
-        //}
+            // Adiciona alguns passos fictícios ao contexto do banco de dados em memória
+            context.Steps.AddRange(
+                new Step { Id = Guid.NewGuid(), TutorialId = tutorial.Id, Title = "Step 1", Content = "Content 1", Order = 1 },
+                new Step { Id = Guid.NewGuid(), TutorialId = tutorial.Id, Title = "Step 2", Content = "Content 2", Order = 2 },
+                new Step { Id = Guid.NewGuid(), TutorialId = Guid.NewGuid(), Title = "Another Tutorial Step", Content = "Another Content", Order = 1 } // Um passo de outro tutorial
+            );
+            await context.SaveChangesAsync();
 
-        //[Fact]
-        //public async Task DeleteConfirmed_RemovesStepAndRedirectsToIndex()
-        //{
-        //    // Arrange
-        //    var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-        //        .UseInMemoryDatabase(databaseName: "TestDatabase")
-        //        .Options;
-        //    var context = new ApplicationDbContext(options);
+            var controller = new StepController(context, _userManager);
 
-        //    // Adiciona um tutorial e um step fictício ao contexto do banco de dados em memória
-        //    var tutorialId = Guid.NewGuid();
-        //    var stepId = Guid.NewGuid();
-        //    var step = new Step { Id = stepId, TutorialId = tutorialId, Title = "Test Step", Content = "Test Content", Order = 1 };
-        //    context.Steps.Add(step);
-        //    await context.SaveChangesAsync();
+            // Act
+            var result = await controller.Index(tutorial.Id);
 
-        //    var controller = new StepController(context);
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<List<Step>>(viewResult.ViewData.Model);
+            Assert.Equal(2, model.Count); // Verifica se há dois passos para o tutorial especificado
+            Assert.All(model, item => Assert.Equal(tutorial.Id, item.TutorialId)); // Verifica se todos os passos pertencem ao tutorial especificado
+        }
 
-        //    // Act
-        //    var result = await controller.DeleteConfirmed(stepId);
+        [Fact]
+        public async Task DeleteConfirmed_RemovesStepAndRedirectsToIndex()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            var context = new ApplicationDbContext(options);
 
-        //    // Assert
-        //    var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-        //    Assert.Equal("Index", redirectToActionResult.ActionName);
-        //    Assert.Equal(tutorialId, redirectToActionResult.RouteValues["tutorialId"]);
+            // Adiciona um tutorial e um step fictício ao contexto do banco de dados em memória
+            var tutorialId = Guid.NewGuid();
+            var stepId = Guid.NewGuid();
+            var step = new Step { Id = stepId, TutorialId = tutorialId, Title = "Test Step", Content = "Test Content", Order = 1 };
+            context.Steps.Add(step);
+            await context.SaveChangesAsync();
 
-        //    // Verifica se o step foi removido do contexto do banco de dados em memória
-        //    var stepInDatabase = await context.Steps.FirstOrDefaultAsync(s => s.Id == stepId);
-        //    Assert.Null(stepInDatabase);
-        //}
+            var controller = new StepController(context, _userManager);
 
-        //[Fact]
-        //public async Task Edit_ReturnsViewResult_WithStep()
-        //{
-        //    // Arrange
-        //    var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-        //        .UseInMemoryDatabase(databaseName: "TestDatabase")
-        //        .Options;
-        //    var context = new ApplicationDbContext(options);
+            // Act
+            var result = await controller.DeleteConfirmed(stepId);
 
-        //    var tutorialId = Guid.NewGuid();
-        //    var stepId = Guid.NewGuid();
-        //    var originalTitle = "Original Step";
-        //    var step = new Step { Id = stepId, TutorialId = tutorialId, Title = originalTitle, Content = "Original Content", Order = 1 };
-        //    context.Steps.Add(step);
-        //    await context.SaveChangesAsync();
+            // Assert
+            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectToActionResult.ActionName);
+            Assert.Equal(tutorialId, redirectToActionResult.RouteValues["tutorialId"]);
 
-        //    var controller = new StepController(context);
+            // Verifica se o step foi removido do contexto do banco de dados em memória
+            var stepInDatabase = await context.Steps.FirstOrDefaultAsync(s => s.Id == stepId);
+            Assert.Null(stepInDatabase);
+        }
 
-        //    // Act
-        //    var result = await controller.Edit(stepId);
+        [Fact]
+        public async Task Edit_ReturnsViewResult_WithStep()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            var context = new ApplicationDbContext(options);
 
-        //    // Assert
-        //    var viewResult = Assert.IsType<ViewResult>(result);
-        //    var model = Assert.IsAssignableFrom<Step>(viewResult.ViewData.Model);
-        //    Assert.Equal(stepId, model.Id);
-        //    Assert.Equal(originalTitle, model.Title);
-        //}
+            var tutorialId = Guid.NewGuid();
+            var stepId = Guid.NewGuid();
+            var originalTitle = "Original Step";
+            var step = new Step { Id = stepId, TutorialId = tutorialId, Title = originalTitle, Content = "Original Content", Order = 1 };
+            context.Steps.Add(step);
+            await context.SaveChangesAsync();
 
-        //[Fact]
-        //public async Task Edit_Post_ReturnsRedirectToActionResult_WithUpdatedStep()
-        //{
-        //    // Arrange
-        //    var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-        //        .UseInMemoryDatabase(databaseName: "TestDatabase")
-        //        .Options;
+            var controller = new StepController(context, _userManager);
 
-        //    Guid tutorialId = Guid.NewGuid();
-        //    Guid stepId = Guid.NewGuid();
+            // Act
+            var result = await controller.Edit(stepId);
 
-        //    // Set up a context (connection to the DB)
-        //    using (var context = new ApplicationDbContext(options))
-        //    {
-        //        // Add sample data to the in-memory database
-        //        context.Steps.Add(new Step { Id = stepId, TutorialId = tutorialId, Title = "Title 1", Content = "Content 1", Order = 1 });
-        //        await context.SaveChangesAsync();
-        //    }
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<Step>(viewResult.ViewData.Model);
+            Assert.Equal(stepId, model.Id);
+            Assert.Equal(originalTitle, model.Title);
+        }
 
-        //    // Set up the controller with the context
-        //    using (var context = new ApplicationDbContext(options))
-        //    {
-        //        var controller = new StepController(context);
+        [Fact]
+        public async Task Edit_Post_ReturnsRedirectToActionResult_WithUpdatedStep()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
 
-        //        // Act
-        //        var step = new Step { Id = stepId, TutorialId = tutorialId, Title = "Updated Title", Content = "Updated Content", Order = 1 };
-        //        var result = await controller.Edit(tutorialId, step);
+            Guid tutorialId = Guid.NewGuid();
+            Guid stepId = Guid.NewGuid();
 
-        //        // Assert
-        //        var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-        //        Assert.Equal("Index", redirectToActionResult.ActionName);
-        //        Assert.Equal(tutorialId, redirectToActionResult.RouteValues["tutorialId"]);
-        //    }
-        //}
+            // Set up a context (connection to the DB)
+            using (var context = new ApplicationDbContext(options))
+            {
+                // Add sample data to the in-memory database
+                context.Steps.Add(new Step { Id = stepId, TutorialId = tutorialId, Title = "Title 1", Content = "Content 1", Order = 1 });
+                await context.SaveChangesAsync();
+            }
+
+            // Set up the controller with the context
+            using (var context = new ApplicationDbContext(options))
+            {
+                var controller = new StepController(context, _userManager);
+
+                // Act
+                var step = new Step { Id = stepId, TutorialId = tutorialId, Title = "Updated Title", Content = "Updated Content", Order = 1 };
+                var result = await controller.Edit(tutorialId, step);
+
+                // Assert
+                var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+                Assert.Equal("Index", redirectToActionResult.ActionName);
+                Assert.Equal(tutorialId, redirectToActionResult.RouteValues["tutorialId"]);
+            }
+        }
     }
 }

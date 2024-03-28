@@ -185,6 +185,29 @@ namespace MelodyCircle.Migrations
                     b.ToTable("Tutorials");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TutorialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.ToTable("TutorialRating");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -510,6 +533,17 @@ namespace MelodyCircle.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                        .WithMany("Ratings")
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.HasOne("MelodyCircle.Models.User", null)
@@ -586,6 +620,8 @@ namespace MelodyCircle.Migrations
 
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
+                    b.Navigation("Ratings");
+
                     b.Navigation("Steps");
                 });
 

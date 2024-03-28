@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328145230_initial")]
+    [Migration("20240328214157_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -186,6 +186,29 @@ namespace MelodyCircle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tutorials");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TutorialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.ToTable("TutorialRating");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
@@ -513,6 +536,17 @@ namespace MelodyCircle.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                        .WithMany("Ratings")
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.HasOne("MelodyCircle.Models.User", null)
@@ -589,6 +623,8 @@ namespace MelodyCircle.Migrations
 
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
+                    b.Navigation("Ratings");
+
                     b.Navigation("Steps");
                 });
 

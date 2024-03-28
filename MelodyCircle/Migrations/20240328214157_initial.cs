@@ -305,6 +305,26 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TutorialRating",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TutorialRating", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TutorialRating_Tutorials_TutorialId",
+                        column: x => x.TutorialId,
+                        principalTable: "Tutorials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Steps",
                 columns: table => new
                 {
@@ -396,6 +416,11 @@ namespace MelodyCircle.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TutorialRating_TutorialId",
+                table: "TutorialRating",
+                column: "TutorialId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserCollaborations_ContributingUsersId",
                 table: "UserCollaborations",
                 column: "ContributingUsersId");
@@ -431,6 +456,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "Steps");
+
+            migrationBuilder.DropTable(
+                name: "TutorialRating");
 
             migrationBuilder.DropTable(
                 name: "UserCollaborations");

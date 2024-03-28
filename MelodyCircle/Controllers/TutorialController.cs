@@ -183,6 +183,49 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", "Step", new { tutorialId = id });
         }
 
+        public async Task<IActionResult> RateTutorial(Guid id, int rating)
+        {
+            if (rating < 0 || rating > 10)
+            {
+                return BadRequest("Rating value must be between 0 and 10");
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var tutorialToRate = await _context.Tutorials.FindAsync(id);
+
+            if (tutorialToRate == null)
+            {
+                return NotFound("User to rate not found");
+            }
+
+            if (tutorialToRate.Ratings == null)
+            {
+                tutorialToRate.Ratings = new List<TutorialRating>();
+            }
+
+            var existingRatings = _context.TutorialRating.AsEnumerable().Where(r => r.UserName.Equals(currentUser.UserName));
+            var existingRating = existingRatings.FirstOrDefault(u => u.TutorialId.Equals(id));
+
+            if (existingRating != null)
+            {
+                existingRating.Value = rating;
+            }
+            else
+            {
+                tutorialToRate.Ratings.Add(new TutorialRating { UserName = currentUser.UserName, TutorialId = id, Value = rating });
+            }
+
+            // Update the user in the database
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
         private bool TutorialExists(Guid id)
         {
             return _context.Tutorials.Any(e => e.Id == id);

@@ -18,5 +18,7 @@ namespace MelodyCircle.Models
         public byte[]? Photo { get; set; }
         public string? PhotoContentType { get; set; }
         public int? SubscribersCount { get; set; } = 0;
+
+        public virtual List<TutorialRating> Ratings { get; set; } = new List<TutorialRating>();
     }
 }
