@@ -32,6 +32,12 @@ namespace MelodyCircle.Models
         public virtual List<User>? WaitingUsers { get; set; }
 
         public bool IsFinished { get; set; }
+
+        public Collaboration()
+        {
+            ContributingUsers = new List<User>();
+            WaitingUsers = new List<User>();
+        }
     }
 
     public enum AccessMode

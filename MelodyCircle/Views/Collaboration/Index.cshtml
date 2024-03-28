@@ -31,17 +31,26 @@
             </div>
             <div class="col-6 px-3 title-width">@collaboration.Title</div>
             <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
-            <div class="col-2 px-3">Finalizada: @(collaboration.IsFinished ? "Sim" : "Não")</div>
-            <div class="col-2">tag</div>
+            <div class="col-2 px-3">tag</div>
             <div class="col-2 px-3">
-                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !collaboration.IsFinished)
+                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
                     <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
                     <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
-                    <form method="post" action="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn bg-purple text-white">Finalizar</button>
-                    </form>
+                    <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
+                    <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
+                }
+                else
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
+                    if (!isInWaitingList)
+                    {
+                        <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                        </form>
+                    }
                 }
             </div>
         </div>

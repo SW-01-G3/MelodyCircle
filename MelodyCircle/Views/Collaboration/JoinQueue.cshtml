@@ -1,0 +1,16 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Confirmação de Entrada";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    <h3>Tem certeza que deseja entrar nesta colaboração?</h3>
+    <p>Colaboração: @Model.Title</p>
+    <form method="post" action="@Url.Action("JoinQueueConfim", "Collaboration", new { id = Model.Id })">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn bg-purple text-white">Confirmar Entrada</button>
+        <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Cancelar</a>
+    </form>
+</div>
