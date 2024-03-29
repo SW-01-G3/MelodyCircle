@@ -200,7 +200,7 @@ namespace MelodyCircle.Controllers
 
             if (tutorialToRate == null)
             {
-                return NotFound("User to rate not found");
+                return NotFound("Tutorial to rate not found");
             }
 
             if (tutorialToRate.Ratings == null)

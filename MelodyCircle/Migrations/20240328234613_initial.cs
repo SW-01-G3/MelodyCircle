@@ -232,6 +232,26 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CollaborationRating",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    CollaborationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CollaborationRating", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CollaborationRating_Collaborations_CollaborationId",
+                        column: x => x.CollaborationId,
+                        principalTable: "Collaborations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserCollaborations",
                 columns: table => new
                 {
@@ -396,6 +416,11 @@ namespace MelodyCircle.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CollaborationRating_CollaborationId",
+                table: "CollaborationRating",
+                column: "CollaborationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Steps_SubscribeTutorialId",
                 table: "Steps",
                 column: "SubscribeTutorialId");
@@ -453,6 +478,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "CollaborationRating");
 
             migrationBuilder.DropTable(
                 name: "Steps");

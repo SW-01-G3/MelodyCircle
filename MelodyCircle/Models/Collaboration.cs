@@ -32,6 +32,8 @@ namespace MelodyCircle.Models
         public virtual List<User>? WaitingUsers { get; set; }
 
         public bool IsFinished { get; set; }
+
+        public virtual List<CollaborationRating> Ratings { get; set; } = new List<CollaborationRating>();
     }
 
     public enum AccessMode

@@ -96,6 +96,29 @@ namespace MelodyCircle.Migrations
                     b.ToTable("Collaborations");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.CollaborationRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.ToTable("CollaborationRating");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
                     b.Property<Guid>("Id")
@@ -499,6 +522,17 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.CollaborationRating", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany("Ratings")
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboration");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
                     b.HasOne("MelodyCircle.Models.SubscribeTutorial", null)
@@ -611,6 +645,11 @@ namespace MelodyCircle.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
+                {
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>

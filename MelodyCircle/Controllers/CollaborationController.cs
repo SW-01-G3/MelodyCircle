@@ -235,6 +235,49 @@ namespace MelodyCircle.Controllers
             return collaboration;
         }
 
+        public async Task<IActionResult> RateCollaboration(Guid id, int rating)
+        {
+            if (rating < 0 || rating > 10)
+            {
+                return BadRequest("Rating value must be between 0 and 10");
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var collabToRate = await _context.Collaborations.FindAsync(id);
+
+            if (collabToRate == null)
+            {
+                return NotFound("Collaboration to rate not found");
+            }
+
+            if (collabToRate.Ratings == null)
+            {
+                collabToRate.Ratings = new List<CollaborationRating>();
+            }
+
+            var existingRatings = _context.CollaborationRating.AsEnumerable().Where(r => r.UserName.Equals(currentUser.UserName));
+            var existingRating = existingRatings.FirstOrDefault(u => u.CollaborationId.Equals(id));
+
+            if (existingRating != null)
+            {
+                existingRating.Value = rating;
+            }
+            else
+            {
+                collabToRate.Ratings.Add(new CollaborationRating { UserName = currentUser.UserName, CollaborationId = id, Value = rating });
+            }
+
+            // Update the user in the database
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
         private bool CollaborationExists(Guid id)
         {
             return _context.Collaborations.Any(e => e.Id == id);
