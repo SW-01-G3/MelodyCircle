@@ -9,6 +9,33 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        let stepDivs = document.getElementsByName("stepDiv");
+        let stepData = [];
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                @:stepData.push(@Html.Raw(item.Content));
+            }
+        }
+                var quill = new Quill('#editor');
+
+        for (let cnt = 0; cnt < stepData.length; cnt++) {
+            stepDivs[cnt].innerHTML = convertToHtml(quill, stepData[cnt]);
+        }
+
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
 
 <div class="text-center">
     <h1 class="display-4">@Html.Translate("LB_WELCOME").</h1>
@@ -16,15 +43,15 @@
     <br />
 </div>
 
-@if(Model != null)
+@if(Model != null && Model.Any())
 {
     @foreach (var item in Model)
     {
-        <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center">
+        <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center">
             <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
             <hr>
-            <h3>@Html.DisplayFor(modelItem => item.Content)</h3>
-        </section>
+            <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
+        </div>
         <br />
     }
 }
@@ -37,7 +64,9 @@
         //<a class="btn bg-purple text-white rounded-circle floating-button" href="/Home/Create" data-bs-toggle="modal" data-bs-target="#addMusicModal">+</a>
         <a href="@Url.Action("Create", "Forum")" class="btn bg-purple text-white rounded-circle floating-button">+</a>
     }
-  
+    <input type="hidden" id="editor" name="editor" value="" />
 }
+
+
 
 

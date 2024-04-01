@@ -3,13 +3,30 @@
 @{
     ViewData["Title"] = "View";
 }
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#editor', {
+            placeholder: 'Compose an epic...',
+            theme: 'snow',
+        });
+        let contentInput = document.getElementById("contentInput");
+        contentInput.value = JSON.stringify(quill.getContents());
+        quill.on('text-change', function (delta, oldDelta, source) {
+            contentInput.value = JSON.stringify(quill.getContents());
+        })
+    </script>
+}
 
 <h1>View</h1>
 
 <h4>ForumPost</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -19,11 +36,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <input type="hidden" asp-for="Content" id="contentInput" value="" />
+                @* <textarea style="visibility: hidden;" asp-for="Content" class="" rows="4"></textarea> *@
+                <div id="editor">
+                    <p>Hello, <strong>World</strong></p>
+                </div>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>
