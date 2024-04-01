@@ -119,6 +119,25 @@ namespace MelodyCircle.Migrations
                     b.ToTable("CollaborationRating");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForumPost");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
                     b.Property<Guid>("Id")

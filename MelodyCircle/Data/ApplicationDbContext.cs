@@ -34,5 +34,6 @@ namespace MelodyCircle.Data
             : base(options)
         {
         }
+        public DbSet<MelodyCircle.Models.ForumPost> ForumPost { get; set; } = default!;
     }
 }

@@ -87,6 +87,19 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ForumPost",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumPost", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tutorials",
                 columns: table => new
                 {
@@ -481,6 +494,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "CollaborationRating");
+
+            migrationBuilder.DropTable(
+                name: "ForumPost");
 
             migrationBuilder.DropTable(
                 name: "Steps");

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240328234613_initial")]
+    [Migration("20240331215150_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -120,6 +120,25 @@ namespace MelodyCircle.Migrations
                     b.HasIndex("CollaborationId");
 
                     b.ToTable("CollaborationRating");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForumPost");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>

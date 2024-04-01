@@ -1,4 +1,10 @@
-﻿@using MelodyCircle.ExtensionMethods
+﻿@using System.Security.Claims
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data
+@model IEnumerable<ForumPost>
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,7 +12,32 @@
 
 <div class="text-center">
     <h1 class="display-4">@Html.Translate("LB_WELCOME").</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <hr />
+    <br />
 </div>
+
+@if(Model != null)
+{
+    @foreach (var item in Model)
+    {
+        <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center">
+            <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
+            <hr>
+            <h3>@Html.DisplayFor(modelItem => item.Content)</h3>
+        </section>
+        <br />
+    }
+}
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    if (User.IsInRole("Admin") | User.IsInRole("Mod"))
+    {
+        //<a class="btn bg-purple text-white rounded-circle floating-button" href="/Home/Create" data-bs-toggle="modal" data-bs-target="#addMusicModal">+</a>
+        <a href="@Url.Action("Create", "Forum")" class="btn bg-purple text-white rounded-circle floating-button">+</a>
+    }
+  
+}
 
 
