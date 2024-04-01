@@ -3,12 +3,51 @@
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
-    <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
-        <option value="None">Nenhum filtro</option>
-        <option value="User">Artista</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Collaboration">Colaboração</option>
-    </select>
+    
+    <button type="button" class="border-0 bg-lightBlue fill.white " data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><img src="~/img/filter.svg" /></button>
+
+    <div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-75 text-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header text-center">
+            <h2 class="offcanvas-title" id="offcanvasScrollingLabel">Filtros</h2>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <h5>Selecione o tipo de procura:</h5>
+        
+        <div class="container mt-4 " name="searchType">
+            
+            <div class="form-check">
+                
+                <label class="form-check-label" for="searchNone">Nenhum filtro</label>
+                <input class="form-check-input" type="checkbox" id="searchNone" value="None">
+
+            </div>
+            <div class="form-check">
+                
+                <label class="form-check-label" for="searchUser">Artista</label>
+                <input class="form-check-input" type="checkbox" id="searchUser" value="User">
+
+            </div>
+            <div class="form-check">
+                
+                <label class="form-check-label" for="searchTutorial">Tutorial</label>
+                <input class="form-check-input" type="checkbox" id="searchTutorial" value="Tutorial">
+
+            </div>
+            <div class="form-check">
+                
+                <label class="form-check-label" for="searchCollaboration">Colaboração</label>
+                <input class="form-check-input" type="checkbox" id="searchCollaboration" value="Collaboration">
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
     <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
+
