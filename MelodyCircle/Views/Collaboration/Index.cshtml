@@ -72,7 +72,6 @@
             <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
             <div class="col-2 px-3">Finalizada: @(collaboration.IsFinished ? "Sim" : "Não")</div>
             <br />
-            <div class="col-2">tag</div>
 
             <div class="modal fade" id="addStarRatingModal" tabindex="-1" aria-labelledby="addStarRatingModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -104,6 +103,7 @@
                     <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
                     <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
                     <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
+                    <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Contribuidores</a>
                 }
                 else
                 {

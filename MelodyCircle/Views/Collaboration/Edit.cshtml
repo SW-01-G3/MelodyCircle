@@ -28,7 +28,7 @@
 
             <div class="form-group">
                 <label asp-for="MaxUsers" class="control-label">Número Máximo de Utilizadores:</label>
-                <input asp-for="MaxUsers" class="form-control" />
+                <input asp-for="MaxUsers" class="form-control" min="0" max="100" />
                 <span asp-validation-for="MaxUsers" class="text-danger"></span>
             </div>
 

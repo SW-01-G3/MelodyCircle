@@ -26,13 +26,20 @@
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-success">Permitir Entrada</button>
                             </form>
+
+                            @if (ViewData["ErrorMessage"] != null)
+                            {
+                                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+                            }
                         </td>
                     </tr>
                 }
             }
             else
             {
-                <p>Não há utilizadores em lista de espera</p>
+                <tr>
+                    <td colspan="3">Não há utilizadores em lista de espera</td>
+                </tr>
             }
         </tbody>
     </table>

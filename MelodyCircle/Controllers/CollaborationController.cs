@@ -15,7 +15,6 @@ namespace MelodyCircle.Controllers
         {
             _context = context;
             _userManager = userManager;
-
         }
 
         // GET: Collaboration
@@ -42,6 +41,27 @@ namespace MelodyCircle.Controllers
             return View(publicCollaborations);
         }
 
+        // GET: /Collaboration/WaitingList/{id}
+        public async Task<IActionResult> WaitingList(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            if (userId != collaboration.CreatorId)
+                return Forbid();
+
+            var sortedWaitingUsers = collaboration.WaitingUsers.OrderBy(u => u.SignupTime).ToList();
+
+            collaboration.WaitingUsers = sortedWaitingUsers;
+
+            return View(collaboration);
+        }
         public async Task<IActionResult> JoinQueue(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);
@@ -65,41 +85,12 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            if (collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId))
-            {
-                ViewData["ErrorMessage"] = "Já está na lista de espera desta colaboração";
-
-                return View("JoinQueueConfirmation", collaboration);
-            }
-
             var user = await _userManager.FindByIdAsync(userId);
 
             collaboration.WaitingUsers.Add(user);
 
             await _context.SaveChangesAsync();
             return View("JoinQueueConfirmation", collaboration);
-        }
-
-        // GET: /Collaboration/WaitingList/{id}
-        public async Task<IActionResult> WaitingList(Guid id)
-        {
-            var collaboration = await _context.Collaborations
-                .Include(c => c.WaitingUsers)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (collaboration == null)
-                return NotFound();
-
-            var userId = _userManager.GetUserId(User);
-
-            if (userId != collaboration.CreatorId)
-                return Forbid();
-
-            var sortedWaitingUsers = collaboration.WaitingUsers.OrderBy(u => u.SignupTime).ToList();
-
-            collaboration.WaitingUsers = sortedWaitingUsers;
-
-            return View(collaboration);
         }
 
         // POST: /Collaboration/AllowUser/{collaborationId}/{userId}
@@ -109,6 +100,7 @@ namespace MelodyCircle.Controllers
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
+                .Include(c => c.ContributingUsers)
                 .FirstOrDefaultAsync(c => c.Id == collaborationId);
 
             if (collaboration == null)
@@ -120,15 +112,60 @@ namespace MelodyCircle.Controllers
                 return Forbid();
 
             if (collaboration.ContributingUsers.Count >= collaboration.MaxUsers)
-                return View("WaitingList");
+            {
+                ViewData["ErrorMessage"] = "Já atingiu o máximo de utilizadores";
+
+                return View("WaitingList", collaboration);
+            }
 
             var userToRemove = collaboration.WaitingUsers.FirstOrDefault(u => u.Id.ToString() == userId);
 
             if (userToRemove != null)
             {
                 collaboration.WaitingUsers.Remove(userToRemove);
+                collaboration.ContributingUsers.Add(userToRemove);
 
-                //collaboration.ContributingUsers.Add(userToRemove);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
+        }
+
+        // GET: /Collaboration/ContributingUsers/{collaborationId}
+        public async Task<IActionResult> ContributingUsers(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            return View("ContributingList", collaboration);
+        }
+
+        // POST: /Collaboration/RemoveUser/{collaborationId}/{userId}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveUser(Guid collaborationId, string userId)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .FirstOrDefaultAsync(c => c.Id == collaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var creatorId = _userManager.GetUserId(User);
+
+            if (creatorId != collaboration.CreatorId)
+                return Forbid();
+
+            var userToRemove = collaboration.ContributingUsers.FirstOrDefault(u => u.Id.ToString() == userId);
+
+            if (userToRemove != null)
+            {
+                collaboration.ContributingUsers.Remove(userToRemove);
 
                 await _context.SaveChangesAsync();
             }
