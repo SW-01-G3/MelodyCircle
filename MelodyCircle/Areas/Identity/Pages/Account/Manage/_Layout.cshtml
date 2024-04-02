@@ -11,23 +11,45 @@
         Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     }
 }
+
+<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-50 text-center align-items-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+	<div class="offcanvas-header text-center">
+		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+
+
+	<h4>Estatísticas do Utilizador</h4>
+
+	<div class="col-8 mt-4">
+@* 		<h6>Tutoriais:  </h6> *@
+		<a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Tutoriais</a>
+@* 		<h6>Collabs:      @Context.Collaborations.Count()</h6> *@
+		<a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">Ver Estatísticas de Criação de Colaborações</a>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-md-7 mx-auto">
-		<section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
-			<div>
-				<h2>Altere as definições da sua conta</h2>
-				<br/>
-				<div class="row">
-					<div class="col-md-4">
-						<partial name="_ManageNav" />
-					</div>
-
-					<div class="col-md-8">
-						@RenderBody()
-					</div>
-				</div>
-			</div>
-		</section>
+        <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="m-0">Altere as definições da sua conta</h2>
+                <button type="button" class="border-0 bg-white unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                    <img src="~/img/statistic.svg" width="32" height="32" class="w-100" />
+                </button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-4">
+                    <partial name="_ManageNav" />
+                </div>
+                <div class="col-md-8">
+                    @RenderBody()
+                </div>
+            </div>
+        </section>
 		<br/>
 		<br/>
 		<section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
