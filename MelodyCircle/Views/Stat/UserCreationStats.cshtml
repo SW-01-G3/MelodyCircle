@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "User Creation Stats";
+}
+
+@{
+    var monthsAndYears = ViewBag.MonthsAndYears as IEnumerable<string>;
+    var userCounts = ViewBag.UserCounts as IEnumerable<int>;
+}
+
+<h1>User Creation Stats</h1>
+
+<canvas id="userCreationChart" width="800" height="400"></canvas>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        var ctx = document.getElementById('userCreationChart').getContext('2d');
+        var monthsAndYears = @Html.Raw(Json.Serialize(monthsAndYears));
+        var userCounts = @Html.Raw(Json.Serialize(userCounts));
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: monthsAndYears,
+                datasets: [{
+                    label: 'New Users',
+                    data: userCounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -43,7 +43,8 @@ namespace MelodyCircle.Data
                     ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<UserRating>()
+                    Ratings = new List<UserRating>(),
+                    CreationDate = DateTime.Now
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
@@ -63,8 +64,14 @@ namespace MelodyCircle.Data
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
                     NormalizedEmail = "PROFESSOR1@MELODYCIRCLE.PT",
-                    EmailConfirmed = true,
-                };
+					EmailConfirmed = true,
+					Gender = Gender.Other,
+					ProfilePicture = [],
+					Locality = "Portugal",
+					Connections = new List<User>(),
+					Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -83,8 +90,14 @@ namespace MelodyCircle.Data
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
                     NormalizedEmail = "PROFESSOR2@MELODYCIRCLE.PT",
-                    EmailConfirmed = true,
-                };
+					EmailConfirmed = true,
+					Gender = Gender.Other,
+					ProfilePicture = [],
+					Locality = "Portugal",
+					Connections = new List<User>(),
+					Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -111,8 +124,10 @@ namespace MelodyCircle.Data
                     ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<UserRating>()
-                };
+                    Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -137,8 +152,9 @@ namespace MelodyCircle.Data
                 ProfilePicture = [],
                 Locality = "Portugal",
                 Connections = new List<User>(),
-                Ratings = new List<UserRating>()
-            };
+                Ratings = new List<UserRating>(),
+				CreationDate = DateTime.Now
+			};
 
             var result2 = await userManager.CreateAsync(user2, "Password-123");
             if (result2.Succeeded)

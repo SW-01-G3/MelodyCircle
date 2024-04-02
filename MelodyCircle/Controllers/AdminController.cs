@@ -1,8 +1,12 @@
-﻿using MelodyCircle.Models;
+﻿using MelodyCircle.Data;
+using MelodyCircle.Models;
+using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Mail;
+using System;
 
 namespace MelodyCircle.Controllers
 {
@@ -11,11 +15,13 @@ namespace MelodyCircle.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly ApplicationDbContext _context;
 
-        public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+			_context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -90,22 +96,27 @@ namespace MelodyCircle.Controllers
 				return View(); 
 			}
 
+			var random = new Random();
+			var currentDate = DateTime.Now.Date;
+
 			for (int i = 1; i <= numberOfUsers; i++)
 			{
+				var randomDays = random.Next(1, 181); 
 				var user = new User
-				{
-					UserName = $"user{i}",
-					Email = $"user{i}@melodycircle.pt",
-					Name = $"User {i}",
-					BirthDate = new DateOnly(2000, 1, 1),
-					Password = "Password-123", 
-					NormalizedEmail = $"USER{i}@MELODYCIRCLE.PT",
-					EmailConfirmed = true,
-					Gender = Gender.Other,
-					ProfilePicture = new byte[0], 
-					Locality = "Portugal",
-					Connections = new List<User>(),
-					Ratings = new List<UserRating>()
+                {
+                    UserName = $"user{i}",
+                    Email = $"user{i}@melodycircle.pt",
+                    Name = $"User {i}",
+                    BirthDate = new DateOnly(2000, 1, 1),
+                    Password = "Password-123",
+                    NormalizedEmail = $"USER{i}@MELODYCIRCLE.PT",
+                    EmailConfirmed = true,
+                    Gender = Gender.Other,
+                    ProfilePicture = new byte[0],
+                    Locality = "Portugal",
+                    Connections = new List<User>(),
+                    Ratings = new List<UserRating>(),   
+					CreationDate = currentDate.AddDays(-randomDays)
 				};
 
 				var result = await _userManager.CreateAsync(user, user.Password);
@@ -137,6 +148,103 @@ namespace MelodyCircle.Controllers
 					await _userManager.DeleteAsync(user);
 				}
 			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateMultipleTutorials(int numberOfTutorials)
+		{
+			if (numberOfTutorials <= 0)
+			{
+				ModelState.AddModelError("", "Número inválido de tutoriais.");
+				return View();
+			}
+
+			var random = new Random();
+			var currentDate = DateTime.Now.Date;
+			var prefix = "SpecialTutorial"; // Prefixo especial para identificar os tutoriais criados nesta ação
+
+			for (int i = 1; i <= numberOfTutorials; i++)
+			{
+				var randomDays = random.Next(1, 181); // número aleatório entre 1 e 180 (aproximadamente 6 meses)
+				var tutorial = new Tutorial
+				{
+					Title = $"{prefix}{i}",
+					Description = $"Descrição do Tutorial {i}",
+					Creator = $"Creator{i}",
+					CreationDate = currentDate.AddDays(-randomDays) // definir a data de criação para trás entre 1 e 6 meses
+				};
+
+				// lógica para criar o tutorial no banco de dados
+				_context.Tutorials.Add(tutorial);
+			}
+
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteAddedTutorials()
+		{
+			// lógica para excluir todos os tutoriais adicionados
+			var tutorials = await _context.Tutorials.Where(t => t.Title.StartsWith("SpecialTutorial")).ToListAsync();
+
+			_context.Tutorials.RemoveRange(tutorials);
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateMultipleCollaborations(int numberOfCollaborations)
+		{
+			if (numberOfCollaborations <= 0)
+			{
+				ModelState.AddModelError("", "Número inválido de colaborações.");
+				return View();
+			}
+
+			var random = new Random();
+			var currentDate = DateTime.Now.Date;
+			var prefix = "SpecialCollaboration"; // Prefixo especial para identificar as colaborações criadas nesta ação
+
+			for (int i = 1; i <= numberOfCollaborations; i++)
+			{
+				var randomDays = random.Next(1, 181); // número aleatório entre 1 e 180 (aproximadamente 6 meses)
+				var collaboration = new Collaboration
+				{
+					Title = $"{prefix}{i}",
+					Description = $"Descrição da Colaboração {i}",
+					CreatorId = $"Creator{i}",
+					CreatedDate = currentDate.AddDays(-randomDays), // definir a data de criação para trás entre 1 e 6 meses
+					AccessMode = AccessMode.Public,
+					MaxUsers = random.Next(1, 11), // número aleatório entre 1 e 10 para o número máximo de usuários
+					IsFinished = false // por padrão, a colaboração não está finalizada
+				};
+
+				// lógica para criar a colaboração no banco de dados
+				_context.Collaborations.Add(collaboration);
+			}
+
+			await _context.SaveChangesAsync();
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteAddedCollaborations()
+		{
+			// lógica para excluir todas as colaborações adicionadas
+			var collaborations = await _context.Collaborations.Where(c => c.Title.StartsWith("SpecialCollaboration")).ToListAsync();
+
+			_context.Collaborations.RemoveRange(collaborations);
+			await _context.SaveChangesAsync();
 
 			return RedirectToAction("Index");
 		}

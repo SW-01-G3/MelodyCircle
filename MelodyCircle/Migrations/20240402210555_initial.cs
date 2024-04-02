@@ -39,6 +39,7 @@ namespace MelodyCircle.Migrations
                     MusicURI = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LoginCount = table.Column<int>(type: "int", nullable: true),
                     LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -110,7 +111,8 @@ namespace MelodyCircle.Migrations
                     StepCount = table.Column<int>(type: "int", nullable: true),
                     Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     PhotoContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SubscribersCount = table.Column<int>(type: "int", nullable: true)
+                    SubscribersCount = table.Column<int>(type: "int", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

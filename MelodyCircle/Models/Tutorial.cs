@@ -20,5 +20,7 @@ namespace MelodyCircle.Models
         public int? SubscribersCount { get; set; } = 0;
 
         public virtual List<TutorialRating> Ratings { get; set; } = new List<TutorialRating>();
+
+        public DateTime CreationDate { get; set; }
     }
 }

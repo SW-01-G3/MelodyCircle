@@ -83,8 +83,10 @@ namespace MelodyCircle.Controllers
                         await photo.CopyToAsync(memoryStream);
                         tutorial.Photo = memoryStream.ToArray();
                         tutorial.PhotoContentType = photo.ContentType;
+                        
                     }
                 }
+                tutorial.CreationDate = DateTime.Now;
 
                 _context.Add(tutorial);
                 await _context.SaveChangesAsync();
