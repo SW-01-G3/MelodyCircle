@@ -139,7 +139,7 @@
     <value>Músicas Favoritas</value>
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
-    <value>Dê estrelas!</value>
+    <value>Avaliar</value>
   </data>
   <data name="LB_INSERT_NEWURI" xml:space="preserve">
     <value>Insira o novo URI da Música</value>

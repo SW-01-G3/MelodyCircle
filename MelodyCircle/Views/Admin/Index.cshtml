@@ -52,14 +52,31 @@
 	</form>
 </div>
 
-<div class="sidebar">
-	<h2>Informações da Aplicação</h2>
-	<ul>
-		<li><strong>Versão:</strong> 1.0.0</li>
-		<li><strong>Última Atualização:</strong> 27 de Março de 2024</li>
-		<li><strong>Utilizadores</strong> @Context.Users.Count()</li>
-		<li><strong>Tutoriais:</strong> @Context.Tutorials.Count()</li>
-		<li><strong>Steps:</strong> @Context.Steps.Count()</li>
-		<li><strong>Collabs:</strong> @Context.Collaborations.Count()</li>
-	</ul>
+<div class="d-flex justify-content-center align-items-center">
+	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+		<img src="~/img/statistic.svg" width="32" height="32" class="mt-5 w-100" />
+	</button>
+</div>
+
+<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-50 text-center align-items-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+	<div class="offcanvas-header text-center">
+		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+
+
+		<h4>Informações da Aplicação</h4>
+
+	<div class="col-8 mt-4">
+		<h6>Utilizadores: @Context.Users.Count()</h6>
+		<h6>Tutoriais:    @Context.Tutorials.Count()</h6>
+		<h6>Steps:        @Context.Steps.Count()</h6>
+		<h6>Collabs:      @Context.Collaborations.Count()</h6>
+	</div>
+
+		<div class="col-8 mt-4">
+			<h6>Versão: 1.0.0</h6>
+			<h6>Última Atualização:<br> 27 de Março de 2024</h6>
+		</div>
+
 </div>
