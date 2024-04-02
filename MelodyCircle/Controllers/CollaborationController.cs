@@ -57,8 +57,8 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> JoinQueueConfim(Guid id)
         {
             var collaboration = await _context.Collaborations
-                    .Include(c => c.WaitingUsers)
-                    .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (collaboration == null)
                 return NotFound();
@@ -84,8 +84,8 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> WaitingList(Guid id)
         {
             var collaboration = await _context.Collaborations
-                                                .Include(c => c.WaitingUsers)
-                                                .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (collaboration == null)
                 return NotFound();
@@ -108,8 +108,8 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> AllowUser(Guid collaborationId, string userId)
         {
             var collaboration = await _context.Collaborations
-                                                .Include(c => c.WaitingUsers)
-                                                .FirstOrDefaultAsync(c => c.Id == collaborationId);
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == collaborationId);
 
             if (collaboration == null)
                 return NotFound();
