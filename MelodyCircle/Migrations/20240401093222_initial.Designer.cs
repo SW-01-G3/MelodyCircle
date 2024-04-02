@@ -12,7 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:MelodyCircle/Migrations/20240401093222_initial.Designer.cs
     [Migration("20240401093222_initial")]
+========
+    [Migration("20240402132447_initial")]
+>>>>>>>> 293:MelodyCircle/Migrations/20240402132447_initial.Designer.cs
     partial class initial
     {
         /// <inheritdoc />
@@ -327,6 +331,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SignupTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");

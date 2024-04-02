@@ -1,0 +1,20 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Confirmação de Entrada na Lista da Colaboração";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+    @if (ViewData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewData["ErrorMessage"]
+        </div>
+    }
+    else
+    {
+        <p>Foi colocado na lista de espera da colaboração "@Model.Title"</p>
+    }
+    <a href="@Url.Action("Index", "Collaboration")" class="btn btn-primary">Voltar para a lista de colaborações</a>
+</div>

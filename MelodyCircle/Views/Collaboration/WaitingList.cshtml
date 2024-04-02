@@ -1,0 +1,40 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Lista de Espera";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome de Utilizador</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.WaitingUsers != null)
+            {
+                @foreach (var user in Model.WaitingUsers)
+                {
+                    <tr>
+                        <td><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></td>
+                        <td>
+                            <form method="post" action="@Url.Action("AllowUser", "Collaboration", new { collaborationId = Model.Id, userId = user.Id })">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success">Permitir Entrada</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <p>Não há utilizadores em lista de espera</p>
+            }
+        </tbody>
+    </table>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn btn-primary">Voltar</a>
+</div>

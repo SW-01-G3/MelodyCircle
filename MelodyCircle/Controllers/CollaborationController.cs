@@ -19,13 +19,121 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: Collaboration
-        public async Task<ActionResult<IEnumerable<Collaboration>>> Index()
+        public async Task<IActionResult> Index()
         {
             var publicCollaborations = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
                 .Where(c => c.AccessMode == AccessMode.Public)
                 .ToListAsync();
 
+            var userId = _userManager.GetUserId(User);
+
+            var userInWaitingList = new Dictionary<Guid, bool>();
+
+            foreach (var collaboration in publicCollaborations)
+            {
+                var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
+
+                userInWaitingList.Add(collaboration.Id, isInWaitingList);
+            }
+
+            ViewBag.UserInWaitingList = userInWaitingList;
+
             return View(publicCollaborations);
+        }
+
+        public async Task<IActionResult> JoinQueue(Guid id)
+        {
+            var collaboration = await _context.Collaborations.FindAsync(id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            return View("JoinQueue", collaboration);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> JoinQueueConfim(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            if (collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId))
+            {
+                ViewData["ErrorMessage"] = "Já está na lista de espera desta colaboração";
+
+                return View("JoinQueueConfirmation", collaboration);
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            collaboration.WaitingUsers.Add(user);
+
+            await _context.SaveChangesAsync();
+            return View("JoinQueueConfirmation", collaboration);
+        }
+
+        // GET: /Collaboration/WaitingList/{id}
+        public async Task<IActionResult> WaitingList(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            if (userId != collaboration.CreatorId)
+                return Forbid();
+
+            var sortedWaitingUsers = collaboration.WaitingUsers.OrderBy(u => u.SignupTime).ToList();
+
+            collaboration.WaitingUsers = sortedWaitingUsers;
+
+            return View(collaboration);
+        }
+
+        // POST: /Collaboration/AllowUser/{collaborationId}/{userId}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AllowUser(Guid collaborationId, string userId)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
+                .FirstOrDefaultAsync(c => c.Id == collaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var creatorId = _userManager.GetUserId(User);
+
+            if (creatorId != collaboration.CreatorId)
+                return Forbid();
+
+            if (collaboration.ContributingUsers.Count >= collaboration.MaxUsers)
+                return View("WaitingList");
+
+            var userToRemove = collaboration.WaitingUsers.FirstOrDefault(u => u.Id.ToString() == userId);
+
+            if (userToRemove != null)
+            {
+                collaboration.WaitingUsers.Remove(userToRemove);
+
+                //collaboration.ContributingUsers.Add(userToRemove);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
         }
 
         public IActionResult Create()
@@ -38,24 +146,23 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Collaboration collaboration, IFormFile photo)
         {
-            if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
+            if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
             {
                 ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
                 ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
+                ModelState.AddModelError(nameof(collaboration.Photo), "A foto é obrigatória");
             }
 
             else
             {
-                if (photo != null || photo.Length > 0)
+                using (var memoryStream = new MemoryStream())
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        collaboration.Photo = memoryStream.ToArray();
-                        collaboration.PhotoContentType = photo.ContentType;
-                    }
+                    await photo.CopyToAsync(memoryStream);
+                    collaboration.Photo = memoryStream.ToArray();
+                    collaboration.PhotoContentType = photo.ContentType;
                 }
 
+                collaboration.WaitingUsers = new List<User>();
                 collaboration.CreatedDate = DateTime.Now;
                 collaboration.CreatorId = _userManager.GetUserId(User);
 
@@ -63,7 +170,6 @@ namespace MelodyCircle.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
             return View(collaboration);
         }
 
