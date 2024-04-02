@@ -66,17 +66,18 @@ namespace MelodyCircle.Controllers
             var userId = _userManager.GetUserId(User);
 
             if (collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId))
-                return RedirectToAction(nameof(Index));
+            {
+                ViewData["ErrorMessage"] = "Já está na lista de espera desta colaboração";
 
-            if (collaboration.WaitingUsers != null && collaboration.WaitingUsers.Count >= collaboration.MaxUsers)
-                return View("WaitingList", collaboration);
+                return View("JoinQueueConfirmation", collaboration);
+            }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             collaboration.WaitingUsers.Add(user);
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View("JoinQueueConfirmation", collaboration);
         }
 
         // GET: /Collaboration/WaitingList/{id}

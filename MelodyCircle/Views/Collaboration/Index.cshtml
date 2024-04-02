@@ -42,26 +42,10 @@
                 }
                 else
                 {
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var isInWaitingList = ViewBag.UserInWaitingList[collaboration.Id];
-                    if (!isInWaitingList)
-                    {
-                        <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn bg-purple text-white">Entrar</button>
-                        </form>
-                    }
-
-                    <div>
-                        <p>Colaboração ID: @collaboration.Id</p>
-                        <p>Utilizadores na Lista de Espera:</p>
-                        <ul>
-                            @foreach (var user in collaboration.WaitingUsers)
-                            {
-                                <li>@user.Id</li>
-                            }
-                        </ul>
-                    </div>
+                    <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                    </form>
                 }
             </div>
         </div>
