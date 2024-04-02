@@ -43,7 +43,7 @@
                 else
                 {
                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
+                    var isInWaitingList = ViewBag.UserInWaitingList[collaboration.Id];
                     if (!isInWaitingList)
                     {
                         <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
@@ -51,6 +51,17 @@
                             <button type="submit" class="btn bg-purple text-white">Entrar</button>
                         </form>
                     }
+
+                    <div>
+                        <p>Colaboração ID: @collaboration.Id</p>
+                        <p>Utilizadores na Lista de Espera:</p>
+                        <ul>
+                            @foreach (var user in collaboration.WaitingUsers)
+                            {
+                                <li>@user.Id</li>
+                            }
+                        </ul>
+                    </div>
                 }
             </div>
         </div>

@@ -3,7 +3,6 @@ using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace MelodyCircle.Controllers
 {
@@ -23,6 +22,7 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> Index()
         {
             var publicCollaborations = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
                 .Where(c => c.AccessMode == AccessMode.Public)
                 .ToListAsync();
 
