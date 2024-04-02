@@ -19,33 +19,38 @@
             <div class="form-check">
                 
                 <label class="form-check-label" for="searchNone">Nenhum filtro</label>
-                <input class="form-check-input" type="checkbox" id="searchNone" value="None">
+                <input class="form-check-input" type="checkbox" id="searchNone" name="searchType" value="None">
 
             </div>
             <div class="form-check">
                 
                 <label class="form-check-label" for="searchUser">Artista</label>
-                <input class="form-check-input" type="checkbox" id="searchUser" value="User">
+                <input class="form-check-input" type="checkbox" id="searchUser" name="searchType" value="User">
 
             </div>
             <div class="form-check">
                 
                 <label class="form-check-label" for="searchTutorial">Tutorial</label>
-                <input class="form-check-input" type="checkbox" id="searchTutorial" value="Tutorial">
+                <input class="form-check-input" type="checkbox" id="searchTutorial" name="searchType" value="Tutorial">
 
             </div>
             <div class="form-check">
                 
                 <label class="form-check-label" for="searchCollaboration">Colaboração</label>
-                <input class="form-check-input" type="checkbox" id="searchCollaboration" value="Collaboration">
+                <input class="form-check-input" type="checkbox" id="searchCollaboration" name="searchType" value="Collaboration">
 
             </div>
         </div>
 
     </div>
 
-
-
+@*     <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
+        <option value="None">Nenhum filtro</option>
+        <option value="User">Artista</option>
+        <option value="Tutorial">Tutorial</option>
+        <option value="Collaboration">Colaboração</option>
+    </select>
+ *@
 
     <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
