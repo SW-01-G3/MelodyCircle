@@ -39,47 +39,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var stepList = document.getElementById('stepList');
+
             var sortable = new Sortable(stepList, {
-                handle: '.step-item', // Defina a classe de identificação dos elementos de passo
-                animation: 150, // Duração da animação de arrastar
+                handle: '.drag-handle',
+                animation: 150,
                 onEnd: function (evt) {
-                    // Quando a ordenação é alterada, atualize a ordem dos passos
-                    var stepItems = stepList.getElementsByClassName('step-item');
+                    var stepDivs = stepList.getElementsByClassName('step-div');
                     var stepOrder = [];
-                    for (var i = 0; i < stepItems.length; i++) {
-                        stepOrder.push(stepItems[i].dataset.stepId);
-                    }
-                    // Envie a nova ordem para o servidor para salvar no banco de dados
-                    updateStepOrder(stepOrder);
+
+                    for (var i = 0; i < stepDivs.length; i++)
+                        stepOrder.push(stepDivs[i].dataset.stepId);
                 }
             });
-
-            function updateStepOrder(order) {
-                var tutorialId = '@ViewBag.TutorialId'; // Obtém o ID do tutorial
-                // Envia a nova ordem dos passos para o servidor via AJAX
-                fetch('@Url.Action("UpdateStepOrder", "Tutorial")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tutorialId: tutorialId,
-                        stepOrder: order
-                    })
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Erro ao atualizar a ordem dos passos');
-                        }
-                        // Se a atualização for bem-sucedida, você pode executar ações adicionais, se necessário
-                    })
-                    .catch(error => {
-                        console.error('Erro:', error);
-                        // Lida com o erro, se necessário
-                    });
-            }
         });
-    </script>
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
