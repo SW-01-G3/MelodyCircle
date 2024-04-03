@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240403145656_initial")]
+    [Migration("20240403152226_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -160,6 +160,9 @@ namespace MelodyCircle.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()

@@ -52,7 +52,13 @@
             <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
             <hr>
             <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
-            <a href="@Url.Action("Details", "Forum", new { id = item.Id })" class="btn btn-info">Ver comentários</a>
+            <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn btn-info">Ver comentários</a>
+            @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
+            {
+                <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-danger">Fechar Post</button>
+                </form>
+            }
         </div>
         <br />
     }

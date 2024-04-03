@@ -12,5 +12,7 @@ namespace MelodyCircle.Models
         public string Content { get; set; }
 
         public ICollection<Comment>? Comments { get; set; }
+
+        public bool IsClosed { get; set; }
     }
 }

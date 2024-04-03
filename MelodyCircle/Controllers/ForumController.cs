@@ -37,8 +37,12 @@ namespace MelodyCircle.Controllers
             if (ModelState.IsValid)
             {
                 forumPost.Id = Guid.NewGuid();
+                forumPost.IsClosed = false;
+
                 _context.Add(forumPost);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction("Index", "Home");
             }
             return RedirectToAction("Index","Home");
@@ -125,8 +129,8 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Forum/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        // GET: Forum/Comments/5
+        public async Task<IActionResult> Comments(Guid? id)
         {
             if (id == null)
                 return NotFound();
@@ -139,6 +143,8 @@ namespace MelodyCircle.Controllers
             if (forumPost == null)
                 return NotFound();
 
+            var isClosed = forumPost.IsClosed;
+
             return View(forumPost);
         }
 
@@ -147,6 +153,11 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Comment(Guid id, [Bind("Content")] Comment comment)
         {
+            var forumPost = await _context.ForumPost.FindAsync(id);
+
+            if (forumPost == null || forumPost.IsClosed)
+                return RedirectToAction(nameof(Comments), new { id = id });
+
             if (comment.Content != null)
             {
                 comment.Id = Guid.NewGuid();
@@ -160,7 +171,39 @@ namespace MelodyCircle.Controllers
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Details), new { id = id });
+            return RedirectToAction(nameof(Comments), new { id = id });
+        }
+
+        // POST: Forum/ClosePost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClosePost(Guid id)
+        {
+            var forumPost = await _context.ForumPost.FindAsync(id);
+
+            if (forumPost == null)
+                return NotFound();
+
+            await _context.SaveChangesAsync();
+
+            return View("ClosePost", forumPost);
+        }
+
+        // POST: Forum/ConfirmClosePost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmClosePost(Guid id)
+        {
+            var forumPost = await _context.ForumPost.FindAsync(id);
+
+            if (forumPost == null)
+                return NotFound();
+
+            forumPost.IsClosed = true;
+
+            await _context.SaveChangesAsync();
+
+            return View("ClosePostConfirmation", forumPost);
         }
 
         private bool ForumPostExists(Guid id)
