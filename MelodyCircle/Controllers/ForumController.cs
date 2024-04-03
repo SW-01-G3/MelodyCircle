@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
+using System.Security.Claims;
 
 namespace MelodyCircle.Controllers
 {
@@ -23,24 +19,6 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.ForumPost.ToListAsync());
-        }
-
-        // GET: Forum/Details/5
-        public async Task<IActionResult> Details(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var forumPost = await _context.ForumPost
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (forumPost == null)
-            {
-                return NotFound();
-            }
-
-            return View(forumPost);
         }
 
         // GET: Forum/Create
@@ -121,16 +99,13 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var forumPost = await _context.ForumPost
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (forumPost == null)
-            {
                 return NotFound();
-            }
 
             return View(forumPost);
         }
@@ -141,13 +116,51 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var forumPost = await _context.ForumPost.FindAsync(id);
+
             if (forumPost != null)
-            {
                 _context.ForumPost.Remove(forumPost);
-            }
 
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Forum/Details/5
+        public async Task<IActionResult> Details(Guid? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var forumPost = await _context.ForumPost
+                .Include(fp => fp.Comments)
+                .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (forumPost == null)
+                return NotFound();
+
+            return View(forumPost);
+        }
+
+        // POST: Forum/Comment/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Comment(Guid id, [Bind("Content")] Comment comment)
+        {
+            if (comment.Content != null)
+            {
+                comment.Id = Guid.NewGuid();
+                comment.CreatedAt = DateTime.Now;
+                comment.ForumPostId = id;
+
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                comment.UserId = userId;
+
+                _context.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         private bool ForumPostExists(Guid id)

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240402215812_initial")]
+    [Migration("20240403145656_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -120,6 +120,35 @@ namespace MelodyCircle.Migrations
                     b.HasIndex("CollaborationId");
 
                     b.ToTable("CollaborationRating");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ForumPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ForumPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
@@ -558,6 +587,25 @@ namespace MelodyCircle.Migrations
                     b.Navigation("Collaboration");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.Comment", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.ForumPost", "ForumPost")
+                        .WithMany("Comments")
+                        .HasForeignKey("ForumPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ForumPost");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
                     b.HasOne("MelodyCircle.Models.SubscribeTutorial", null)
@@ -675,6 +723,11 @@ namespace MelodyCircle.Migrations
             modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
                 {
                     b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>

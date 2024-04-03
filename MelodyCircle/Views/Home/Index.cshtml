@@ -9,6 +9,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
@@ -43,7 +44,7 @@
     <br />
 </div>
 
-@if(Model != null && Model.Any())
+@if (Model != null && Model.Any())
 {
     @foreach (var item in Model)
     {
@@ -51,11 +52,11 @@
             <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
             <hr>
             <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
+            <a href="@Url.Action("Details", "Forum", new { id = item.Id })" class="btn btn-info">Ver comentários</a>
         </div>
         <br />
     }
 }
-
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -66,7 +67,3 @@
     }
     <input type="hidden" id="editor" name="editor" value="" />
 }
-
-
-
-

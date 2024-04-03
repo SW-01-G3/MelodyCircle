@@ -14,6 +14,7 @@ namespace MelodyCircle.Data
         public DbSet<SubscribeTutorial> SubscribeTutorials { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Collaboration> Collaborations { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

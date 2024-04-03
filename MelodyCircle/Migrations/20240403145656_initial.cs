@@ -314,6 +314,33 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ForumPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_ForumPost_ForumPostId",
+                        column: x => x.ForumPostId,
+                        principalTable: "ForumPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SubscribeTutorials",
                 columns: table => new
                 {
@@ -435,6 +462,16 @@ namespace MelodyCircle.Migrations
                 column: "CollaborationId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_ForumPostId",
+                table: "Comments",
+                column: "ForumPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId",
+                table: "Comments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Steps_SubscribeTutorialId",
                 table: "Steps",
                 column: "SubscribeTutorialId");
@@ -497,7 +534,7 @@ namespace MelodyCircle.Migrations
                 name: "CollaborationRating");
 
             migrationBuilder.DropTable(
-                name: "ForumPost");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Steps");
@@ -516,6 +553,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "ForumPost");
 
             migrationBuilder.DropTable(
                 name: "SubscribeTutorials");
