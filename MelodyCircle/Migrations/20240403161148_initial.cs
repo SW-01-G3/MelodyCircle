@@ -39,11 +39,8 @@ namespace MelodyCircle.Migrations
                     MusicURI = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LoginCount = table.Column<int>(type: "int", nullable: true),
                     LastLoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-<<<<<<<< HEAD:MelodyCircle/Migrations/20240403152226_initial.cs
                     SignupTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-========
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
->>>>>>>> 243:MelodyCircle/Migrations/20240403152057_initial.cs
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

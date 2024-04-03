@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:MelodyCircle/Migrations/20240403152226_initial.Designer.cs
-    [Migration("20240403152226_initial")]
-========
-    [Migration("20240403152057_initial")]
->>>>>>>> 243:MelodyCircle/Migrations/20240403152057_initial.Designer.cs
+    [Migration("20240403161148_initial")]
     partial class initial
     {
         /// <inheritdoc />

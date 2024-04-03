@@ -59,6 +59,8 @@ namespace MelodyCircle.Models
 		public int? LoginCount { get; set; } 
 		public DateTime? LastLoginTime { get; set; }
         public DateTime? SignupTime { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 
     public enum Gender
