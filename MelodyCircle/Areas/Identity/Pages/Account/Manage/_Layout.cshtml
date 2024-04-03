@@ -24,7 +24,7 @@
 	<div class="col-8 mt-4">
 @* 		<h6>Tutoriais:  </h6> *@
 		<a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Tutoriais</a>
-@* 		<h6>Collabs:      @Context.Collaborations.Count()</h6> *@
+        <a class="btn btn-primary" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Passos</a>
 		<a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">Ver Estatísticas de Criação de Colaborações</a>
 	</div>
 </div>

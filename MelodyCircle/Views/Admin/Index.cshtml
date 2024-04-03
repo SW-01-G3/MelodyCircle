@@ -29,6 +29,8 @@
 		<a class="btn btn-primary" href="@Url.Action("UserCreationStats", "Stat")">Ver Estatísticas de Criação de Utilizadores</a>
 		<h6>Tutoriais:    @Context.Tutorials.Count()</h6>
 		<a class="btn btn-primary" href="@Url.Action("TutorialCreationStats", "Stat")">Ver Estatísticas de Criação de Tutoriais</a>
+		<h6>Steps:      @Context.Steps.Count()</h6>
+		<a class="btn btn-primary" href="@Url.Action("StepCreationStats", "Stat")">Ver Estatísticas de Criação de Passos</a>
 		<h6>Collabs:      @Context.Collaborations.Count()</h6>
 		<a class="btn btn-primary" href="@Url.Action("CollaborationCreationStats", "Stat")">Ver Estatísticas de Criação de Colaborações</a>
 	</div>
@@ -115,5 +117,17 @@
 	</form>
 </div>
 
-
+<div>
+	<form method="post" asp-action="CreateMultipleSteps">
+		<div class="form-group">
+			<label for="numberOfSteps">Número de Passos:</label>
+			<input type="number" class="form-control" id="numberOfSteps" name="numberOfSteps" value="100">
+		</div>
+		<button type="submit" class="btn bg-purple text-white">Criar Steps</button>
+	</form>
+	<p></p>
+	<form asp-action="DeleteAddedSteps" method="post" asp-controller="Admin">
+		<button type="submit" class="btn bg-purple text-white">Excluir Steps Criados</button>
+	</form>
+</div>
 

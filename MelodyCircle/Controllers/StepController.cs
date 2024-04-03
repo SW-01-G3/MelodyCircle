@@ -69,6 +69,7 @@ namespace MelodyCircle.Controllers
 
             else 
             {
+                step.CreationDate = DateTime.Now;
                 _context.Add(step);
                 await _context.SaveChangesAsync();
 

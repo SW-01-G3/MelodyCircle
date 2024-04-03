@@ -164,17 +164,17 @@ namespace MelodyCircle.Controllers
 
 			var random = new Random();
 			var currentDate = DateTime.Now.Date;
-			var prefix = "SpecialTutorial"; // Prefixo especial para identificar os tutoriais criados nesta ação
+			var prefix = "SpecialTutorial";
 
 			for (int i = 1; i <= numberOfTutorials; i++)
 			{
-				var randomDays = random.Next(1, 181); // número aleatório entre 1 e 180 (aproximadamente 6 meses)
+				var randomDays = random.Next(1, 181); 
 				var tutorial = new Tutorial
 				{
 					Title = $"{prefix}{i}",
 					Description = $"Descrição do Tutorial {i}",
 					Creator = $"Creator{i}",
-					CreationDate = currentDate.AddDays(-randomDays) // definir a data de criação para trás entre 1 e 6 meses
+					CreationDate = currentDate.AddDays(-randomDays) 
 				};
 
 				// lógica para criar o tutorial no banco de dados
@@ -211,23 +211,22 @@ namespace MelodyCircle.Controllers
 
 			var random = new Random();
 			var currentDate = DateTime.Now.Date;
-			var prefix = "SpecialCollaboration"; // Prefixo especial para identificar as colaborações criadas nesta ação
+			var prefix = "SpecialCollaboration"; 
 
 			for (int i = 1; i <= numberOfCollaborations; i++)
 			{
-				var randomDays = random.Next(1, 181); // número aleatório entre 1 e 180 (aproximadamente 6 meses)
+				var randomDays = random.Next(1, 181); 
 				var collaboration = new Collaboration
 				{
 					Title = $"{prefix}{i}",
 					Description = $"Descrição da Colaboração {i}",
 					CreatorId = $"Creator{i}",
-					CreatedDate = currentDate.AddDays(-randomDays), // definir a data de criação para trás entre 1 e 6 meses
+					CreatedDate = currentDate.AddDays(-randomDays), 
 					AccessMode = AccessMode.Public,
-					MaxUsers = random.Next(1, 11), // número aleatório entre 1 e 10 para o número máximo de usuários
-					IsFinished = false // por padrão, a colaboração não está finalizada
+					MaxUsers = random.Next(1, 11), 
+					IsFinished = false 
 				};
 
-				// lógica para criar a colaboração no banco de dados
 				_context.Collaborations.Add(collaboration);
 			}
 
@@ -240,7 +239,7 @@ namespace MelodyCircle.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteAddedCollaborations()
 		{
-			// lógica para excluir todas as colaborações adicionadas
+
 			var collaborations = await _context.Collaborations.Where(c => c.Title.StartsWith("SpecialCollaboration")).ToListAsync();
 
 			_context.Collaborations.RemoveRange(collaborations);
@@ -248,6 +247,63 @@ namespace MelodyCircle.Controllers
 
 			return RedirectToAction("Index");
 		}
-	}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMultipleSteps(int numberOfSteps)
+        {
+            if (numberOfSteps <= 0)
+            {
+                ModelState.AddModelError("", "Número inválido de passos.");
+                return View();
+            }
+
+            var random = new Random();
+            var currentDate = DateTime.Now.Date;
+            var prefix = "SpecialStep";
+
+            var tutorial = new Tutorial
+            {
+                Title = "SpecialTutorial",
+                Description = "Descrição do Tutorial Especial",
+                Creator = "admin1", 
+                CreationDate = currentDate,
+                Steps = new List<Step>()
+            };
+
+            for (int i = 1; i <= numberOfSteps; i++)
+            {
+                var randomDays = random.Next(1, 181); 
+                var step = new Step
+                {
+                    Tutorial = tutorial,
+                    Title = $"{prefix}{i}",
+                    Content = $"Conteudo do Step {i}",
+                    Order = 0,
+                    CreationDate = currentDate.AddDays(-randomDays),
+                };
+
+ 
+                tutorial.Steps.Add(step);
+            }
+
+            _context.Tutorials.Add(tutorial);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAddedSteps()
+        {
+            var tutorials = await _context.Tutorials.Where(t => t.Title == "SpecialTutorial").ToListAsync();
+
+            _context.Tutorials.RemoveRange(tutorials);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+    }
 }
 
