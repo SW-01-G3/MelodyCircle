@@ -215,7 +215,7 @@ namespace MelodyCircle.Controllers
             ViewBag.TotalStepsCount = totalStepsCount;
 
 
-            return RedirectToAction("Index", new { tutorialId = step.TutorialId }); // Redirecione para a página de tutoriais do usuário
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
         private bool StepExists(Guid tutorialId)
