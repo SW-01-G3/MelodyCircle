@@ -1,4 +1,4 @@
-﻿@* @using System.Security.Claims
+﻿@using System.Security.Claims
 @using MelodyCircle.ExtensionMethods
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
@@ -7,7 +7,7 @@
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Colaborações";
+    ViewData["Title"] = "Colaborações Participantes";
 }
 
 <div class="text-center text-purple">
@@ -15,12 +15,6 @@
 </div>
 
 <div class="container">
-    <div class="row mb-3">
-        <div class="col">
-            <a href="@Url.Action("Create", "Collaboration")" class="btn btn-primary">Criar</a>
-        </div>
-    </div>
-
     @foreach (var collaboration in Model)
     {
         <div class="row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
@@ -34,7 +28,7 @@
                     <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
                 }
             </div>
-            <div class="col-2 px-3 title-width">@collaboration.Title</div>
+            <div class="col-2 px-3 title-width">@collaboration.Title (@collaboration.AccessMode.ToString())</div>
 
             @{
                 double averageRating = Context.CollaborationRating
@@ -97,7 +91,7 @@
             </div>
             <div class="col-2 px-3">tag</div>
             <div class="col-2 px-3">
-                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+@*                 @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
                     <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
                     <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
@@ -111,10 +105,13 @@
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn bg-purple text-white">Entrar</button>
                     </form>
-                }
+                } *@
             </div>
         </div>
     }
+</div>
+<div class="text-end">
+    <a asp-action="EditMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/edit-white.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 </div>
 
 <script>
@@ -151,4 +148,4 @@
             });
         }
     });
-</script> *@
+</script>
