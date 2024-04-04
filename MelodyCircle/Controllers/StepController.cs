@@ -26,6 +26,7 @@ namespace MelodyCircle.Controllers
             var steps = await _context.Steps
                 .Include(s => s.Tutorial)
                 .Where(s => s.TutorialId == tutorialId)
+                .OrderBy(s => s.Order)
                 .ToListAsync();
 
             var creator = await _context.Tutorials

@@ -15,25 +15,44 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
     <script>
+        let stepDivs = document.getElementsByName("stepDiv");
+        let stepData = [];
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var step in Model)
+            {
+                @:stepData.push(@Html.Raw(step.Content));
+            }
+        }
+                var quill = new Quill('#editor');
+
+        for (let cnt = 0; cnt < stepData.length; cnt++) {
+            stepDivs[cnt].innerHTML = convertToHtml(quill, stepData[cnt]);
+        }
+
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            // Menu Lateral
             var stepList = document.getElementById('stepList');
             new Sortable(stepList, {
                 group: 'shared',
                 animation: 150,
                 draggable: ".step-div",
                 handle: '.drag-handle',
-                onEnd: updateOrder // Use a mesma função para atualizar a ordem
+                onEnd: updateOrder
             });
 
-            // Menu Central (ajuste o seletor conforme necessário)
             var centralMenu = document.getElementById('centralMenu');
             new Sortable(centralMenu, {
                 group: 'shared',
                 animation: 150,
                 draggable: ".step-div",
                 handle: '.drag-handle',
-                onEnd: updateOrder // Use a mesma função para atualizar a ordem
+                onEnd: updateOrder
             });
         });
 
@@ -41,7 +60,9 @@
             var stepOrder = Array.from(evt.to.children).map(function (step) {
                 return step.getAttribute('data-step-id');
             });
+
             console.log('stepOrder to send:', stepOrder);
+
             fetch('/Step/UpdateOrder', {
                 method: 'POST',
                 headers: {
@@ -53,27 +74,24 @@
                 .then(function (data) {
                     console.log('Success:', data);
 
-                    // Se a operação foi bem-sucedida, então a variável `stepOrder` contém a ordem correta.
                     if (data && data.success) {
-                        // Obtenha os elementos atuais no menu central.
                         var centralMenuElements = document.querySelectorAll('#centralMenu .step-div');
 
-                        // Crie um mapa de ID para elemento para acesso rápido.
                         var centralMenuElementsMap = {};
+
                         centralMenuElements.forEach(function (element) {
                             var id = element.getAttribute('data-step-id');
                             centralMenuElementsMap[id] = element;
                         });
 
-                        // Use `stepOrder` do menu lateral para ordenar os elementos do menu central.
                         var centralMenu = document.getElementById('centralMenu');
-                        centralMenu.innerHTML = ''; // Limpe o menu central.
+
+                        centralMenu.innerHTML = '';
 
                         stepOrder.forEach(function (id) {
                             var element = centralMenuElementsMap[id];
-                            if (element) {
-                                centralMenu.appendChild(element); // Re-adicione o elemento na nova ordem.
-                            }
+                            if (element)
+                                centralMenu.appendChild(element);
                         });
                     }
                 })
@@ -150,24 +168,24 @@
     </aside>
 
     @* CENTRAL MENU *@
-    <div class="col-md-8" id="centralMenu">
+    <div class="col-md-8">
         <div class="row d-flex justify-content-center">
             <h2 class="align-self-center">@ViewData["Title"]</h2>
             <h3 class="align-self-center">@ViewBag.Creator</h3>
         </div>
+    
+        <div id="centralMenu">
+            @foreach (var step in Model)
+            {
+                <div class="my-3 step-div" data-step-id="@step.Id">
+                    <div class="d-flex justify-content-center drag-handle">
+                        <h4>@Html.DisplayFor(modelItem => step.Title)</h4>
+                    </div>
 
-        @foreach (var step in Model)
-        {
-            <div class="my-3 step-div" data-step-id="@step.Id">
-                <div class="d-flex justify-content-center drag-handle">
-                    <h4>@Html.DisplayFor(modelItem => step.Title)</h4>
+                    <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
                 </div>
-
-                <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1">
-
-                </section>
-            </div>
-        }
+            }
+        </div>
     </div>
     @* END OF CENTRAL MENU *@
 
