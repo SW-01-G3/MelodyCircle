@@ -62,6 +62,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 //      builder.Configuration["EmailSender:Password"]
 //  )
 //);
+
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>

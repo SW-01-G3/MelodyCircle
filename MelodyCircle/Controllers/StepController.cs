@@ -219,20 +219,19 @@ namespace MelodyCircle.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateOrder([FromBody] List<Guid> stepOrder)
         {
             try
             {
                 if (stepOrder == null || stepOrder.Count == 0)
-                {
-                    return Json(new { success = false, message = "Invalid order list." });
-                }
+                    return Json(new { success = false, message = "Invalid order list" });
 
                 int order = 0;
+
                 foreach (var stepId in stepOrder)
                 {
                     var step = await _context.Steps.FindAsync(stepId);
+
                     if (step != null)
                     {
                         step.Order = order++;
@@ -242,7 +241,7 @@ namespace MelodyCircle.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, message = "Order updated successfully." });
+                return Json(new { success = true, message = "Order updated successfully" });
             }
             catch (Exception ex)
             {
