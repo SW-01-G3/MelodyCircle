@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using System.Security.Claims;
+using MelodyCircle.Services;
 
 namespace MelodyCircle.Controllers
 {
@@ -11,11 +13,13 @@ namespace MelodyCircle.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly NotificationService _notificationService;
 
-        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager)
+        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, NotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: Collaboration
@@ -203,6 +207,48 @@ namespace MelodyCircle.Controllers
             }
 
             return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
+        }
+
+        public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
+        {
+            //var collaboration = await _context.Collaborations
+            //    .Include(c => c.WaitingUsers)
+            //    .FirstOrDefaultAsync(c => c.Id == id);
+
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .FirstOrDefaultAsync(c => c.Id == collaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var user = await _userManager.FindByNameAsync(userId);
+
+            if(user == null)
+                return NotFound();
+
+            collaboration.WaitingUsers.Add(user);
+
+            await _context.SaveChangesAsync();
+
+            await _notificationService.SendCollaborationInviteAsync(
+               senderId: collaboration.CreatorId, // Assuming creator sends the invite
+               recipientId: userId,
+               collaborationId: collaboration.Id,
+               collaborationTitle: collaboration.Title,
+               collaborationDescription: collaboration.Description);
+
+            return View("Index", collaboration);
+        }
+
+        public async Task<IActionResult> PrivateCollaborations()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var collaborations = await _context.Collaborations
+                .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
+                .ToListAsync();
+
+            return PartialView("_PrivateCollaborationsPartial", collaborations);
         }
 
         public IActionResult Create()

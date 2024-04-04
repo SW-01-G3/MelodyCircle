@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
 @using MelodyCircle.ViewModels
+@using System.Security.Claims
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
@@ -143,6 +144,39 @@
 					    </div>
 				    </div>
 			    }
+
+                <button type="button" class="border-purple bg-purple rounded " data-bs-toggle="modal" data-bs-target="#addToCollabModal">
+                    <img src="~/img/statistic.svg" />
+                </button>
+
+                <div class="modal fade" id="addToCollabModal" tabindex="-1" aria-labelledby="addToCollabModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addToCollabModalLabel">Colaborações Privadas</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="privateCollaborationsContainer">
+                                @{
+                                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                    var collaborations = Context.Collaborations
+                                    .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private).ToList();
+                                }
+
+                                @foreach (var collaboration in collaborations)
+                                {
+                                    <div>
+                                        <h3>@collaboration.Title</h3>
+                                        <form asp-action="InviteToCollab" asp-controller="Collaboration" asp-route-collaborationId="@collaboration.Id"  asp-route-userId="@Model.User.UserName" >
+                                            <button class="btn bg-purple text-white" type="submit">Convidar</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 		    }
 		    
             <button type="button" class="border-purple bg-purple rounded mt-1   " data-bs-toggle="modal" data-bs-target="#addStarRatingModal">

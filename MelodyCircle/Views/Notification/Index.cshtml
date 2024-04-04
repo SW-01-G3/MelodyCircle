@@ -1,0 +1,32 @@
+﻿@model List<Notification>
+
+<h2>Notifications</h2>
+
+@if (Model != null || Model.Count > 0)
+{
+    @foreach (var notification in Model)
+    {
+        <div>
+            @if (notification.Status == NotificationStatus.Pending)
+            {
+                <h3>Collaboration Invitation</h3>
+                <p><strong>@notification.CollaborationTitle</strong></p>
+                <p>@notification.CollaborationDescription</p>
+                <p><strong>Sender:</strong> @notification.SenderId</p>
+                <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
+                    <input type="hidden" name="notificationId" value="@notification.Id" />
+                    <button type="submit" class="btn btn-primary">Accept</button>
+                </form>
+                <form asp-action="DeclineInvite" asp-controller="Notification" method="post">
+                    <input type="hidden" name="notificationId" value="@notification.Id" />
+                    <button type="submit" class="btn btn-danger">Decline</button>
+                </form>
+            }
+        </div>
+    }
+}
+else
+{
+    <h2>No Notifications!</h2>
+}
+
