@@ -11,6 +11,7 @@ namespace MelodyCircle.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private int maxSteps = 100;
 
         public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
@@ -67,6 +68,11 @@ namespace MelodyCircle.Controllers
 
             if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
                 ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
+
+            var currentStepCount = _context.Steps.Count(s => s.TutorialId == step.TutorialId);
+
+            if (currentStepCount >= maxSteps)
+                ModelState.AddModelError(string.Empty, "Limite máximo de Passos atingido para este tutorial");
 
             else 
             {
