@@ -71,14 +71,16 @@
     <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
 </div>
 
-@if (ViewBag.OccupiedOrders != null)
+@if (ViewBag.StepsWithOrders != null)
 {
     <div>
         <h2>Orders Ocupadas:</h2>
-        @foreach (var order in ViewBag.OccupiedOrders)
-        {
-            <span>@order </span>
-        }
+        <ul>
+            @foreach (var item in ViewBag.StepsWithOrders)
+            {
+                <li>@item.Order - @item.Title</li>
+            }
+        </ul>
     </div>
 }
 
