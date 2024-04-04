@@ -218,6 +218,38 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateOrder([FromBody] List<Guid> stepOrder)
+        {
+            try
+            {
+                if (stepOrder == null || stepOrder.Count == 0)
+                {
+                    return Json(new { success = false, message = "Invalid order list." });
+                }
+
+                int order = 0;
+                foreach (var stepId in stepOrder)
+                {
+                    var step = await _context.Steps.FindAsync(stepId);
+                    if (step != null)
+                    {
+                        step.Order = order++;
+                        _context.Steps.Update(step);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Order updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error updating order: {ex.Message}" });
+            }
+        }
+
         private bool StepExists(Guid tutorialId)
         {
             return _context.Steps.Any(e => e.Id == tutorialId);
