@@ -74,6 +74,25 @@ namespace MelodyCircle.Controllers
             if (currentStepCount >= maxSteps)
                 ModelState.AddModelError(string.Empty, "Limite máximo de Passos atingido para este tutorial");
 
+            var existingStep = await _context.Steps
+            .FirstOrDefaultAsync(s => s.TutorialId == step.TutorialId && s.Order == step.Order);
+
+            if (existingStep != null)
+            {
+                ModelState.AddModelError(nameof(step.Order), $"A Order '{step.Order}' já está ocupada.");
+
+                var occupiedOrders = await _context.Steps
+                    .Where(s => s.TutorialId == step.TutorialId)
+                    .OrderBy(s => s.Order)
+                    .Select(s => s.Order)
+                    .ToListAsync();
+
+                var availableOrders = Enumerable.Range(1, maxSteps).Except(occupiedOrders).ToList();
+
+                ViewBag.OccupiedOrders = occupiedOrders;
+                ViewBag.AvailableOrders = availableOrders;
+            }
+
             else 
             {
                 step.CreationDate = DateTime.Now;

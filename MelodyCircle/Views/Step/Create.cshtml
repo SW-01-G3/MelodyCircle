@@ -3,9 +3,11 @@
 @{
     ViewData["Title"] = "Adicionar Passo";
 }
+
 @section head {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
+
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script>
@@ -68,3 +70,25 @@
 <div>
     <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
 </div>
+
+@if (ViewBag.OccupiedOrders != null)
+{
+    <div>
+        <h2>Orders Ocupadas:</h2>
+        @foreach (var order in ViewBag.OccupiedOrders)
+        {
+            <span>@order </span>
+        }
+    </div>
+}
+
+@if (ViewBag.AvailableOrders != null)
+{
+    <div>
+        <h2>Orders Disponíveis:</h2>
+        @foreach (var order in ViewBag.AvailableOrders)
+        {
+            <span>@order </span>
+        }
+    </div>
+}
