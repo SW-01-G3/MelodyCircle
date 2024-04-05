@@ -241,15 +241,15 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> PrivateCollaborations()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var collaborations = await _context.Collaborations
-                .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
-                .ToListAsync();
+        //public async Task<IActionResult> PrivateCollaborations()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var collaborations = await _context.Collaborations
+        //        .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
+        //        .ToListAsync();
 
-            return PartialView("_PrivateCollaborationsPartial", collaborations);
-        }
+        //    return PartialView("_PrivateCollaborationsPartial", collaborations);
+        //}
 
         public IActionResult Create()
         {

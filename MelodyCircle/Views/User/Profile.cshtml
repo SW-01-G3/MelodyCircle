@@ -159,8 +159,11 @@
                             <div class="modal-body" id="privateCollaborationsContainer">
                                 @{
                                     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                                     var collaborations = Context.Collaborations
-                                    .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private).ToList();
+                                    .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
+                                    .Where(c => !c.WaitingUsers.Contains(Model.User))
+                                    .Where(c => !c.ContributingUsers.Contains(Model.User)).ToList();
                                 }
 
                                 @foreach (var collaboration in collaborations)
