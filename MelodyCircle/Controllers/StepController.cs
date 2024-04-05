@@ -108,6 +108,7 @@ namespace MelodyCircle.Controllers
 
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
+
             return View(step);
         }
 
@@ -181,21 +182,22 @@ namespace MelodyCircle.Controllers
                 {
                     _context.Entry(existingStep).State = EntityState.Detached;
                     _context.Update(step);
+
                     await _context.SaveChangesAsync();
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!StepExists(step.Id))
-                    {
                         return NotFound();
-                    }
+
                     else
-                    {
                         throw;
-                    }
                 }
+
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
+
             return View(step);
         }
 
@@ -213,26 +215,20 @@ namespace MelodyCircle.Controllers
                 .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
 
             if (subscription == null)
-            {
-                return NotFound(); 
-            }
+                return NotFound();
 
             var step = await _context.Steps.FindAsync(stepId);
+
             if (step == null)
-            {
-                return NotFound(); 
-            }
+                return NotFound();
 
             bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
 
             if (!alreadyCompleted)
-            {
                 subscription.CompletedSteps.Add(step);
-            }
+
             else
-            {
                 subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
-            }
 
             int savedChanges =  await _context.SaveChangesAsync();
 
@@ -246,7 +242,6 @@ namespace MelodyCircle.Controllers
 
             ViewBag.CompletedStepsCount = completedStepsCount;
             ViewBag.TotalStepsCount = totalStepsCount;
-
 
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
@@ -276,6 +271,7 @@ namespace MelodyCircle.Controllers
 
                 return Json(new { success = true, message = "Order updated successfully" });
             }
+
             catch (Exception ex)
             {
                 return Json(new { success = false, message = $"Error updating order: {ex.Message}" });
