@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data;
+@model List<Notification>
+@inject ApplicationDbContext Context
+
+<h2>Notifications</h2>
+
+@if (Model != null || Model.Count > 0)
+{
+    @foreach (var notification in Model)
+    {
+       
+        @if (notification.Status == NotificationStatus.Pending)
+        {
+             <div class="row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+                <h3>Collaboration Invitation</h3>
+                <p><strong>@notification.CollaborationTitle</strong></p>
+                <p>@notification.CollaborationDescription</p>
+
+                @{
+                    var username = Context.Users.Where(s => s.Id.ToString() == notification.SenderId).FirstOrDefault().UserName;
+                }
+
+                <p>The user <strong>@username</strong> is inviting you to a collab. Join?</p>
+                <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
+                    <input type="hidden" name="notificationId" value="@notification.Id" />
+                    <button type="submit" class="btn btn-primary">Accept</button>
+                </form>
+                <form asp-action="DeclineInvite" asp-controller="Notification" method="post">
+                    <input type="hidden" name="notificationId" value="@notification.Id" />
+                    <button type="submit" class="btn btn-danger">Decline</button>
+                </form>
+            </div>
+        }
+    }
+}
+else
+{
+    <h2>No Notifications!</h2>
+}
+

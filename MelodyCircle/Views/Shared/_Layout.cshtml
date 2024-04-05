@@ -40,7 +40,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
-                                <a class="nav-link text-center" asp-controller="User" asp-action="" asp-route-id="@User.Identity.Name"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
+                                <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
                             </li>
                         }
 

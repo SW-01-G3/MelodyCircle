@@ -3,6 +3,9 @@ using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
+using System.Security.Claims;
+using MelodyCircle.Services;
 
 namespace MelodyCircle.Controllers
 {
@@ -10,35 +13,68 @@ namespace MelodyCircle.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly NotificationService _notificationService;
 
-        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager)
+        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, NotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: Collaboration
+        //public async Task<IActionResult> Index()
+        //{
+        //    var publicCollaborations = await _context.Collaborations
+        //        .Include(c => c.WaitingUsers)
+        //        //.Where(c => c.AccessMode == AccessMode.Public)
+        //        .ToListAsync();
+
+        //    var userId = _userManager.GetUserId(User);
+
+        //    var userInWaitingList = new Dictionary<Guid, bool>();
+
+        //    foreach (var collaboration in publicCollaborations)
+        //    {
+        //        var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
+
+        //        userInWaitingList.Add(collaboration.Id, isInWaitingList);
+        //    }
+
+        //    ViewBag.UserInWaitingList = userInWaitingList;
+
+        //    return View(publicCollaborations);
+        //}
+
+        //GET: Collaboration
         public async Task<IActionResult> Index()
         {
-            var publicCollaborations = await _context.Collaborations
-                .Include(c => c.WaitingUsers)
-                .Where(c => c.AccessMode == AccessMode.Public)
+            return RedirectToAction("EditMode");
+        }
+
+        // GET: Collaboration/EditModeCollab
+        public async Task<IActionResult> EditMode()
+        {
+            var userId = _userManager.GetUserId(User);
+            var collabsCriados = await _context.Collaborations
+                .Where(t => t.CreatorId == userId)
                 .ToListAsync();
 
+            return View("EditModeCollab", collabsCriados);
+        }
+
+        // GET: Collaboration/ViewModeCollab
+        public async Task<IActionResult> ViewMode()
+        {
             var userId = _userManager.GetUserId(User);
+            var userc = _context.Users.Find(userId);
 
-            var userInWaitingList = new Dictionary<Guid, bool>();
+            var collabsParticipantes = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .Where(s => s.ContributingUsers.Contains(userc))
+                .ToListAsync();
 
-            foreach (var collaboration in publicCollaborations)
-            {
-                var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
-
-                userInWaitingList.Add(collaboration.Id, isInWaitingList);
-            }
-
-            ViewBag.UserInWaitingList = userInWaitingList;
-
-            return View(publicCollaborations);
+            return View("ViewModeCollab", collabsParticipantes);
         }
 
         // GET: /Collaboration/WaitingList/{id}
@@ -172,6 +208,48 @@ namespace MelodyCircle.Controllers
 
             return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
         }
+
+        public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
+        {
+            //var collaboration = await _context.Collaborations
+            //    .Include(c => c.WaitingUsers)
+            //    .FirstOrDefaultAsync(c => c.Id == id);
+
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .FirstOrDefaultAsync(c => c.Id == collaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var user = await _userManager.FindByNameAsync(userId);
+
+            if(user == null)
+                return NotFound();
+
+            collaboration.WaitingUsers.Add(user);
+
+            await _context.SaveChangesAsync();
+
+            await _notificationService.SendCollaborationInviteAsync(
+               senderId: collaboration.CreatorId, // Assuming creator sends the invite
+               recipientId: userId,
+               collaborationId: collaboration.Id,
+               collaborationTitle: collaboration.Title,
+               collaborationDescription: collaboration.Description);
+
+            return RedirectToAction("Index");
+        }
+
+        //public async Task<IActionResult> PrivateCollaborations()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var collaborations = await _context.Collaborations
+        //        .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
+        //        .ToListAsync();
+
+        //    return PartialView("_PrivateCollaborationsPartial", collaborations);
+        //}
 
         public IActionResult Create()
         {

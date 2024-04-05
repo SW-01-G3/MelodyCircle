@@ -92,6 +92,10 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<UniqueEmailService>();
 
+builder.Services.AddScoped<NotificationService>();
+
+builder.Services.AddHostedService<NotificationCleanupService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

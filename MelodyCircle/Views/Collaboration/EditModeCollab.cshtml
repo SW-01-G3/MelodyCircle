@@ -1,13 +1,13 @@
-﻿@* @using System.Security.Claims
+﻿@using System.Security.Claims
 @using MelodyCircle.ExtensionMethods
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
-@model IEnumerable<MelodyCircle.Models.Collaboration>
+@model IEnumerable<Collaboration>
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Colaborações";
+    ViewData["Title"] = "Colaborações Criadas";
 }
 
 <div class="text-center text-purple">
@@ -34,8 +34,7 @@
                     <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
                 }
             </div>
-            <div class="col-2 px-3 title-width">@collaboration.Title</div>
-
+            <div class="col-2 px-3 title-width">@collaboration.Title (@collaboration.AccessMode.ToString())</div>
             @{
                 double averageRating = Context.CollaborationRating
                 .Where(u => u.CollaborationId.Equals(collaboration.Id))
@@ -47,11 +46,11 @@
                 int halfStar = roundedRating % 2;
                 int emptyStars = 5 - fullStars - halfStar;
             }
-            <div class="col-1 ">
+  @*           <div class="col-1 ">
                 <button type="button" class="border-purple bg-purple rounded" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
                     <img src="~/img/star-add-filled-svgrepo-com.svg" />
                 </button>
-            </div>
+            </div> *@
             <div class="col-2 ">
                 <div class="star-rating ">
                     @for (int i = 0; i < fullStars; i++)
@@ -102,19 +101,24 @@
                     <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
                     <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
                     <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
-                    <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
+                    if (collaboration.AccessMode == AccessMode.Public){
+                        <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
+                    }
                     <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Contribuidores</a>
                 }
-                else
+@*                 else
                 {
                     <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn bg-purple text-white">Entrar</button>
                     </form>
-                }
+                } *@
             </div>
         </div>
     }
+</div>
+<div class="text-end">
+        <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 </div>
 
 <script>
@@ -151,4 +155,4 @@
             });
         }
     });
-</script> *@
+</script>
