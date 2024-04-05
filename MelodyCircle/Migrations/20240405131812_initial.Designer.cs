@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240404230928_initial")]
+    [Migration("20240405131812_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -175,11 +175,9 @@ namespace MelodyCircle.Migrations
 
             modelBuilder.Entity("MelodyCircle.Models.Notification", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CollaborationDescription")
                         .IsRequired()
@@ -191,6 +189,9 @@ namespace MelodyCircle.Migrations
                     b.Property<string>("CollaborationTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("RecipientId")
                         .IsRequired()

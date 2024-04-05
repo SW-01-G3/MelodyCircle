@@ -106,14 +106,14 @@ namespace MelodyCircle.Migrations
                 name: "Notifications",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SenderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RecipientId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CollaborationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CollaborationTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CollaborationDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -238,7 +238,7 @@ namespace MelodyCircle.Controllers
                collaborationTitle: collaboration.Title,
                collaborationDescription: collaboration.Description);
 
-            return View("Index", collaboration);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> PrivateCollaborations()

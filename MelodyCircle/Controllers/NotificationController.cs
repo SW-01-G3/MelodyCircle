@@ -21,14 +21,14 @@ namespace MelodyCircle.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AcceptInvite(int notificationId)
+        public async Task<IActionResult> AcceptInvite(Guid notificationId)
         {
             await _notificationService.AcceptCollaborationInviteAsync(notificationId);
             return RedirectToAction("Index", "Home"); 
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeclineInvite(int notificationId)
+        public async Task<IActionResult> DeclineInvite(Guid notificationId)
         {
             await _notificationService.DeclineCollaborationInviteAsync(notificationId);
             return RedirectToAction("Index", "Home");
