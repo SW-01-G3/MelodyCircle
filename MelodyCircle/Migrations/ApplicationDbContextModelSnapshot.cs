@@ -241,7 +241,6 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -272,7 +271,6 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("time");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -708,9 +706,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasOne("MelodyCircle.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Tutorial");
 
@@ -727,9 +723,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasOne("MelodyCircle.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Collaboration");
 

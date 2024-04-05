@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240405190224_initial")]
+    [Migration("20240405222814_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -244,7 +244,6 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -275,7 +274,6 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("time");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -711,9 +709,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasOne("MelodyCircle.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Tutorial");
 
@@ -730,9 +726,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasOne("MelodyCircle.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Collaboration");
 

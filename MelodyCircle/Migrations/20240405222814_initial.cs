@@ -276,7 +276,7 @@ namespace MelodyCircle.Migrations
                     AssignedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BPM = table.Column<double>(type: "float", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CollaborationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -286,8 +286,7 @@ namespace MelodyCircle.Migrations
                         name: "FK_Track_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Track_Collaborations_CollaborationId",
                         column: x => x.CollaborationId,
@@ -376,7 +375,7 @@ namespace MelodyCircle.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -386,8 +385,7 @@ namespace MelodyCircle.Migrations
                         name: "FK_SubscribeTutorials_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SubscribeTutorials_Tutorials_TutorialId",
                         column: x => x.TutorialId,

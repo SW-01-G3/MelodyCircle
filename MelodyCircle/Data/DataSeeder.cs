@@ -32,7 +32,6 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-					Id = Guid.NewGuid(),
 					UserName = "admin1",
                     Email = "admin@melodycircle.pt",
                     Name = "Admin1",
@@ -59,7 +58,6 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-                    Id = Guid.NewGuid(),
                     UserName = "professor1",
                     Email = "professor1@melodycircle.pt",
                     Name = "professor1",
@@ -86,7 +84,6 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-					Id = Guid.NewGuid(),
 					UserName = "professor2",
                     Email = "professor2@melodycircle.pt",
                     Name = "professor2",
@@ -116,7 +113,6 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-					Id = Guid.NewGuid(),
 					UserName = "mod1",
                     Email = "mod@melodycircle.pt",
                     Name = "Moderator1",
@@ -145,7 +141,6 @@ namespace MelodyCircle.Data
         {
             var user2 = new User
             {
-				Id = Guid.NewGuid(),
 				UserName = "mod2",
                 Email = "mod2@melodycircle.pt",
                 Name = "Moderator2",

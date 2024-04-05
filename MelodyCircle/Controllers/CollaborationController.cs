@@ -22,21 +22,26 @@ namespace MelodyCircle.Controllers
         {
             var publicCollaborations = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
+                .Include(c => c.ContributingUsers)
                 .Where(c => c.AccessMode == AccessMode.Public)
                 .ToListAsync();
 
             var userId = _userManager.GetUserId(User);
 
             var userInWaitingList = new Dictionary<Guid, bool>();
+            var userInContribuingList = new Dictionary<Guid, bool>();
 
             foreach (var collaboration in publicCollaborations)
             {
                 var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
+                var isInContribuingList = collaboration.ContributingUsers != null && collaboration.ContributingUsers.Any(u => u.Id.ToString() == userId);
 
                 userInWaitingList.Add(collaboration.Id, isInWaitingList);
+                userInContribuingList.Add(collaboration.Id, isInContribuingList);
             }
 
             ViewBag.UserInWaitingList = userInWaitingList;
+            ViewBag.UserInContribuingList = userInContribuingList;
 
             return View(publicCollaborations);
         }
@@ -62,6 +67,7 @@ namespace MelodyCircle.Controllers
 
             return View(collaboration);
         }
+
         public async Task<IActionResult> JoinQueue(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);
@@ -74,7 +80,7 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> JoinQueueConfim(Guid id)
+        public async Task<IActionResult> JoinQueueConfirm(Guid id)
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
@@ -85,15 +91,20 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
 
-            collaboration.WaitingUsers.Add(user);
+            if (user == null)
+                return NotFound();
 
-            await _context.SaveChangesAsync();
+            if (!collaboration.WaitingUsers.Any(u => u.Id == user.Id))
+            {
+                collaboration.WaitingUsers.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
             return View("JoinQueueConfirmation", collaboration);
         }
 
-        // POST: /Collaboration/AllowUser/{collaborationId}/{userId}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AllowUser(Guid collaborationId, string userId)
@@ -118,13 +129,12 @@ namespace MelodyCircle.Controllers
                 return View("WaitingList", collaboration);
             }
 
-            var userToRemove = collaboration.WaitingUsers.FirstOrDefault(u => u.Id.ToString() == userId);
+            var userToAdd = await _context.Users.FindAsync(userId);
 
-            if (userToRemove != null)
+            if (userToAdd != null && collaboration.WaitingUsers.Contains(userToAdd))
             {
-                collaboration.WaitingUsers.Remove(userToRemove);
-                collaboration.ContributingUsers.Add(userToRemove);
-
+                collaboration.WaitingUsers.Remove(userToAdd);
+                collaboration.ContributingUsers.Add(userToAdd);
                 await _context.SaveChangesAsync();
             }
 
@@ -183,6 +193,10 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Collaboration collaboration, IFormFile photo)
         {
+            collaboration.CreatorId = _userManager.GetUserId(User);
+
+            var user = await _context.Users.FindAsync(collaboration.CreatorId);
+
             if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
             {
                 ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
@@ -199,12 +213,13 @@ namespace MelodyCircle.Controllers
                     collaboration.PhotoContentType = photo.ContentType;
                 }
 
-                collaboration.WaitingUsers = new List<User>();
+                collaboration.ContributingUsers.Add(user);
+
                 collaboration.CreatedDate = DateTime.Now;
-                collaboration.CreatorId = _userManager.GetUserId(User);
 
                 _context.Add(collaboration);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(collaboration);
@@ -426,7 +441,6 @@ namespace MelodyCircle.Controllers
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
-                .Include(c => c.Ratings)
                 .Include("Tracks.Instruments")
                 .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -435,34 +449,21 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id.ToString() == userId) || collaboration.CreatorId == userId;
+            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
 
             if (!isContributorOrCreator)
                 return Forbid();
 
+            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId == Guid.Parse(userId));
+
             var arrangementViewModel = new ArrangementPanelViewModel
             {
                 Collaboration = collaboration,
-                Tracks = collaboration.Tracks.ToList()
+                Tracks = collaboration.Tracks.ToList(),
+                IsContributorOrCreator = isContributorOrCreator
             };
 
-            if (!collaboration.Tracks.Any())
-            {
-                int trackNumber = 1;
-
-                foreach (var user in collaboration.ContributingUsers)
-                {
-                    var track = new Track
-                    {
-                        AssignedUserId = user.Id,
-                    };
-
-                    collaboration.Tracks.Add(track);
-                    trackNumber++;
-                }
-
-                await _context.SaveChangesAsync();
-            }
+            ViewBag.AssignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
 
             return View("Painel", arrangementViewModel);
         }

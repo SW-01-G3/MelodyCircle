@@ -3,5 +3,6 @@
 public class ArrangementPanelViewModel
 {
     public Collaboration Collaboration { get; set; }
-    public List<Track> Tracks { get; set; }
+    public IList<Track> Tracks { get; set; }
+    public bool IsContributorOrCreator { get; set; }
 }

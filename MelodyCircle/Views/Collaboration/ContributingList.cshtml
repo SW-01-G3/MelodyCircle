@@ -19,7 +19,7 @@
                 @foreach (var user in Model.ContributingUsers)
                 {
                     <tr>
-                        <td><a asp-action="Profile" asp-controller="User" asp-route-id="@user.Id">@user.UserName</a></td>
+                        <td><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></td>
                         <td>
                             <form method="post" action="@Url.Action("RemoveUser", "Collaboration", new { collaborationId = Model.Id, userId = user.Id })">
                                 @Html.AntiForgeryToken()
