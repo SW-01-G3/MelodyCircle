@@ -42,4 +42,9 @@
     <None Include="wwwroot\img\default_pf.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\InstrumentOnTrack\" />
+    <Folder Include="Views\Track\" />
+  </ItemGroup>
+
 </Project>

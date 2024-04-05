@@ -30,6 +30,7 @@ namespace MelodyCircle.Models
 
         public virtual List<User>? ContributingUsers { get; set; }
         public virtual List<User>? WaitingUsers { get; set; }
+        public virtual List<Track>? Tracks { get; set; }
 
         public bool IsFinished { get; set; }
 

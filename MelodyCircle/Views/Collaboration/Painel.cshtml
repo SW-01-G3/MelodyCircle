@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+@model ArrangementPanelViewModel
+
+@{
+    ViewBag.Title = "Painel de Arranjo";
+
+    var user = await UserManager.GetUserAsync(User);
+    var userId = user?.Id;
+    var assignedTrackNumber = Model.Tracks.FindIndex(t => t.AssignedUserId.ToString() == userId) + 1;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <!-- Menu Lateral de Instrumentos -->
+            <div id="instrument-menu">
+                <h3>INSTRUMENTOS</h3>
+                <!-- Os instrumentos serão carregados aqui -->
+                <!-- Exemplo Estático -->
+                <div class="instrument" draggable="true">Guitar</div>
+                <div class="instrument" draggable="true">Bass</div>
+                <div class="instrument" draggable="true">Drums</div>
+                <!-- Botão de Upload de Instrumento -->
+                <button id="upload-button">UPLOAD</button>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <!-- Painel de Arranjo -->
+            <div id="arrangement-panel">
+                <div class="header">
+                    <span>BPM: <input type="number" id="bpm" value="102" min="60" max="150"/></span>
+                    <span class="time-limit">4:00</span>
+                    <span>A tua faixa: @assignedTrackNumber</span>
+                </div>
+                <!-- As faixas serão carregadas aqui -->
+                <div class="track" data-track-id="1">Track 1</div>
+                <div class="track" data-track-id="2">Track 2</div>
+                <!-- Mais faixas... -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Aqui você adicionará o JavaScript necessário para manipulação do drag-and-drop, etc.
+    </script>
+}

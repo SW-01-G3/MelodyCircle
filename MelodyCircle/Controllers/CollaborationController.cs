@@ -421,6 +421,52 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: /Collaboration/ArrangementPanel/{id}
+        public async Task<IActionResult> ArrangementPanel(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .Include(c => c.Ratings)
+                .Include("Tracks.Instruments")
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id.ToString() == userId) || collaboration.CreatorId == userId;
+
+            if (!isContributorOrCreator)
+                return Forbid();
+
+            var arrangementViewModel = new ArrangementPanelViewModel
+            {
+                Collaboration = collaboration,
+                Tracks = collaboration.Tracks.ToList()
+            };
+
+            if (!collaboration.Tracks.Any())
+            {
+                int trackNumber = 1;
+
+                foreach (var user in collaboration.ContributingUsers)
+                {
+                    var track = new Track
+                    {
+                        AssignedUserId = user.Id,
+                    };
+
+                    collaboration.Tracks.Add(track);
+                    trackNumber++;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return View("Painel", arrangementViewModel);
+        }
+
         private bool CollaborationExists(Guid id)
         {
             return _context.Collaborations.Any(e => e.Id == id);

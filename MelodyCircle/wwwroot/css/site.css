@@ -228,3 +228,26 @@ body {
 .sidebar ul li strong {
     font-weight: bold;
 }
+
+#instrument-menu {
+    border-right: solid 1px #ccc;
+    height: 100vh;
+}
+
+.instrument {
+    padding: 10px;
+    margin: 5px;
+    background-color: #e9ecef;
+    cursor: grab;
+}
+
+#arrangement-panel {
+    padding: 10px;
+}
+
+.track {
+    border: solid 1px #007bff;
+    margin: 5px;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
