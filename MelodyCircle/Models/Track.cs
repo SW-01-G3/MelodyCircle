@@ -6,6 +6,8 @@
 
         public Guid AssignedUserId { get; set; }
 
+        public Guid CollaborationId { get; set; }
+
         public double BPM { get; set; }
 
         public TimeSpan Duration { get; set; } = TimeSpan.FromMinutes(4);

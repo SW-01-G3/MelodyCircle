@@ -1,8 +1,19 @@
-﻿using MelodyCircle.Models;
+﻿using System.Diagnostics.Metrics;
 
-public class ArrangementPanelViewModel
+namespace MelodyCircle.Models
 {
-    public Collaboration Collaboration { get; set; }
-    public IList<Track> Tracks { get; set; }
-    public bool IsContributorOrCreator { get; set; }
+    public class ArrangementPanelViewModel
+    {
+        public Collaboration Collaboration { get; set; }
+
+        public IList<Track> Tracks { get; set; }
+
+        public IList<Instrument> AvailableInstruments { get; set; }
+
+        public bool IsContributorOrCreator { get; set; }
+
+        public Track UserTrack { get; set; }
+
+        public int AssignedTrackNumber { get; set; }
+    }
 }

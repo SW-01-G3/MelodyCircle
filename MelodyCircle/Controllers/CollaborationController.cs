@@ -441,7 +441,8 @@ namespace MelodyCircle.Controllers
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
-                .Include("Tracks.Instruments")
+                .Include(c => c.Tracks)
+                    .ThenInclude(t => t.Instruments)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (collaboration == null)
@@ -454,18 +455,69 @@ namespace MelodyCircle.Controllers
             if (!isContributorOrCreator)
                 return Forbid();
 
-            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId == Guid.Parse(userId));
+            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId == Guid.Parse(userId));
+
+            if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
+            {
+                userTrack = new Track
+                {
+                    Id = Guid.NewGuid(),
+                    AssignedUserId = Guid.Parse(userId),
+                    CollaborationId = id,
+                    BPM = 102  
+                };
+
+                _context.Tracks.Add(userTrack);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
 
             var arrangementViewModel = new ArrangementPanelViewModel
             {
                 Collaboration = collaboration,
-                Tracks = collaboration.Tracks.ToList(),
-                IsContributorOrCreator = isContributorOrCreator
+                Tracks = collaboration.Tracks,
+                IsContributorOrCreator = isContributorOrCreator,
+                UserTrack = userTrack,
+                AssignedTrackNumber = assignedTrackNumber,
+                AvailableInstruments = InstrumentData.AvailableInstruments
             };
 
-            ViewBag.AssignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
-
             return View("Painel", arrangementViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddInstrumentToTrack(Guid trackId, string instrumentName)
+        {
+            // Localize a faixa pelo ID
+            var track = await _context.Tracks.Include(t => t.Instruments).FirstOrDefaultAsync(t => t.Id == trackId);
+
+            if (track == null)
+                return NotFound();
+
+            // Verifique se o usuário atual tem permissão para adicionar um instrumento a esta faixa
+            var userId = _userManager.GetUserId(User);
+
+            if (track.AssignedUserId.ToString() != userId)
+                return Forbid();
+
+            // Crie e adicione o novo instrumento à faixa
+            var instrument = new InstrumentOnTrack
+            {
+                Id = Guid.NewGuid(),
+                InstrumentType = instrumentName,
+                // Defina StartTime e Duration conforme necessário
+                // StartTime = ...
+                // Duration = ...
+            };
+
+            track.Instruments.Add(instrument);
+
+            await _context.SaveChangesAsync();
+
+            // Retorne sucesso ou alguma informação que seja útil para o front-end
+            return Json(new { success = true, instrumentId = instrument.Id });
         }
 
         private bool CollaborationExists(Guid id)
