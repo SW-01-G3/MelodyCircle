@@ -463,8 +463,7 @@ namespace MelodyCircle.Controllers
                 {
                     Id = Guid.NewGuid(),
                     AssignedUserId = Guid.Parse(userId),
-                    CollaborationId = id,
-                    BPM = 102  
+                    CollaborationId = id
                 };
 
                 _context.Tracks.Add(userTrack);
@@ -488,36 +487,61 @@ namespace MelodyCircle.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddInstrumentToTrack(Guid trackId, string instrumentName)
         {
-            // Localize a faixa pelo ID
             var track = await _context.Tracks.Include(t => t.Instruments).FirstOrDefaultAsync(t => t.Id == trackId);
 
             if (track == null)
                 return NotFound();
 
-            // Verifique se o usuário atual tem permissão para adicionar um instrumento a esta faixa
             var userId = _userManager.GetUserId(User);
 
             if (track.AssignedUserId.ToString() != userId)
                 return Forbid();
 
-            // Crie e adicione o novo instrumento à faixa
             var instrument = new InstrumentOnTrack
             {
                 Id = Guid.NewGuid(),
                 InstrumentType = instrumentName,
-                // Defina StartTime e Duration conforme necessário
-                // StartTime = ...
-                // Duration = ...
             };
 
             track.Instruments.Add(instrument);
 
             await _context.SaveChangesAsync();
 
-            // Retorne sucesso ou alguma informação que seja útil para o front-end
             return Json(new { success = true, instrumentId = instrument.Id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateTrack(Guid trackId, string instrumentName)
+        {
+            var track = await _context.Tracks
+                .Include(t => t.Instruments)
+                .FirstOrDefaultAsync(t => t.Id == trackId);
+
+            if (track == null)
+                return Json(new { success = false, message = "Track not found" });
+
+            var userId = _userManager.GetUserId(User);
+
+            if (track.AssignedUserId.ToString() != userId)
+                return Json(new { success = false, message = "User is not authorized to update this track" });
+
+            var newInstrument = new InstrumentOnTrack
+            {
+                Id = Guid.NewGuid(),
+                TrackId = trackId,
+                InstrumentType = instrumentName,
+                StartTime = TimeSpan.Zero,
+                Duration = TimeSpan.Zero
+            };
+
+            track.Instruments.Add(newInstrument);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, instrumentId = newInstrument.Id });
         }
 
         private bool CollaborationExists(Guid id)

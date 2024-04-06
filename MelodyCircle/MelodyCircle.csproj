@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\InstrumentOnTrack\**" />
+    <Compile Remove="Views\Track\**" />
+    <Content Remove="Views\InstrumentOnTrack\**" />
+    <Content Remove="Views\Track\**" />
+    <EmbeddedResource Remove="Views\InstrumentOnTrack\**" />
+    <EmbeddedResource Remove="Views\Track\**" />
+    <None Remove="Views\InstrumentOnTrack\**" />
+    <None Remove="Views\Track\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\img\star-sharp-half-svgrepo-com.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com-filled.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com.svg" />
@@ -40,11 +51,6 @@
 
   <ItemGroup>
     <None Include="wwwroot\img\default_pf.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\InstrumentOnTrack\" />
-    <Folder Include="Views\Track\" />
   </ItemGroup>
 
 </Project>

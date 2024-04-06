@@ -4,6 +4,8 @@
     {
         public Guid Id { get; set; }
 
+        public Guid TrackId { get; internal set; }
+
         public string InstrumentType { get; set; }
 
         public TimeSpan StartTime { get; set; }

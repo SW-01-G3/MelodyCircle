@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-
-namespace MelodyCircle.Models
+﻿namespace MelodyCircle.Models
 {
     public class ArrangementPanelViewModel
     {

@@ -1,15 +1,19 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Identity
 @inject UserManager<User> UserManager
+@inject IAntiforgery Antiforgery
 
 @model ArrangementPanelViewModel
 
 @{
     ViewBag.Title = "Painel de Arranjo";
+
     var user = await UserManager.GetUserAsync(User);
     var userId = user?.Id;
     var assignedTrack = Model.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
     var assignedTrackNumber = assignedTrack != null ? Model.Tracks.IndexOf(assignedTrack) + 1 : 0;
     var userHasTrack = assignedTrackNumber > 0;
+    var antiforgeryTokenSet = Antiforgery.GetAndStoreTokens(Context);
 }
 
 <div class="container-fluid">
@@ -20,11 +24,12 @@
                 <h3>INSTRUMENTOS</h3>
                 @foreach (var instrument in Model.AvailableInstruments)
                 {
-                    <div class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name" id="@instrument.Name">
+                    <div id="@instrument.Name" class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name">
                         @instrument.Name
                     </div>
-                    <audio id="@($"sound-{instrument.Name}")" src="@instrument.SoundPath"></audio>
                 }
+                <!-- Botão de Upload de Instrumento -->
+                <button id="upload-button">UPLOAD</button>
             </div>
         </div>
         <div class="col-md-10">
@@ -35,21 +40,21 @@
                     <span class="time-limit">4:00</span>
                     @if (userHasTrack)
                     {
-                        <span>A tua faixa: @assignedTrackNumber</span>
+                        <span>Sua faixa: @assignedTrackNumber</span>
                     }
                     else
                     {
-                        <span>Não tens faixa atribuída</span>
+                        <span>Você não tem faixa atribuída.</span>
                     }
                 </div>
                 <!-- As faixas serão carregadas aqui -->
-               @foreach (var track in Model.Tracks)
+                @foreach (var track in Model.Tracks)
                 {
-                    <div class="track" data-track-id="@track.Id">
+                    <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
                         <!-- Apenas faixas designadas para o usuário são droppables -->
-                        @if (track.AssignedUserId.ToString() == UserManager.GetUserId(User))
+                        @if (track.AssignedUserId.ToString() == userId)
                         {
-                            <div class="drop-area" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                            <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
                         }
                     </div>
                 }
@@ -58,48 +63,67 @@
     </div>
 </div>
 
+<form id="antiforgery-form" method="post" style="display:none;">
+    <input type="hidden" name="__RequestVerificationToken" value="@antiforgeryTokenSet.RequestToken" />
+</form>
+
 @section Scripts {
-<script>
-// Permitir o arrasto sobre o alvo
-function allowDrop(ev) {
-    ev.preventDefault();
-}
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
 
-// Manipular o evento drop
-function drop(ev) {
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    var instrument = document.getElementById(data);
-    
-    // Adicionar o instrumento à faixa se droppable
-    if (ev.target.classList.contains('drop-area')) {
-        ev.target.appendChild(instrument.cloneNode(true));
-        
-        // Chame uma função para atualizar o back-end aqui
-        // updateTrack(ev.target.parentNode.dataset.trackId, data);
-    }
-}
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+            event.target.style.opacity = '0.5';
+        }
 
-// Manipular o evento drag
-function drag(ev) {
-    ev.dataTransfer.setData("text/plain", ev.target.id);
-}
+        function drop(event) {
+            event.preventDefault();
 
-// Atualiza a faixa no back-end (a implementar)
-function updateTrack(trackId, instrumentName) {
-    // Fazer uma requisição AJAX para atualizar a faixa no servidor
-}
+            var instrumentName = event.dataTransfer.getData("text");
 
-document.querySelectorAll('.instrument').forEach(item => {
-    item.addEventListener('click', event => {
-        let soundId = `sound-${item.getAttribute('data-instrument')}`;
-        let sound = document.getElementById(soundId);
-        sound.play();
-    });
-});
-</script>
-}
+            // Verifique se o target é a área correta para soltar e obtenha o trackId
+            var trackContainer = event.target.closest('.track');
+            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : null;
 
-<style>
-   @* Adicione estilos conforme necessário aqui *@
-</style>
+            if (trackId) {
+                console.log("Instrument dropped:", instrumentName, "on track ID:", trackId);
+                updateTrack(trackId, instrumentName);
+            } else
+                console.error("Drop target is not a track container or trackId is null");
+        }
+
+        function updateTrack(trackId, instrumentName) {
+            var token = '@antiforgeryTokenSet.RequestToken';
+            var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ trackId: trackId, instrumentName: instrumentName })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success)
+                        console.log('Instrument added successfully:', data.instrumentId);
+                    else
+                        console.error('Error adding instrument:', data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        document.querySelectorAll('.instrument').forEach(item => {
+            item.addEventListener('click', event => {
+                let soundId = `sound-${item.getAttribute('data-instrument')}`;
+                let sound = document.getElementById(soundId);
+                sound.play();
+            });
+        });
+    </script>
+}
