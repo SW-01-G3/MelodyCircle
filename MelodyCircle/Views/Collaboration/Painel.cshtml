@@ -16,6 +16,62 @@
     var antiforgeryTokenSet = Antiforgery.GetAndStoreTokens(Context);
 }
 
+@section Scripts {
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.getAttribute('data-instrument'));
+        }
+
+        function drop(event) {
+            event.preventDefault();
+
+            var instrumentName = event.dataTransfer.getData("text");
+            var trackContainer = event.target.closest('.track');
+            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+
+            if (trackId && instrumentName) {
+                console.log("Instrument dropped:", instrumentName, "on track ID:", trackId);
+                updateTrack(trackId, instrumentName);
+            } else
+                console.error("Drop target is not a track container or trackId is null.");
+        }
+
+        function updateTrack(trackId, instrumentName) {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            fetch('@Url.Action("AddInstrumentToTrack", "Collaboration")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ trackId: trackId, instrumentName: instrumentName })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success)
+                        console.log('Instrument added successfully:', data.instrumentId);
+                    else
+                        console.error('Error adding instrument:', data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        document.querySelectorAll('.instrument').forEach(item => {
+            item.addEventListener('click', event => {
+                let soundId = `sound-${item.getAttribute('data-instrument')}`;
+                let sound = document.getElementById(soundId);
+                sound.play();
+            });
+        });
+    </script>
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2">
@@ -66,64 +122,3 @@
 <form id="antiforgery-form" method="post" style="display:none;">
     <input type="hidden" name="__RequestVerificationToken" value="@antiforgeryTokenSet.RequestToken" />
 </form>
-
-@section Scripts {
-    <script>
-        function allowDrop(event) {
-            event.preventDefault();
-        }
-
-        function drag(event) {
-            event.dataTransfer.setData("text", event.target.id);
-            event.target.style.opacity = '0.5';
-        }
-
-        function drop(event) {
-            event.preventDefault();
-
-            var instrumentName = event.dataTransfer.getData("text");
-
-            // Verifique se o target é a área correta para soltar e obtenha o trackId
-            var trackContainer = event.target.closest('.track');
-            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : null;
-
-            if (trackId) {
-                console.log("Instrument dropped:", instrumentName, "on track ID:", trackId);
-                updateTrack(trackId, instrumentName);
-            } else
-                console.error("Drop target is not a track container or trackId is null");
-        }
-
-        function updateTrack(trackId, instrumentName) {
-            var token = '@antiforgeryTokenSet.RequestToken';
-            var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': token
-                },
-                body: JSON.stringify({ trackId: trackId, instrumentName: instrumentName })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success)
-                        console.log('Instrument added successfully:', data.instrumentId);
-                    else
-                        console.error('Error adding instrument:', data.message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        document.querySelectorAll('.instrument').forEach(item => {
-            item.addEventListener('click', event => {
-                let soundId = `sound-${item.getAttribute('data-instrument')}`;
-                let sound = document.getElementById(soundId);
-                sound.play();
-            });
-        });
-    </script>
-}

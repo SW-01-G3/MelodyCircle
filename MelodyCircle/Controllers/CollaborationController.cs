@@ -455,7 +455,7 @@ namespace MelodyCircle.Controllers
             if (!isContributorOrCreator)
                 return Forbid();
 
-            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId == Guid.Parse(userId));
+            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
 
             if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
             {
@@ -504,6 +504,7 @@ namespace MelodyCircle.Controllers
             {
                 Id = Guid.NewGuid(),
                 InstrumentType = instrumentName,
+                TrackId = trackId,
             };
 
             track.Instruments.Add(instrument);

@@ -34,7 +34,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasIndex("ContributingUsersId");
 
-                    b.ToTable("UserCollaborations", (string)null);
+                    b.ToTable("UserContributingCollaborations", (string)null);
                 });
 
             modelBuilder.Entity("CollaborationUser1", b =>
@@ -279,7 +279,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Track");
+                    b.ToTable("Tracks");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
