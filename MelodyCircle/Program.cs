@@ -95,6 +95,13 @@ builder.Services.AddScoped<UniqueEmailService>();
 builder.Services.AddScoped<NotificationService>();
 
 builder.Services.AddHostedService<NotificationCleanupService>();
+builder.Services.AddSignalR();
+
+builder.Services.AddSignalR(hubOptions =>
+{
+    hubOptions.EnableDetailedErrors = true;
+});
+
 
 var app = builder.Build();
 
@@ -122,6 +129,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.MapHub<ChatHub>("/chatHub");
+
 
 using (var scope = app.Services.CreateScope())
 {

@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:MelodyCircle/Migrations/20240405142640_initial.Designer.cs
-    [Migration("20240405142640_initial")]
-========
-    [Migration("20240405131812_initial")]
->>>>>>>> 252:MelodyCircle/Migrations/20240405131812_initial.Designer.cs
+    [Migration("20240405224747_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -57,6 +53,35 @@ namespace MelodyCircle.Migrations
                     b.HasIndex("WaitingUsersId");
 
                     b.ToTable("UserWaitingCollaborations", (string)null);
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
@@ -626,6 +651,25 @@ namespace MelodyCircle.Migrations
                         .HasForeignKey("WaitingUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ChatMessage", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany()
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboration");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.CollaborationRating", b =>
