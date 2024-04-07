@@ -10,20 +10,16 @@
     ViewData["Title"] = "Colaborações Criadas";
 }
 
-<div class="text-center text-purple">
+<div class="text-center">
     <h1>@ViewData["Title"]</h1>
 </div>
 
 <div class="container">
-    <div class="row mb-3">
-        <div class="col">
-            <a href="@Url.Action("Create", "Collaboration")" class="btn btn-primary">Criar</a>
-        </div>
-    </div>
+    
 
     @foreach (var collaboration in Model)
     {
-        <div class="row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+        <div class="row rounded border border-purple bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
             <div class="col-2">
                 @if (collaboration.Photo != null && collaboration.Photo.Length > 0)
                 {
@@ -94,29 +90,32 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2 px-3">tag</div>
-            <div class="col-2 px-3">
+
+            <div class="col-2 px-3 ">
                 @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
-                    <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
-                    <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
-                    <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
-                    if (collaboration.AccessMode == AccessMode.Public){
+                    <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/edit.svg" /> </a>
+                    <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/delete.svg" /> </a>
+                }
+            </div>
+            <div class="col-2 px-3 w-100 align-items-center pt-2 ">
+                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    if (collaboration.AccessMode == AccessMode.Public)
+                    {
                         <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
                     }
                     <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Contribuidores</a>
+                    <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
+
                 }
-@*                 else
-                {
-                    <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn bg-purple text-white">Entrar</button>
-                    </form>
-                } *@
             </div>
         </div>
     }
 </div>
+
+<a class="btn bg-purple text-white rounded-circle floating-button z-3" href="/Collaboration/Create">+</a>
+
 <div class="text-end">
         <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 </div>

@@ -2,12 +2,12 @@
     ViewData["Title"] = "Finalizar Colaboração";
 }
 
-<div class="text-center">
+<div class=" text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
     <h1>@ViewData["Title"]</h1>
-    <h3>Deseja dar como finalizada esta colaboração?</h3>
-    <form method="post" action="@Url.Action("FinishConfirmed", "Collaboration", new { id = ViewBag.CollaborationId })">
+    <h4 class="pt-2">Deseja dar como finalizada esta colaboração?</h4>
+    <form class="pt-2" method="post" action="@Url.Action("FinishConfirmed", "Collaboration", new { id = ViewBag.CollaborationId })">
         @Html.AntiForgeryToken()
-        <button type="submit" class="btn bg-purple text-white">Confirmar</button>
+        <button type="submit" class="btn bg-danger text-white">Confirmar</button>
     </form>
-    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar para a lista de colaborações</a>
-</div>
+    <a href="@Url.Action("Index", "Collaboration")" class="pt-2">Voltar para a lista de colaborações</a>
+ </div>

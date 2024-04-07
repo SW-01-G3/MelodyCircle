@@ -7,7 +7,8 @@
 <div class="text-center">
     <h1>@ViewData["Title"]</h1>
 
-    <div class="table-responsive">
+    <div class="rounded border border-purple table-responsive row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
+
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -38,12 +39,12 @@
         </table>
     </div>
 
-    <a href="@Url.Action("Index", "Collaboration")" class="btn btn-primary">Voltar</a>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar</a>
 </div>
 
 <!-- Chat Component Integration -->
-<div id="chatComponent">
-    <h2>Chat da Colaboração</h2>
+<div id="chatComponent" class="rounded border border-purple row bg-white my-3 py-3 px-3 w-25  align-items-center ">
+    <h5>Chat da Colaboração</h5>
     @Html.Partial("_ChatPartial", Model)
 </div>
 

@@ -7,6 +7,8 @@
 <div class="text-center">
     <h1>@ViewData["Title"]</h1>
 
+    <div class="rounded border border-purple table-responsive row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
+
     <table class="table">
         <thead>
             <tr>
@@ -43,5 +45,6 @@
             }
         </tbody>
     </table>
-    <a href="@Url.Action("Index", "Collaboration")" class="btn btn-primary">Voltar</a>
+    </div>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar</a>
 </div>

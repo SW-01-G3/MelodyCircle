@@ -4,57 +4,49 @@
     ViewData["Title"] = "Editar Colaboração";
 }
 
-<h1>@ViewData["Title"]</h1>
 
-<hr />
-
-<div class="row">
-    <div class="col-md-4">
+<div class="row justify-content-center text-center">
+    <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <form method="post" enctype="multipart/form-data" asp-action="Edit">
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="CreatedDate" />
-
-            <div class="form-group">
-                <label asp-for="Title" class="control-label">Título</label>
-                <input asp-for="Title" class="form-control" />
+            <div class="form-group text-center mt-3">
+                <h1>@ViewData["Title"]</h1>
+            </div>
+            <div class="form-group text-center mt-3">
+                <label for="Title">Título:</label>
+                <input type="text" class="form-control border-purple" id="Title" name="Title" value="@Model.Title">
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="Description" class="control-label">Descrição</label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            <div class="form-group text-center">
+                <label for="Description">Descrição:</label>
+                <textarea class="form-control border-purple" id="Description" name="Description">@Model.Description</textarea>
             </div>
-
-            <div class="form-group">
-                <label asp-for="MaxUsers" class="control-label">Número Máximo de Utilizadores:</label>
-                <input asp-for="MaxUsers" class="form-control" min="0" max="100" />
+            <div class="form-group text-center">
+                <label for="MaxUsers">Número Máximo de Utilizadores:</label>
+                <input type="number" class="form-control border-purple" id="MaxUsers" name="MaxUsers" value="@Model.MaxUsers" min="0" max="100">
                 <span asp-validation-for="MaxUsers" class="text-danger"></span>
             </div>
+            <div class="form-group text-center">
+                <label for="AccessMode">Modo de Acesso:</label>
+                <div class="position-relative">
+                    <select class="form-select border-purple" id="AccessMode" name="AccessMode">
+                        <option value="Public">Público</option>
+                        <option value="Private">Privado</option>
+                    </select>
 
-            <div class="form-group">
-                <label asp-for="AccessMode" class="control-label">Modo de Acesso:</label>
-                <select asp-for="AccessMode" class="form-control">
-                    <option value="Public">Público</option>
-                    <option value="Private">Privado</option>
-                </select>
+                </div>
                 <span asp-validation-for="AccessMode" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="AccessPassword" class="control-label">Senha de Acesso:</label>
-                <input type="password" asp-for="AccessPassword" class="form-control" />
-                <span asp-validation-for="AccessPassword" class="text-danger"></span>
+            <div class="form-group text-center">
+                <label for="AccessPassword">Senha de Acesso:</label>
+                <input type="password" class="form-control border-purple" id="AccessPassword" name="AccessPassword" value="@Model.AccessPassword">
             </div>
-
-            <div class="form-group">
-                <label for="Photo">Foto:</label>
-                <input type="file" class="form-control-file" id="Photo" name="photo">
+            <div class="form-group text-center">
+                <label asp-for="Photo" class="control-label">Foto</label>
+                <input type="file" class="form-control border-purple " id="Photo" name="photo" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
+            <div class="form-group text-center my-3">
+                <input type="submit" value="Confirmar" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>
