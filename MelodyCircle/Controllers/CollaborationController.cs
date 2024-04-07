@@ -3,6 +3,7 @@ using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
+using NAudio.Wave;
 
 namespace MelodyCircle.Controllers
 {
@@ -10,11 +11,13 @@ namespace MelodyCircle.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager)
+        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Collaboration
@@ -196,6 +199,9 @@ namespace MelodyCircle.Controllers
             collaboration.CreatorId = _userManager.GetUserId(User);
 
             var user = await _context.Users.FindAsync(collaboration.CreatorId);
+
+            if (user == null)
+                return NotFound("User not found");
 
             if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
             {
@@ -488,9 +494,9 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddInstrumentToTrack(Guid trackId, string instrumentName)
+        public async Task<IActionResult> AddInstrumentToTrack([FromBody] InstrumentOnTrackDto dto)
         {
-            var track = await _context.Tracks.Include(t => t.Instruments).FirstOrDefaultAsync(t => t.Id == trackId);
+            var track = await _context.Tracks.Include(t => t.Instruments).FirstOrDefaultAsync(t => t.Id == dto.TrackId);
 
             if (track == null)
                 return NotFound();
@@ -500,11 +506,17 @@ namespace MelodyCircle.Controllers
             if (track.AssignedUserId.ToString() != userId)
                 return Forbid();
 
+            var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
+            var duration = GetAudioDuration(instrumentFilePath);
+
             var instrument = new InstrumentOnTrack
             {
                 Id = Guid.NewGuid(),
-                InstrumentType = instrumentName,
-                TrackId = trackId,
+                InstrumentType = dto.InstrumentName,
+                TrackId = dto.TrackId,
+                StartTime = TimeSpan.FromSeconds(dto.StartTime),
+                Duration = duration,
+                Track = track
             };
 
             track.Instruments.Add(instrument);
@@ -514,35 +526,12 @@ namespace MelodyCircle.Controllers
             return Json(new { success = true, instrumentId = instrument.Id });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UpdateTrack(Guid trackId, string instrumentName)
+        private TimeSpan GetAudioDuration(string filePath)
         {
-            var track = await _context.Tracks
-                .Include(t => t.Instruments)
-                .FirstOrDefaultAsync(t => t.Id == trackId);
-
-            if (track == null)
-                return Json(new { success = false, message = "Track not found" });
-
-            var userId = _userManager.GetUserId(User);
-
-            if (track.AssignedUserId.ToString() != userId)
-                return Json(new { success = false, message = "User is not authorized to update this track" });
-
-            var newInstrument = new InstrumentOnTrack
+            using (var reader = new Mp3FileReader(filePath))
             {
-                Id = Guid.NewGuid(),
-                TrackId = trackId,
-                InstrumentType = instrumentName,
-                StartTime = TimeSpan.Zero,
-                Duration = TimeSpan.Zero
-            };
-
-            track.Instruments.Add(newInstrument);
-
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true, instrumentId = newInstrument.Id });
+                return reader.TotalTime;
+            }
         }
 
         private bool CollaborationExists(Guid id)

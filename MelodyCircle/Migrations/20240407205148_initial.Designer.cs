@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240406210327_initial")]
+    [Migration("20240407205148_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -196,7 +196,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("Instruments");
+                    b.ToTable("InstrumentOnTrack");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>

@@ -18,57 +18,145 @@
 
 @section Scripts {
     <script>
+        document.querySelectorAll('.instrument').forEach(item => {
+            item.addEventListener('click', event => {
+                let soundId = `sound-${item.getAttribute('data-instrument')}`;
+                let sound = document.getElementById(soundId);
+
+                sound.play();
+            });
+        });
+
         function allowDrop(event) {
             event.preventDefault();
         }
 
         function drag(event) {
-            event.dataTransfer.setData("text", event.target.getAttribute('data-instrument'));
+            event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
         }
 
         function drop(event) {
             event.preventDefault();
 
-            var instrumentName = event.dataTransfer.getData("text");
+            var instrumentName = event.dataTransfer.getData("text/plain");
             var trackContainer = event.target.closest('.track');
             var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+            var mouseX = event.clientX;
+            var trackRect = trackContainer.getBoundingClientRect();
+            var trackStartX = trackRect.left;
+            var trackWidth = trackRect.width;
+            var relativePosition = (mouseX - trackStartX) / trackWidth;
 
-            if (trackId && instrumentName) {
-                console.log("Instrument dropped:", instrumentName, "on track ID:", trackId);
-                updateTrack(trackId, instrumentName);
-            } else
-                console.error("Drop target is not a track container or trackId is null.");
+            var startTimeSeconds = relativePosition * 4 * 60;
+
+            if (trackId && instrumentName)
+                updateTrack(trackId, instrumentName, startTimeSeconds);
+            else
+                console.error("Drop target is not a track container or trackId/instrumentName is missing.");
         }
 
-        function updateTrack(trackId, instrumentName) {
+        function updateTrack(trackId, instrumentName, startTimeSeconds) {
             var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            fetch('@Url.Action("AddInstrumentToTrack", "Collaboration")', {
+            var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
-                body: JSON.stringify({ trackId: trackId, instrumentName: instrumentName })
+                body: JSON.stringify({
+                    TrackId: trackId,
+                    InstrumentName: instrumentName,
+                    StartTime: startTimeSeconds
+                })
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok)
+                        return response.text().then(text => { throw new Error(text) });
+
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success)
                         console.log('Instrument added successfully:', data.instrumentId);
-                    else
-                        console.error('Error adding instrument:', data.message);
+                    
+                    console.error('Error adding instrument:', data.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                 });
         }
 
-        document.querySelectorAll('.instrument').forEach(item => {
-            item.addEventListener('click', event => {
-                let soundId = `sound-${item.getAttribute('data-instrument')}`;
-                let sound = document.getElementById(soundId);
-                sound.play();
+        function createInstrumentElement(instrumentName, instrumentId) {
+            var element = document.createElement('div');
+            element.classList.add('instrument-track');
+            element.textContent = instrumentName;
+            element.setAttribute('data-instrument-id', instrumentId);
+
+            element.style.border = '1px solid #000';
+            element.style.marginTop = '5px';
+            element.style.padding = '5px';
+
+            return element;
+        }
+
+        function createTimeline() {
+            const tracks = document.querySelectorAll('.track-container'); // Note que estamos selecionando o container da track agora
+            const trackLength = 240; // Duração total em segundos (4 minutos)
+            const interval = 30; // Intervalo em segundos para as marcações
+
+            // Criar a régua para cada faixa
+            tracks.forEach((trackContainer, index) => {
+                const timeline = document.createElement('div');
+                timeline.className = 'timeline';
+                timeline.style.display = 'flex';
+                timeline.style.width = '100%'; // A régua deve ocupar toda a largura do container da track
+                timeline.style.marginBottom = '10px'; // Espaço abaixo da régua
+
+                // Criar as marcações de tempo
+                for (let time = 0; time <= trackLength; time += interval) {
+                    const timeMarker = document.createElement('div');
+                    timeMarker.className = 'time-marker';
+                    timeMarker.style.flexGrow = '1'; // Distribui uniformemente o espaço
+                    timeMarker.style.textAlign = 'center';
+                    timeMarker.style.position = 'relative';
+
+                    const markerLabel = document.createElement('span');
+                    markerLabel.textContent = `${time / 60}min`;
+                    markerLabel.style.position = 'absolute';
+                    markerLabel.style.width = '100%';
+                    markerLabel.style.left = '0';
+                    markerLabel.style.bottom = '-20px'; // Posição abaixo da régua
+
+                    timeMarker.appendChild(markerLabel);
+                    timeline.appendChild(timeMarker);
+                }
+
+                // Adiciona a régua ao container da track
+                trackContainer.prepend(timeline); // Adiciona a régua no topo do container da track
+
+                // Adiciona a numeração da track
+                const trackNumber = document.createElement('div');
+                trackNumber.className = 'track-number';
+                trackNumber.textContent = `Track ${index + 1}`; // Numeração começa em 1
+                trackNumber.style.position = 'absolute';
+                trackNumber.style.right = '10px'; // Posição à direita
+                trackNumber.style.top = '5px'; // Posição acima da régua
+
+                trackContainer.prepend(trackNumber); // Adiciona a numeração no topo do container da track
             });
-        });
+        }
+
+        function addInstrumentToTrackElement(trackId, instrumentName) {
+            const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
+            if (trackElement) {
+                const instrumentElement = createInstrumentElement(instrumentName);
+                trackElement.appendChild(instrumentElement);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createTimeline);
     </script>
 }
 
@@ -77,7 +165,7 @@
         <div class="col-md-2">
             <!-- Menu Lateral de Instrumentos -->
             <div id="instrument-menu">
-                <h3>INSTRUMENTOS</h3>
+                <h5>INSTRUMENTOS</h5>
                 @foreach (var instrument in Model.AvailableInstruments)
                 {
                     <div id="@instrument.Name" class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name">
@@ -93,25 +181,30 @@
             <div id="arrangement-panel">
                 <div class="header">
                     <span>BPM: <input type="number" id="bpm" value="102" min="60" max="150" /></span>
-                    <span class="time-limit">4:00</span>
                     @if (userHasTrack)
                     {
-                        <span>Sua faixa: @assignedTrackNumber</span>
+                        <span>A tua faixa: @assignedTrackNumber</span>
                     }
                     else
                     {
-                        <span>Você não tem faixa atribuída.</span>
+                        <span>Você não tem faixa atribuída</span>
                     }
                 </div>
                 <!-- As faixas serão carregadas aqui -->
                 @foreach (var track in Model.Tracks)
                 {
-                    <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
-                        <!-- Apenas faixas designadas para o usuário são droppables -->
-                        @if (track.AssignedUserId.ToString() == userId)
-                        {
-                            <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
-                        }
+                    <div class="track-container">
+                        <div class="timeline">
+                            <!-- Marcadores de tempo serão inseridos aqui -->
+                        </div>
+                        <div class="track" data-track-id="@track.Id">
+                            <!-- Área droppable -->
+                            @if (track.AssignedUserId.ToString() == userId)
+                            {
+                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                            }
+                        </div>
+                        @* <div class="track-number">Track @Model.Tracks.IndexOf(track) + 1</div> *@
                     </div>
                 }
             </div>

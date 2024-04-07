@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
 
-        public Guid TrackId { get; internal set; }
+        public Guid TrackId { get; set; }
 
         public string InstrumentType { get; set; }
 

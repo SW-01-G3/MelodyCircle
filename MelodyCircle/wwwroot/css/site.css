@@ -229,40 +229,72 @@ body {
     font-weight: bold;
 }
 
-#instrument-menu {
-    border-right: solid 1px #ccc;
-    height: 100vh;
-}
-
-.instrument {
-    padding: 10px;
-    margin: 5px;
-    background-color: #e9ecef;
-    cursor: grab;
-}
+/* PAINEL DE ARRANJO */
 
 #arrangement-panel {
     padding: 10px;
 }
 
-.track {
-    border: solid 1px #007bff;
-    margin: 5px;
-    padding: 10px;
-    background-color: #f8f9fa;
-}
-
-.drop-area {
-    width: 100%;
-    height: 100%; /* Definindo altura para as áreas droppable */
-    border: 2px dashed #ccc;
-    position: relative; /* Para posicionar os elementos internos absolutamente se necessário */
-}
-
 .instrument {
-    margin: 5px;
-    padding: 5px;
-    background-color: #e1e1e1;
-    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 5px 0; /* Adicionado um espaço vertical entre os instrumentos */
+    background-color: #e9ecef;
     cursor: grab;
+    border: 1px solid #ccc;
+    user-select: none; /* Impede que o texto seja selecionado durante o drag */
 }
+
+.track-container {
+    position: relative; /* Adicionando posição relativa para posicionar elementos absolutamente dentro */
+    padding: 5px; /* Adicionando um pouco de preenchimento ao redor da track */
+    border: 1px dashed #ccc; /* Restaurando o tracejado suave */
+    margin-bottom: 30px; /* Espaço após cada track para evitar sobreposição */
+}
+
+.timeline {
+    position: absolute;
+    top: 0;
+    left: 10px; /* Igual ao padding do track-container */
+    right: 10px; /* Igual ao padding do track-container */
+    height: 20px; /* Altura da régua */
+    display: flex;
+    align-items: center; /* Centraliza os marcadores de tempo verticalmente */
+    border-top: 2px solid #ccc; /* Substituído por uma borda mais visível */
+}
+
+.track {
+    height: 100px; /* Ajustando a altura da sua track */
+    border: 1px solid #ccc; /* Borda sólida para cada track */
+    background-color: #f8f9fa; /* Cor de fundo claro para as tracks */
+    margin-top: 30px; /* Espaço acima da track para não sobrepor a régua */
+}
+
+.time-marker {
+    position: relative;
+    flex: 1; /* Cada marcador de tempo ocupa um espaço igual */
+    text-align: center;
+}
+
+.time-marker::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-right: 1px solid #ddd; /* Linhas verticais para os marcadores de tempo */
+}
+
+.time-marker span {
+    position: absolute;
+    bottom: -20px; /* Posiciona os rótulos abaixo da régua */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+}
+
+.track-number {
+    font-weight: bold; /* Tornando o número da track em negrito */
+    color: #333; /* Cor escura para o número da track */
+}
+
+/* FINAL DO PAINEL DE ARRANJO */

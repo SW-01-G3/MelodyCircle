@@ -193,7 +193,7 @@ namespace MelodyCircle.Migrations
 
                     b.HasIndex("TrackId");
 
-                    b.ToTable("Instruments");
+                    b.ToTable("InstrumentOnTrack");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>

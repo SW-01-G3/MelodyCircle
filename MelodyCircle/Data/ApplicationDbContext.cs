@@ -16,7 +16,7 @@ namespace MelodyCircle.Data
         public DbSet<Collaboration> Collaborations { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Track> Tracks { get; set; }
-        public DbSet<InstrumentOnTrack> Instruments { get; set; }
+        public DbSet<InstrumentOnTrack> InstrumentOnTrack { get; set; }
         public DbSet<ForumPost> ForumPost { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
