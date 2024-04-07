@@ -38,6 +38,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+        @if (User.Identity.IsAuthenticated && User.Identity.Name == ViewBag.Creator)
+        {
+            @:initSortable();
+        }
+                });
+
+        function initSortable() {
             var stepList = document.getElementById('stepList');
             new Sortable(stepList, {
                 group: 'shared',
@@ -55,7 +62,7 @@
                 handle: '.drag-handle',
                 onEnd: updateOrder
             });
-        });
+        }
 
         function updateOrder(evt) {
             var stepOrder = Array.from(evt.to.children).map(function (step) {
@@ -110,7 +117,7 @@
     <aside class="col-md-2 h-100 bg-white rounded-3 border-purple">
         <h2 class="p-2 pt-3 text-center">Passos</h2>
 
-        <div id="stepList" class="">
+        <div id="stepList" class="pb-3">
             @if (Model != null && Model.Any())
             {
                 var userId = UserManager.GetUserId(User);
@@ -119,36 +126,46 @@
 
                 if (subscription != null)
                 {
-                    <p>
-                        @subscription.CompletedSteps.Count() / @Model.Count() | @subscription.CompletedSteps.CalculateCompletionPercentage(Model.Count(), 2)% completado
-                    </p>
+                    <div class="container">
+                        <div class="progress">
+                            @{
+                                var completionPercentage = subscription != null ? subscription.CompletedSteps.CalculateCompletionPercentage(Model.Count(), 0) : 0;
+                            }
+                            <div class="progress-bar bg-purple" role="progressbar" aria-valuenow="@completionPercentage" aria-valuemin="0" aria-valuemax="100" style="width: @completionPercentage%">
+                                @completionPercentage%
+                            </div>
+                        </div>
+                    </div>
                 }
 
                 @foreach (var (step, index) in Model.Select((Value, Index) => (Value, Index)))
                 {
                     <div class="col justify-content-evenly mt-3 step-div rounded-2 p-2 border-purple" data-step-id="@step.Id">
                         <div class="drag-handle">
-                            @if (subscription != null)
-                            {
-                                <form method="post" asp-action="CompleteStep" asp-route-tutorialId="@step.TutorialId" asp-route-stepId="@step.Id">
-                                    <button type="submit">Check</button>
-                                </form>
-                            }
+                            <div class="text-center">
+                                <span class="text-wrap text-break">@Html.DisplayFor(_ => step.Title)</span>
+                            </div>
 
-                            <!-- Alteração aqui para incluir a numeração do passo -->
-                            <span class="text-wrap text-break ">@Html.DisplayFor(_ => step.Title)</span>
-
-                            @if (User.Identity.IsAuthenticated && User.Identity.Name == ViewBag.Creator)
-                            {
-                                <div class="d-flex justify-content-end align-items-center">
+                            <div class="text-center mt-2">
+                                @if (User.Identity.IsAuthenticated && User.Identity.Name == ViewBag.Creator)
+                                {
                                     <a href="@Url.Action("Edit", new { id = step.Id })" class="me-2">
-                                        <img src="~/img/edit-black.svg" alt="Edit step." class="icon" />
+                                        <img src="~/img/edit-black.svg" alt="Edit step" class="icon" />
                                     </a>
                                     <a href="@Url.Action("Delete", new { id = step.Id })">
-                                        <img src="~/img/delete.svg" alt="Delete step." class="icon" />
+                                        <img src="~/img/delete.svg" alt="Delete step" class="icon" />
                                     </a>
-                                </div>
-                            }
+                                }
+
+                                @if (subscription != null && User.Identity.IsAuthenticated && User.Identity.Name != ViewBag.Creator)
+                                {
+                                    <form method="post" asp-action="CompleteStep" asp-route-tutorialId="@step.TutorialId" asp-route-stepId="@step.Id">
+                                        <button class="border-purple bg-purple rounded" type="submit">
+                                            <img src="~/img/check.svg" alt="Complete step" />
+                                        </button>
+                                    </form>
+                                }
+                            </div>
                         </div>
                     </div>
                 }
