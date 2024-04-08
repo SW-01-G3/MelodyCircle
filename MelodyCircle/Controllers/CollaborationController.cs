@@ -469,8 +469,10 @@ namespace MelodyCircle.Controllers
                 {
                     Id = Guid.NewGuid(),
                     AssignedUserId = Guid.Parse(userId),
-                    CollaborationId = id
-                };
+                    CollaborationId = id,
+                    BPM = 102,
+                    Duration = TimeSpan.FromMinutes(4)
+            };
 
                 _context.Tracks.Add(userTrack);
 

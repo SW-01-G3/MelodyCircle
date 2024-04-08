@@ -23,19 +23,18 @@
                 let instrumentName = item.getAttribute('data-instrument').toLowerCase();
                 let soundId = `sound-${instrumentName}`;
                 let sound = document.getElementById(soundId);
-
-                if (sound)
-                    sound.play();
-                else
-                    console.error('Sound element not found:', soundId);
+                if (sound) sound.play();
+                else console.error('Sound element not found:', soundId);
             });
         });
 
         function allowDrop(event) {
+            console.log("Drag over the drop area");
             event.preventDefault();
         }
 
         function drag(event) {
+            console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
             event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
         }
 
@@ -51,12 +50,13 @@
             var trackWidth = trackRect.width;
             var relativePosition = (mouseX - trackStartX) / trackWidth;
 
-            var startTimeSeconds = relativePosition * 4 * 60;
+            var startTimeSeconds = relativePosition * 4 * 60; // 4 minutos em segundos
 
-            if (trackId && instrumentName)
+            if (trackId && instrumentName) {
                 updateTrack(trackId, instrumentName, startTimeSeconds);
-            else
+            } else {
                 console.error("Drop target is not a track container or trackId/instrumentName is missing.");
+            }
         }
 
         function updateTrack(trackId, instrumentName, startTimeSeconds) {
@@ -82,10 +82,11 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (data.success)
+                    if (data.success) {
                         console.log('Instrument added successfully:', data.instrumentId);
-                    
-                    console.error('Error adding instrument:', data.message);
+                        // Aqui você adicionaria o elemento visual da faixa no front-end
+                    } else
+                        console.error('Error adding instrument:', data.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -106,49 +107,40 @@
         }
 
         function createTimeline() {
-            const tracks = document.querySelectorAll('.track-container'); // Note que estamos selecionando o container da track agora
+            const tracks = document.querySelectorAll('.track');
             const trackLength = 240; // Duração total em segundos (4 minutos)
             const interval = 30; // Intervalo em segundos para as marcações
 
             // Criar a régua para cada faixa
-            tracks.forEach((trackContainer, index) => {
+            tracks.forEach(track => {
                 const timeline = document.createElement('div');
                 timeline.className = 'timeline';
                 timeline.style.display = 'flex';
-                timeline.style.width = '100%'; // A régua deve ocupar toda a largura do container da track
-                timeline.style.marginBottom = '10px'; // Espaço abaixo da régua
+                timeline.style.position = 'absolute';
+                timeline.style.width = '100%'; // Isso fará com que a timeline e a track tenham o mesmo tamanho
+                timeline.style.height = '20px';
 
                 // Criar as marcações de tempo
                 for (let time = 0; time <= trackLength; time += interval) {
                     const timeMarker = document.createElement('div');
                     timeMarker.className = 'time-marker';
-                    timeMarker.style.flexGrow = '1'; // Distribui uniformemente o espaço
-                    timeMarker.style.textAlign = 'center';
-                    timeMarker.style.position = 'relative';
+                    timeMarker.style.width = `${(interval / trackLength) * 100}%`;
+                    timeMarker.style.position = 'absolute';
+                    timeMarker.style.left = `${(time / trackLength) * 100}%`;
 
                     const markerLabel = document.createElement('span');
                     markerLabel.textContent = `${time / 60}min`;
                     markerLabel.style.position = 'absolute';
-                    markerLabel.style.width = '100%';
-                    markerLabel.style.left = '0';
-                    markerLabel.style.bottom = '-20px'; // Posição abaixo da régua
+                    markerLabel.style.left = '50%';
+                    markerLabel.style.transform = 'translateX(-50%)';
+                    markerLabel.style.bottom = '20px'; // Posicionando os números acima da régua
 
                     timeMarker.appendChild(markerLabel);
                     timeline.appendChild(timeMarker);
                 }
 
-                // Adiciona a régua ao container da track
-                trackContainer.prepend(timeline); // Adiciona a régua no topo do container da track
-
-                // Adiciona a numeração da track
-                const trackNumber = document.createElement('div');
-                trackNumber.className = 'track-number';
-                trackNumber.textContent = `Track ${index + 1}`; // Numeração começa em 1
-                trackNumber.style.position = 'absolute';
-                trackNumber.style.right = '10px'; // Posição à direita
-                trackNumber.style.top = '5px'; // Posição acima da régua
-
-                trackContainer.prepend(trackNumber); // Adiciona a numeração no topo do container da track
+                const trackContainer = track.parentNode;
+                trackContainer.insertBefore(timeline, track); // Insere a timeline acima da track
             });
         }
 
@@ -160,7 +152,9 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', createTimeline);
+        document.addEventListener('DOMContentLoaded', () => {
+            createTimeline();
+        });
     </script>
 }
 
@@ -203,14 +197,16 @@
                         <div class="timeline">
                             <!-- Marcadores de tempo serão inseridos aqui -->
                         </div>
-                        <div class="track" data-track-id="@track.Id">
+
+                        <div class="track-number">Track @Model.Tracks.IndexOf(track)</div>
+
+                        <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
                             <!-- Área droppable -->
                             @if (track.AssignedUserId.ToString() == userId)
                             {
                                 <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
                             }
                         </div>
-                        @* <div class="track-number">Track @Model.Tracks.IndexOf(track) + 1</div> *@
                     </div>
                 }
             </div>
