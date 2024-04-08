@@ -61,7 +61,7 @@ namespace MelodyCircle.Controllers
             var userId = _userManager.GetUserId(User);
             var collabsCriados = _context.Collaborations
                 .Where(t => t.CreatorId == userId);
-                
+
             var publicCollaborations = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
                 .Include(c => c.ContributingUsers)

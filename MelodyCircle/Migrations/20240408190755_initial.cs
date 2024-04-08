@@ -661,11 +661,10 @@ namespace MelodyCircle.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-<<<<<<<< HEAD:MelodyCircle/Migrations/20240405224747_initial.cs
-                name: "Notifications");
-========
                 name: "InstrumentOnTrack");
->>>>>>>> 266:MelodyCircle/Migrations/20240407205148_initial.cs
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Steps");
