@@ -3,9 +3,17 @@
     var collaborationCounts = ViewBag.CollaborationCounts as IEnumerable<int>;
 }
 
-<h1>@ViewBag.UserName Collaboration Creation Stats</h1>
+<div class="text-center">
+    <h1>Estatísticas</h1>
+</div>
 
-<canvas id="collaborationCreationChart" width="800" height="400"></canvas>
+<div class="container text-center border-purple bg-white p-5 mx-auto w-50 row d-flex justify-content-center align-items-center">
+    <h1>@ViewBag.UserName Collaboration Creation Stats</h1>
+
+    <div class="w-100">
+        <canvas id="collaborationCreationChart" width="800" height="400"></canvas>
+    </div>
+</div>
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -15,31 +15,41 @@
 	</button>
 </div>
 
-<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-50 text-center align-items-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-	<div class="offcanvas-header text-center">
+<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-75 text-center align-items-center d-flex flex-column" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+	<div class="offcanvas-header">
 		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 
+	<div class="offcanvas-body">
+		<h4>Informações da Aplicação</h4>
 
-	<h4>Informações da Aplicação</h4>
+		<div class="my-4">
+			<h6>Utilizadores: @Context.Users.Count()</h6>
+			<a class="btn bg-purple text-white my-2" href="@Url.Action("UserCreationStats", "Stat")">Ver Estatísticas de Utilizadores</a>
+		</div>
 
-	<div class="col-8 mt-4">
-		<h6>Utilizadores: @Context.Users.Count()</h6>
-		<a class="btn btn-primary" href="@Url.Action("UserCreationStats", "Stat")">Ver Estatísticas de Criação de Utilizadores</a>
-		<h6>Tutoriais:    @Context.Tutorials.Count()</h6>
-		<a class="btn btn-primary" href="@Url.Action("TutorialCreationStats", "Stat")">Ver Estatísticas de Criação de Tutoriais</a>
-		<h6>Steps:      @Context.Steps.Count()</h6>
-		<a class="btn btn-primary" href="@Url.Action("StepCreationStats", "Stat")">Ver Estatísticas de Criação de Passos</a>
-		<h6>Collabs:      @Context.Collaborations.Count()</h6>
-		<a class="btn btn-primary" href="@Url.Action("CollaborationCreationStats", "Stat")">Ver Estatísticas de Criação de Colaborações</a>
+		<div class="my-4">
+			<h6>Tutoriais: @Context.Tutorials.Count()</h6>
+			<a class="btn bg-purple text-white my-2" href="@Url.Action("TutorialCreationStats", "Stat")">Ver Estatísticas de Tutoriais</a>
+		</div>
+
+		<div class="my-4">
+			<h6>Steps: @Context.Steps.Count()</h6>
+			<a class="btn bg-purple text-white my-2" href="@Url.Action("StepCreationStats", "Stat")">Ver Estatísticas de Passos</a>
+		</div>
+
+		<div class="my-4">
+			<h6>Collabs: @Context.Collaborations.Count()</h6>
+			<a class="btn bg-purple text-white my-2" href="@Url.Action("CollaborationCreationStats", "Stat")">Ver Estatísticas de Colaborações</a>
+		</div>
+
+		<!-- This div remains at its place but the content above is centered vertically -->
+		<div class="mt-auto">
+			<h6>Versão: 1.0.0</h6>
+			<h6>Última Atualização:<br> 27 de Março de 2024</h6>
+		</div>
 	</div>
-
-	<div class="col-8 mt-4">
-		<h6>Versão: 1.0.0</h6>
-		<h6>Última Atualização:<br> 27 de Março de 2024</h6>
-	</div>
-
 </div>
 
 
