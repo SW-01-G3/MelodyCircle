@@ -26,8 +26,6 @@ var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         }
 }
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const toggleFiltersButton = document.getElementById('toggleFilters');
     const filterContent = document.querySelector('.filter-content');
