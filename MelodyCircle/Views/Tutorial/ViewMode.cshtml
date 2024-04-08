@@ -24,13 +24,18 @@
                     <div class="card-body align-content-center text-center">
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
 
-                        <h5 class="card-title">Nº de passos</h5>
-                        <h6>@item.StepCount</h6>
+                        <div>
+                            <span class="card-title">Nº de passos: </span>
+                            <span>@item.StepCount</span>
+                        </div>
+                        
+                        <div>
+                            <span class="card-title">Nº de inscritos: </span>
+                            <span>@item.SubscribersCount</span>
+                        </div>
+                        
 
-                        <h5 class="card-title">Nº de inscritos</h5>
-                        <h6>@item.SubscribersCount</h6>
-
-                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white mt-2">Abrir</a><br />
 
                         @{
                             double averageRating = Context.TutorialRating
@@ -43,8 +48,7 @@
                             int halfStar = roundedRating % 2;
                             int emptyStars = 5 - fullStars - halfStar;
                         }
-                        <br/>
-                        <div class="star-rating ">
+                        <div class="star-rating mt-3">
                             @for (int i = 0; i < fullStars; i++)
                             {
                                 <img src="~/img/star-filled-svgrepo-com.svg" />
@@ -58,10 +62,9 @@
                             {
                                 <img src="~/img/estrelaEmpty.svg" />
                             }
-                            <br />
                         </div>
 
-                        <button type="button" class="border-purple bg-purple rounded" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
+                        <button type="button" class="border-purple bg-purple rounded mt-3" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
                             <img src="~/img/star-add-filled-svgrepo-com.svg" />
                         </button>
 

@@ -150,10 +150,11 @@ body {
 .floating-button-center {
   position: fixed;
   bottom: 1.5rem;
-  right: 50%;
-  left: 50%;
+  right: 0;
+  left: 0;
+  margin-inline: auto;
   height: 40px;
-  width: 100px;
+  width: fit-content;
 }
 
 .fill-purple {
