@@ -28,18 +28,13 @@ namespace MelodyCircle.Models
         [Required]
         public AccessMode AccessMode { get; set; }
 
-        public virtual List<User>? ContributingUsers { get; set; }
-        public virtual List<User>? WaitingUsers { get; set; }
+        public virtual List<User>? ContributingUsers { get; set; } = new List<User>();
+        public virtual List<User>? WaitingUsers { get; set; } = new List<User>();
+        public virtual List<Track>? Tracks { get; set; } = new List<Track>();
 
         public bool IsFinished { get; set; }
 
-        public virtual List<CollaborationRating> Ratings { get; set; } = new List<CollaborationRating>();
-
-        public Collaboration()
-        {
-            ContributingUsers = new List<User>();
-            WaitingUsers = new List<User>();
-        }
+        public virtual List<CollaborationRating>? Ratings { get; set; } = new List<CollaborationRating>();
     }
     
     public enum AccessMode

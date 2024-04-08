@@ -228,3 +228,87 @@ body {
 .sidebar ul li strong {
     font-weight: bold;
 }
+
+/* PAINEL DE ARRANJO */
+
+#arrangement-panel {
+    padding: 10px;
+}
+
+#instrument-menu {
+    border-right: solid 1px #ccc;
+    height: 100vh;
+}
+
+.instrument {
+    margin: 5px;
+    padding: 5px;
+    background-color: #f8f9fa; /* Mais claro do que o anterior para contraste */
+    border: 1px solid #ccc;
+    cursor: grab;
+}
+
+.drop-area {
+    width: 1030; /* Ajuste para compensar o padding */
+    height: 97px; /* Altura da sua track */
+    border: 2px dashed #ccc;
+    position: relative; /* Para posicionar os elementos internos absolutamente se necessário */
+}
+
+.track-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-left: 50px; /* Espaço para a numeração da track */
+}
+
+.timeline {
+    display: flex;
+    width: 100%; /* Ajuste para que a timeline ocupe a largura total do seu contêiner */
+    position: relative; /* Ajuste para posicionar os elementos absolutamente dentro dela */
+    margin-top: 0px; /* Desloque a timeline para cima para que os números fiquem acima */
+    top: 50px;
+    left: 0px;
+}
+
+.track {
+    border: 1px solid #ccc;
+    height: 100x; /* A altura da sua track */
+    background-color: #f8f9fa; /* Cor de fundo */
+    margin-top: 25px; /* Espaço acima da track */
+    width: 1055px;
+}
+
+.time-marker {
+    flex: 1; /* Isso fará com que cada marcador de tempo tenha o mesmo tamanho */
+    position: relative;
+    text-align: center;
+}
+
+.time-marker::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    border-right: 1px solid #ddd;
+}
+
+.time-marker span {
+    position: absolute;
+    bottom: 20px; /* Ajuste para que os números fiquem acima da timeline */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+}
+
+.track-number {
+    position: absolute;
+    top: 50px;
+    left: -2.5%; /* Posição da numeração da track */
+    font-weight: bold;
+    background-color: #fff; /* Cor de fundo para destacar a numeração */
+    padding: 2px 5px; /* Preenchimento em torno do texto da numeração */
+}
+
+/* FINAL DO PAINEL DE ARRANJO */

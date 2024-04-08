@@ -1,0 +1,228 @@
+﻿@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject IAntiforgery Antiforgery
+
+@model ArrangementPanelViewModel
+
+@{
+    ViewBag.Title = "Painel de Arranjo";
+
+    var user = await UserManager.GetUserAsync(User);
+    var userId = user?.Id;
+    var assignedTrack = Model.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+    var assignedTrackNumber = assignedTrack != null ? Model.Tracks.IndexOf(assignedTrack) + 1 : 0;
+    var userHasTrack = assignedTrackNumber > 0;
+    var antiforgeryTokenSet = Antiforgery.GetAndStoreTokens(Context);
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.instrument').forEach(item => {
+            item.addEventListener('click', event => {
+                let instrumentName = item.getAttribute('data-instrument').toLowerCase();
+                let soundId = `sound-${instrumentName}`;
+                let sound = document.getElementById(soundId);
+                if (sound) sound.play();
+                else console.error('Sound element not found:', soundId);
+            });
+        });
+
+        function allowDrop(event) {
+            console.log("Drag over the drop area");
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
+            event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
+        }
+
+        function drop(event) {
+            event.preventDefault();
+
+            var instrumentName = event.dataTransfer.getData("text/plain");
+            var trackContainer = event.target.closest('.track');
+            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+            var mouseX = event.clientX;
+            var trackRect = trackContainer.getBoundingClientRect();
+            var trackStartX = trackRect.left;
+            var trackWidth = trackRect.width;
+            var relativePosition = (mouseX - trackStartX) / trackWidth;
+
+            var startTimeSeconds = relativePosition * 4 * 60; // 4 minutos em segundos
+
+            if (trackId && instrumentName) {
+                updateTrack(trackId, instrumentName, startTimeSeconds);
+            } else {
+                console.error("Drop target is not a track container or trackId/instrumentName is missing.");
+            }
+        }
+
+        function updateTrack(trackId, instrumentName, startTimeSeconds) {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    TrackId: trackId,
+                    InstrumentName: instrumentName,
+                    StartTime: startTimeSeconds
+                })
+            })
+                .then(response => {
+                    if (!response.ok)
+                        return response.text().then(text => { throw new Error(text) });
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        console.log('Instrument added successfully:', data.instrumentId);
+                        // Aqui você adicionaria o elemento visual da faixa no front-end
+                    } else
+                        console.error('Error adding instrument:', data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function createInstrumentElement(instrumentName, instrumentId) {
+            var element = document.createElement('div');
+            element.classList.add('instrument-track');
+            element.textContent = instrumentName.toUpperCase(); // Nome do instrumento em maiúsculas
+            element.setAttribute('data-instrument-id', instrumentId);
+
+            element.style.border = '2px solid #000'; // Borda mais grossa
+            element.style.backgroundColor = '#FFF'; // Fundo branco
+            element.style.color = '#000'; // Texto preto
+            element.style.textAlign = 'center'; // Texto centralizado
+            element.style.lineHeight = '50px'; // Altura da linha para centralizar verticalmente
+            element.style.marginTop = '5px';
+            element.style.padding = '5px';
+            element.style.fontSize = '1.5rem'; // Tamanho da fonte maior
+            element.style.fontWeight = 'bold'; // Texto em negrito
+            element.style.width = 'calc(100% - 10px)'; // Largura ajustada
+            element.style.boxSizing = 'border-box'; // Box sizing para incluir borda e padding
+            element.style.borderColor = 'black';
+
+            return element;
+        }
+
+        function createTimeline() {
+            const tracks = document.querySelectorAll('.track');
+            const trackLength = 240; // Duração total em segundos (4 minutos)
+            const interval = 30; // Intervalo em segundos para as marcações
+
+            // Criar a régua para cada faixa
+            tracks.forEach(track => {
+                const timeline = document.createElement('div');
+                timeline.className = 'timeline';
+                timeline.style.display = 'flex';
+                timeline.style.position = 'absolute';
+                timeline.style.width = '100%'; // Isso fará com que a timeline e a track tenham o mesmo tamanho
+                timeline.style.height = '20px';
+
+                // Criar as marcações de tempo
+                for (let time = 0; time <= trackLength; time += interval) {
+                    const timeMarker = document.createElement('div');
+                    timeMarker.className = 'time-marker';
+                    timeMarker.style.width = `${(interval / trackLength) * 100}%`;
+                    timeMarker.style.position = 'absolute';
+                    timeMarker.style.left = `${(time / trackLength) * 100}%`;
+
+                    const markerLabel = document.createElement('span');
+                    markerLabel.textContent = `${time / 60}min`;
+                    markerLabel.style.position = 'absolute';
+                    markerLabel.style.left = '50%';
+                    markerLabel.style.transform = 'translateX(-50%)';
+                    markerLabel.style.bottom = '20px'; // Posicionando os números acima da régua
+
+                    timeMarker.appendChild(markerLabel);
+                    timeline.appendChild(timeMarker);
+                }
+
+                const trackContainer = track.parentNode;
+                trackContainer.insertBefore(timeline, track); // Insere a timeline acima da track
+            });
+        }
+
+        function addInstrumentToTrackElement(trackId, instrumentName) {
+            const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
+            if (trackElement) {
+                const instrumentElement = createInstrumentElement(instrumentName, instrumentName); // Segundo parâmetro pode ser um ID único se necessário
+                trackElement.appendChild(instrumentElement);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createTimeline();
+        });
+    </script>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <!-- Menu Lateral de Instrumentos -->
+            <div id="instrument-menu">
+                <h5>INSTRUMENTOS</h5>
+                @foreach (var instrument in Model.AvailableInstruments)
+                {
+                    <div id="@instrument.Name" class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name">
+                        @instrument.Name
+                        <audio id="@($"sound-{instrument.Name.ToLower()}")" src="@instrument.SoundPath"></audio>
+
+                    </div>
+                }
+                <!-- Botão de Upload de Instrumento -->
+                <button id="upload-button">UPLOAD</button>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <!-- Painel de Arranjo -->
+            <div id="arrangement-panel">
+                <div class="header">
+                    <span>BPM: <input type="number" id="bpm" value="102" min="60" max="150" /></span>
+                    @if (userHasTrack)
+                    {
+                        <span>A tua faixa: @assignedTrackNumber</span>
+                    }
+                    else
+                    {
+                        <span>Você não tem faixa atribuída</span>
+                    }
+                </div>
+                <!-- As faixas serão carregadas aqui -->
+                @foreach (var track in Model.Tracks)
+                {
+                    <div class="track-container">
+                        <div class="timeline">
+                            <!-- Marcadores de tempo serão inseridos aqui -->
+                        </div>
+
+                        <div class="track-number">Track @Model.Tracks.IndexOf(track)</div>
+
+                        <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
+                            <!-- Área droppable -->
+                            @if (track.AssignedUserId.ToString() == userId)
+                            {
+                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="antiforgery-form" method="post" style="display:none;">
+    <input type="hidden" name="__RequestVerificationToken" value="@antiforgeryTokenSet.RequestToken" />
+</form>

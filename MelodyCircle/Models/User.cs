@@ -5,8 +5,6 @@ namespace MelodyCircle.Models
 {
     public class User : IdentityUser
     {
-        public Guid Id { get; set; }
-
         //[PersonalData]
         //[Required]
         //[EmailAddress]

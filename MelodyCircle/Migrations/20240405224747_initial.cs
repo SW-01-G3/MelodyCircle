@@ -314,7 +314,34 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserCollaborations",
+                name: "Tracks",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AssignedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CollaborationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BPM = table.Column<double>(type: "float", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tracks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tracks_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tracks_Collaborations_CollaborationId",
+                        column: x => x.CollaborationId,
+                        principalTable: "Collaborations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserContributingCollaborations",
                 columns: table => new
                 {
                     ContributingCollaborationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -322,15 +349,15 @@ namespace MelodyCircle.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserCollaborations", x => new { x.ContributingCollaborationsId, x.ContributingUsersId });
+                    table.PrimaryKey("PK_UserContributingCollaborations", x => new { x.ContributingCollaborationsId, x.ContributingUsersId });
                     table.ForeignKey(
-                        name: "FK_UserCollaborations_AspNetUsers_ContributingUsersId",
+                        name: "FK_UserContributingCollaborations_AspNetUsers_ContributingUsersId",
                         column: x => x.ContributingUsersId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserCollaborations_Collaborations_ContributingCollaborationsId",
+                        name: "FK_UserContributingCollaborations_Collaborations_ContributingCollaborationsId",
                         column: x => x.ContributingCollaborationsId,
                         principalTable: "Collaborations",
                         principalColumn: "Id",
@@ -393,7 +420,7 @@ namespace MelodyCircle.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TutorialId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -403,8 +430,7 @@ namespace MelodyCircle.Migrations
                         name: "FK_SubscribeTutorials_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_SubscribeTutorials_Tutorials_TutorialId",
                         column: x => x.TutorialId,
@@ -429,6 +455,27 @@ namespace MelodyCircle.Migrations
                         name: "FK_TutorialRating_Tutorials_TutorialId",
                         column: x => x.TutorialId,
                         principalTable: "Tutorials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InstrumentOnTrack",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TrackId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InstrumentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InstrumentOnTrack", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InstrumentOnTrack_Tracks_TrackId",
+                        column: x => x.TrackId,
+                        principalTable: "Tracks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -531,6 +578,11 @@ namespace MelodyCircle.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InstrumentOnTrack_TrackId",
+                table: "InstrumentOnTrack",
+                column: "TrackId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Steps_SubscribeTutorialId",
                 table: "Steps",
                 column: "SubscribeTutorialId");
@@ -551,13 +603,23 @@ namespace MelodyCircle.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tracks_CollaborationId",
+                table: "Tracks",
+                column: "CollaborationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tracks_UserId",
+                table: "Tracks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TutorialRating_TutorialId",
                 table: "TutorialRating",
                 column: "TutorialId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserCollaborations_ContributingUsersId",
-                table: "UserCollaborations",
+                name: "IX_UserContributingCollaborations_ContributingUsersId",
+                table: "UserContributingCollaborations",
                 column: "ContributingUsersId");
 
             migrationBuilder.CreateIndex(
@@ -599,7 +661,11 @@ namespace MelodyCircle.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+<<<<<<<< HEAD:MelodyCircle/Migrations/20240405224747_initial.cs
                 name: "Notifications");
+========
+                name: "InstrumentOnTrack");
+>>>>>>>> 266:MelodyCircle/Migrations/20240407205148_initial.cs
 
             migrationBuilder.DropTable(
                 name: "Steps");
@@ -608,7 +674,7 @@ namespace MelodyCircle.Migrations
                 name: "TutorialRating");
 
             migrationBuilder.DropTable(
-                name: "UserCollaborations");
+                name: "UserContributingCollaborations");
 
             migrationBuilder.DropTable(
                 name: "UserRating");
@@ -621,6 +687,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "ForumPost");
+
+            migrationBuilder.DropTable(
+                name: "Tracks");
 
             migrationBuilder.DropTable(
                 name: "SubscribeTutorials");

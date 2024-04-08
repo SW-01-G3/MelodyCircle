@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Security.Claims;
 using MelodyCircle.Services;
+using NAudio.Wave;
 
 namespace MelodyCircle.Controllers
 {
@@ -14,11 +15,13 @@ namespace MelodyCircle.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly NotificationService _notificationService;
-
-        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, NotificationService notificationService)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        
+        public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, IWebHostEnvironment hostingEnvironment, NotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
             _notificationService = notificationService;
         }
 
@@ -56,8 +59,13 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> EditMode()
         {
             var userId = _userManager.GetUserId(User);
-            var collabsCriados = await _context.Collaborations
-                .Where(t => t.CreatorId == userId)
+            var collabsCriados = _context.Collaborations
+                .Where(t => t.CreatorId == userId);
+                
+            var publicCollaborations = await _context.Collaborations
+                .Include(c => c.WaitingUsers)
+                .Include(c => c.ContributingUsers)
+                .Where(c => c.AccessMode == AccessMode.Public)
                 .ToListAsync();
 
             return View("EditModeCollab", collabsCriados);
@@ -67,11 +75,11 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> ViewMode()
         {
             var userId = _userManager.GetUserId(User);
-            var userc = _context.Users.Find(userId);
+            var user = _context.Users.Find(userId);
 
             var collabsParticipantes = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
-                .Where(s => s.ContributingUsers.Contains(userc))
+                .Where(s => s.ContributingUsers.Contains(user))
                 .ToListAsync();
 
             return View("ViewModeCollab", collabsParticipantes);
@@ -98,6 +106,7 @@ namespace MelodyCircle.Controllers
 
             return View(collaboration);
         }
+
         public async Task<IActionResult> JoinQueue(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);
@@ -110,7 +119,7 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> JoinQueueConfim(Guid id)
+        public async Task<IActionResult> JoinQueueConfirm(Guid id)
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
@@ -121,15 +130,20 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
 
-            collaboration.WaitingUsers.Add(user);
+            if (user == null)
+                return NotFound();
 
-            await _context.SaveChangesAsync();
+            if (!collaboration.WaitingUsers.Any(u => u.Id == user.Id))
+            {
+                collaboration.WaitingUsers.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
             return View("JoinQueueConfirmation", collaboration);
         }
 
-        // POST: /Collaboration/AllowUser/{collaborationId}/{userId}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AllowUser(Guid collaborationId, string userId)
@@ -154,13 +168,12 @@ namespace MelodyCircle.Controllers
                 return View("WaitingList", collaboration);
             }
 
-            var userToRemove = collaboration.WaitingUsers.FirstOrDefault(u => u.Id.ToString() == userId);
+            var userToAdd = await _context.Users.FindAsync(userId);
 
-            if (userToRemove != null)
+            if (userToAdd != null && collaboration.WaitingUsers.Contains(userToAdd))
             {
-                collaboration.WaitingUsers.Remove(userToRemove);
-                collaboration.ContributingUsers.Add(userToRemove);
-
+                collaboration.WaitingUsers.Remove(userToAdd);
+                collaboration.ContributingUsers.Add(userToAdd);
                 await _context.SaveChangesAsync();
             }
 
@@ -261,6 +274,13 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Collaboration collaboration, IFormFile photo)
         {
+            collaboration.CreatorId = _userManager.GetUserId(User);
+
+            var user = await _context.Users.FindAsync(collaboration.CreatorId);
+
+            if (user == null)
+                return NotFound("User not found");
+
             if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
             {
                 ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
@@ -277,12 +297,13 @@ namespace MelodyCircle.Controllers
                     collaboration.PhotoContentType = photo.ContentType;
                 }
 
-                collaboration.WaitingUsers = new List<User>();
+                collaboration.ContributingUsers.Add(user);
+
                 collaboration.CreatedDate = DateTime.Now;
-                collaboration.CreatorId = _userManager.GetUserId(User);
 
                 _context.Add(collaboration);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(collaboration);
@@ -497,6 +518,114 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        // GET: /Collaboration/ArrangementPanel/{id}
+        public async Task<IActionResult> ArrangementPanel(Guid id)
+        {
+            var collaboration = await _context.Collaborations
+                .Include(c => c.ContributingUsers)
+                .Include(c => c.Tracks)
+                    .ThenInclude(t => t.InstrumentsOnTrack)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
+
+            if (!isContributorOrCreator)
+                return Forbid();
+
+            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+
+            if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
+            {
+                userTrack = new Track
+                {
+                    Id = Guid.NewGuid(),
+                    AssignedUserId = Guid.Parse(userId),
+                    CollaborationId = id,
+                    BPM = 102,
+                    Duration = TimeSpan.FromMinutes(4)
+            };
+
+                _context.Tracks.Add(userTrack);
+
+                await _context.SaveChangesAsync();
+            }
+
+            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
+
+            var arrangementViewModel = new ArrangementPanelViewModel
+            {
+                Collaboration = collaboration,
+                Tracks = collaboration.Tracks,
+                IsContributorOrCreator = isContributorOrCreator,
+                UserTrack = userTrack,
+                AssignedTrackNumber = assignedTrackNumber,
+                AvailableInstruments = InstrumentData.AvailableInstruments
+            };
+
+            return View("Painel", arrangementViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddInstrumentToTrack([FromBody] InstrumentOnTrackDto dto)
+        {
+            var track = await _context.Tracks.Include(t => t.InstrumentsOnTrack).FirstOrDefaultAsync(t => t.Id == dto.TrackId);
+
+            if (track == null)
+                return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+
+            if (track.AssignedUserId.ToString() != userId)
+                return Forbid();
+
+            var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
+            var duration = GetAudioDuration(instrumentFilePath);
+
+            var instrument = new InstrumentOnTrack
+            {
+                Id = Guid.NewGuid(),
+                TrackId = dto.TrackId,
+                InstrumentType = dto.InstrumentName,
+                StartTime = TimeSpan.FromSeconds(dto.StartTime),
+                Duration = duration
+            };
+
+            if (instrument.Id == null)
+                return NotFound();
+
+            if (instrument.TrackId == null)
+                return NotFound();
+
+            if (instrument.InstrumentType == null)
+                return NotFound();
+
+            if (instrument.StartTime == null)
+                return NotFound();
+
+            if (instrument.Duration == null)
+                return NotFound();
+
+            track.InstrumentsOnTrack.Add(instrument);
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, instrumentId = instrument.Id });
+        }
+
+        private TimeSpan GetAudioDuration(string filePath)
+        {
+            using (var reader = new Mp3FileReader(filePath))
+            {
+                return reader.TotalTime;
+            }
         }
 
         private bool CollaborationExists(Guid id)

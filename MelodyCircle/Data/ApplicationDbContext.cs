@@ -17,6 +17,9 @@ namespace MelodyCircle.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Track> Tracks { get; set; }
+        public DbSet<InstrumentOnTrack> InstrumentOnTrack { get; set; }
+        public DbSet<ForumPost> ForumPost { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,12 +34,16 @@ namespace MelodyCircle.Data
                 .HasMany(u => u.WaitingCollaborations)
                 .WithMany(c => c.WaitingUsers)
                 .UsingEntity(j => j.ToTable("UserWaitingCollaborations"));
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.ContributingCollaborations)
+                .WithMany(c => c.ContributingUsers)
+                .UsingEntity(j => j.ToTable("UserContributingCollaborations"));
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        public DbSet<MelodyCircle.Models.ForumPost> ForumPost { get; set; } = default!;
     }
 }
