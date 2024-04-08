@@ -96,12 +96,21 @@
         function createInstrumentElement(instrumentName, instrumentId) {
             var element = document.createElement('div');
             element.classList.add('instrument-track');
-            element.textContent = instrumentName;
+            element.textContent = instrumentName.toUpperCase(); // Nome do instrumento em maiúsculas
             element.setAttribute('data-instrument-id', instrumentId);
 
-            element.style.border = '1px solid #000';
+            element.style.border = '2px solid #000'; // Borda mais grossa
+            element.style.backgroundColor = '#FFF'; // Fundo branco
+            element.style.color = '#000'; // Texto preto
+            element.style.textAlign = 'center'; // Texto centralizado
+            element.style.lineHeight = '50px'; // Altura da linha para centralizar verticalmente
             element.style.marginTop = '5px';
             element.style.padding = '5px';
+            element.style.fontSize = '1.5rem'; // Tamanho da fonte maior
+            element.style.fontWeight = 'bold'; // Texto em negrito
+            element.style.width = 'calc(100% - 10px)'; // Largura ajustada
+            element.style.boxSizing = 'border-box'; // Box sizing para incluir borda e padding
+            element.style.borderColor = 'black';
 
             return element;
         }
@@ -147,7 +156,7 @@
         function addInstrumentToTrackElement(trackId, instrumentName) {
             const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
             if (trackElement) {
-                const instrumentElement = createInstrumentElement(instrumentName);
+                const instrumentElement = createInstrumentElement(instrumentName, instrumentName); // Segundo parâmetro pode ser um ID único se necessário
                 trackElement.appendChild(instrumentElement);
             }
         }

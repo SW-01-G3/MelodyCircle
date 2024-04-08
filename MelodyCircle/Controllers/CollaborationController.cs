@@ -448,7 +448,7 @@ namespace MelodyCircle.Controllers
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
                 .Include(c => c.Tracks)
-                    .ThenInclude(t => t.Instruments)
+                    .ThenInclude(t => t.InstrumentsOnTrack)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (collaboration == null)
@@ -498,7 +498,7 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddInstrumentToTrack([FromBody] InstrumentOnTrackDto dto)
         {
-            var track = await _context.Tracks.Include(t => t.Instruments).FirstOrDefaultAsync(t => t.Id == dto.TrackId);
+            var track = await _context.Tracks.Include(t => t.InstrumentsOnTrack).FirstOrDefaultAsync(t => t.Id == dto.TrackId);
 
             if (track == null)
                 return NotFound();
@@ -514,14 +514,28 @@ namespace MelodyCircle.Controllers
             var instrument = new InstrumentOnTrack
             {
                 Id = Guid.NewGuid(),
-                InstrumentType = dto.InstrumentName,
                 TrackId = dto.TrackId,
+                InstrumentType = dto.InstrumentName,
                 StartTime = TimeSpan.FromSeconds(dto.StartTime),
-                Duration = duration,
-                Track = track
+                Duration = duration
             };
 
-            track.Instruments.Add(instrument);
+            if (instrument.Id == null)
+                return NotFound();
+
+            if (instrument.TrackId == null)
+                return NotFound();
+
+            if (instrument.InstrumentType == null)
+                return NotFound();
+
+            if (instrument.StartTime == null)
+                return NotFound();
+
+            if (instrument.Duration == null)
+                return NotFound();
+
+            track.InstrumentsOnTrack.Add(instrument);
 
             await _context.SaveChangesAsync();
 
