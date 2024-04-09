@@ -136,6 +136,7 @@
                     console.log("Mouse enter:", instrumentName);
                     tooltipSpan.style.display = 'block'; // Mostra a tooltip quando o mouse está sobre o elemento
                 };
+
                 element.onmouseleave = function () {
                     console.log("Mouse leave:", instrumentName);
                     tooltipSpan.style.display = 'none'; // Esconde a tooltip quando o mouse sai do elemento
@@ -208,6 +209,21 @@
     </script>
 }
 
+@functions {
+    public string CalculateLeftPosition(TimeSpan startTime, TimeSpan totalDuration)
+    {
+        // Calcula a porcentagem do StartTime em relação à duração total da track.
+        double positionPercentage = (startTime.TotalSeconds / totalDuration.TotalSeconds) * 100;
+        return $"{positionPercentage}%";
+    }
+
+    public string CalculateWidth(TimeSpan duration, TimeSpan totalDuration)
+    {
+        double widthPercentage = (duration.TotalSeconds / totalDuration.TotalSeconds) * 100;
+        return $"{widthPercentage}%";
+    }
+}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2">
@@ -240,7 +256,7 @@
                         <span>Você não tem faixa atribuída</span>
                     }
                 </div>
-                <!-- As faixas serão carregadas aqui -->
+                <!-- Faixas -->
                 @foreach (var track in Model.Tracks)
                 {
                     <div class="track-container">
@@ -248,19 +264,27 @@
                             <!-- Marcadores de tempo serão inseridos aqui -->
                         </div>
 
-                        <div class="track-number">Track @Model.Tracks.IndexOf(track)</div>
+                        <div class="track-number">Faixa @(Model.Tracks.IndexOf(track) + 1)</div>
 
                         <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
                             <!-- Área droppable -->
+                            <div class="drop-area"
                             @if (track.AssignedUserId.ToString() == userId)
                             {
-                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)">
-                                    <span class="instrument-tooltip"></span>
-                                </div>
-                            }
+                                @:ondragover="allowDrop(event)"
+                                @:ondrop="drop(event)"
+                            }>
+                                @foreach (var instrument in track.InstrumentsOnTrack)
+                                {
+                                    <div class="instrument-on-track" style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
+                                        <span>@instrument.InstrumentType</span>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 }
+
             </div>
         </div>
     </div>
