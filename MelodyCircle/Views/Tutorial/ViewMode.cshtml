@@ -1,4 +1,9 @@
-﻿@model IEnumerable<Tutorial>
+﻿@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data
+@model IEnumerable<Tutorial>
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 
 @{
     ViewData["Title"] = "Tutoriais Inscritos";
@@ -26,6 +31,62 @@
                         <h6>@item.SubscribersCount</h6>
 
                         <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white">Abrir</a><br />
+
+                        @{
+                            double averageRating = Context.TutorialRating
+                            .Where(u => u.TutorialId.Equals(item.Id))
+                            .ToList()
+                            .CalculateAverageRating();
+
+                            int roundedRating = (int)Math.Round(averageRating, MidpointRounding.AwayFromZero);
+                            int fullStars = roundedRating / 2;
+                            int halfStar = roundedRating % 2;
+                            int emptyStars = 5 - fullStars - halfStar;
+                        }
+                        <br/>
+                        <div class="star-rating ">
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <img src="~/img/star-filled-svgrepo-com.svg" />
+                            }
+                            @if (halfStar > 0)
+                            {
+                                <img src="~/img/star-half-svgrepo-com.svg" />
+                                fullStars++;
+                            }
+                            @for (int i = fullStars; i < 5; i++)
+                            {
+                                <img src="~/img/estrelaEmpty.svg" />
+                            }
+                            <br />
+                        </div>
+
+                        <button type="button" class="border-purple bg-purple rounded" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
+                            <img src="~/img/star-add-filled-svgrepo-com.svg" />
+                        </button>
+
+                        <div class="modal fade" id="addStarRatingModal" tabindex="-1" aria-labelledby="addStarRatingModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addStarRatingModalLabel">@Html.Translate("LB_010")</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="starRatingForm" asp-action="RateTutorial" asp-route-id="@item.Id" method="post">
+                                            <div class="star-rating">
+                                                @for (int i = 1; i <= 10; i++)
+                                                {
+                                                    <img class="star" src="~/img/estrelaEmpty.svg" data-value="@i" />
+                                                }
+                                            </div>
+                                            <input type="hidden" name="rating" id="starRating" value="0" />
+                                            <button type="submit" class="btn bg-purple text-white border-darkPurple rounded">@Html.Translate("LB_GIVESTARS")</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
@@ -51,3 +112,39 @@
         <a asp-action="EditMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/edit-white.svg" class="icon text-white" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 	}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll(".star");
+        //const baseUrl = '@Url.Content("~/img/")';
+
+        stars.forEach(star => {
+            star.addEventListener("mouseover", function () {
+                const value = parseInt(this.getAttribute("data-value"));
+                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+            });
+
+            star.addEventListener("mouseleave", function () {
+                const rating = parseInt(document.getElementById("starRating").value);
+                fillStars(rating, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+            });
+
+            star.addEventListener("click", function () {
+                const value = parseInt(this.getAttribute("data-value"));
+                document.getElementById("starRating").value = value;
+                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+            });
+        });
+
+        function fillStars(value, filledSrc, emptySrc) {
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute("data-value"));
+                if (starValue <= value) {
+                    star.src = filledSrc;
+                } else {
+                    star.src = emptySrc;
+                }
+            });
+        }
+    });
+</script>

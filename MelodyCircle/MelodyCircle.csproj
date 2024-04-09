@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\InstrumentOnTrack\**" />
+    <Compile Remove="Views\Track\**" />
+    <Content Remove="Views\InstrumentOnTrack\**" />
+    <Content Remove="Views\Track\**" />
+    <EmbeddedResource Remove="Views\InstrumentOnTrack\**" />
+    <EmbeddedResource Remove="Views\Track\**" />
+    <None Remove="Views\InstrumentOnTrack\**" />
+    <None Remove="Views\Track\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\img\star-sharp-half-svgrepo-com.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com-filled.svg" />
     <Content Remove="wwwroot\img\star-svgrepo-com.svg" />
@@ -31,6 +42,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+
+	  
     <PackageReference Include="SendGrid" Version="9.29.2" />
 	
 	  <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="8.0.2" />

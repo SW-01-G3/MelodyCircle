@@ -22,11 +22,99 @@ namespace MelodyCircle.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CollaborationUser", b =>
+                {
+                    b.Property<Guid>("ContributingCollaborationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContributingUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ContributingCollaborationsId", "ContributingUsersId");
+
+                    b.HasIndex("ContributingUsersId");
+
+                    b.ToTable("UserContributingCollaborations", (string)null);
+                });
+
+            modelBuilder.Entity("CollaborationUser1", b =>
+                {
+                    b.Property<Guid>("WaitingCollaborationsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("WaitingUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("WaitingCollaborationsId", "WaitingUsersId");
+
+                    b.HasIndex("WaitingUsersId");
+
+                    b.ToTable("UserWaitingCollaborations", (string)null);
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessMode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccessPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsers")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Photo")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PhotoContentType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -35,6 +123,142 @@ namespace MelodyCircle.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Collaborations");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.CollaborationRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.ToTable("CollaborationRating");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ForumPostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ForumPostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ForumPost");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.InstrumentOnTrack", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<string>("InstrumentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<Guid>("TrackId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("InstrumentOnTrack");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CollaborationDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CollaborationTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecipientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
@@ -47,8 +271,14 @@ namespace MelodyCircle.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Order")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("SubscribeTutorialId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -58,6 +288,8 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubscribeTutorialId");
 
                     b.HasIndex("TutorialId");
 
@@ -74,7 +306,6 @@ namespace MelodyCircle.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -86,11 +317,44 @@ namespace MelodyCircle.Migrations
                     b.ToTable("SubscribeTutorials");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.Track", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AssignedUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("BPM")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tracks");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Creator")
                         .IsRequired()
@@ -121,6 +385,29 @@ namespace MelodyCircle.Migrations
                     b.ToTable("Tutorials");
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TutorialId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TutorialId");
+
+                    b.ToTable("TutorialRating");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -136,6 +423,9 @@ namespace MelodyCircle.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -146,6 +436,9 @@ namespace MelodyCircle.Migrations
                     b.Property<int?>("Gender")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("LastLoginTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Locality")
                         .HasColumnType("nvarchar(max)");
 
@@ -154,6 +447,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("LoginCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("MusicURI")
                         .IsRequired()
@@ -189,6 +485,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SignupTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -376,8 +675,102 @@ namespace MelodyCircle.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CollaborationUser", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", null)
+                        .WithMany()
+                        .HasForeignKey("ContributingCollaborationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("ContributingUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CollaborationUser1", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", null)
+                        .WithMany()
+                        .HasForeignKey("WaitingCollaborationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("WaitingUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ChatMessage", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany()
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboration");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.CollaborationRating", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany("Ratings")
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboration");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Comment", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.ForumPost", "ForumPost")
+                        .WithMany("Comments")
+                        .HasForeignKey("ForumPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ForumPost");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.InstrumentOnTrack", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Track", "Track")
+                        .WithMany("InstrumentsOnTrack")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Step", b =>
                 {
+                    b.HasOne("MelodyCircle.Models.SubscribeTutorial", null)
+                        .WithMany("CompletedSteps")
+                        .HasForeignKey("SubscribeTutorialId");
+
                     b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
                         .WithMany("Steps")
                         .HasForeignKey("TutorialId")
@@ -397,13 +790,39 @@ namespace MelodyCircle.Migrations
 
                     b.HasOne("MelodyCircle.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Tutorial");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Track", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany("Tracks")
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MelodyCircle.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Collaboration");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.TutorialRating", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Tutorial", "Tutorial")
+                        .WithMany("Ratings")
+                        .HasForeignKey("TutorialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tutorial");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
@@ -475,8 +894,32 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MelodyCircle.Models.Collaboration", b =>
+                {
+                    b.Navigation("Ratings");
+
+                    b.Navigation("Tracks");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.ForumPost", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.SubscribeTutorial", b =>
+                {
+                    b.Navigation("CompletedSteps");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.Track", b =>
+                {
+                    b.Navigation("InstrumentsOnTrack");
+                });
+
             modelBuilder.Entity("MelodyCircle.Models.Tutorial", b =>
                 {
+                    b.Navigation("Ratings");
+
                     b.Navigation("Steps");
                 });
 

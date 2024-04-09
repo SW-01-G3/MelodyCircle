@@ -1,4 +1,8 @@
-﻿@model SearchResultViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data;
+@model SearchResultViewModel
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
@@ -64,6 +68,10 @@
                             <div class="col-md-12">
                                 <div class="text-center border-purple bg-white p-4 mx-auto mb-4 justify-content-center align-items-center">
                                     <h4>@collaboration.Title</h4>
+                                        <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                                        </form>
                                 </div>
                             </div>
                         }

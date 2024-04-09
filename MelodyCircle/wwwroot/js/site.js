@@ -42,3 +42,78 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+//Procurar
+// Função para verificar e definir os checkboxes selecionados
+function checkSelectedCheckboxes() {
+    const selectedValues = localStorage.getItem('selectedValues');
+    if (!selectedValues) {
+        document.getElementById('searchNone').checked = true;
+        localStorage.setItem('selectedValues', 'None');
+    } else {
+        const selectedCheckboxes = selectedValues.split(',');
+        selectedCheckboxes.forEach(value => {
+            const checkbox = document.getElementById('search' + value);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+    }
+}
+
+// Seleciona todos os checkboxes exceto o checkbox "Nenhum filtro"
+const checkboxes = document.querySelectorAll('.form-check-input:not(#searchNone)');
+
+// Adiciona um evento de mudança a cada checkbox
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+        // Cria um array para armazenar os valores selecionados
+        const selectedValues = [];
+
+        // Verifica cada checkbox e adiciona seu valor ao array se estiver marcado
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                selectedValues.push(cb.value);
+            }
+        });
+
+        // Se nenhum checkbox estiver selecionado, seleciona o checkbox "Nenhum filtro"
+        if (selectedValues.length === 0) {
+            document.getElementById('searchNone').checked = true;
+            selectedValues.push('None');
+        } else if (selectedValues.includes('None')) {
+            // Se o checkbox "Nenhum filtro" estiver selecionado, desmarca os outros checkboxes
+            checkboxes.forEach(cb => {
+                if (cb !== document.getElementById('searchNone')) {
+                    cb.checked = false;
+                }
+            });
+            selectedValues.splice(selectedValues.indexOf('None'), 1);
+        }
+
+        // Armazena os valores selecionados no armazenamento local
+        localStorage.setItem('selectedValues', selectedValues.join(','));
+
+        // Atualiza a página com a nova URL
+        window.location.href = '?' + selectedValues.join('&');
+    });
+});
+
+// Adiciona um evento de mudança ao checkbox "Nenhum filtro"
+document.getElementById('searchNone').addEventListener('change', function () {
+    if (this.checked) {
+        // Se o checkbox "Nenhum filtro" for selecionado, desmarca os outros checkboxes
+        checkboxes.forEach(cb => {
+            cb.checked = false;
+        });
+
+        // Armazena 'None' como único valor selecionado no armazenamento local
+        localStorage.setItem('selectedValues', 'None');
+
+        // Atualiza a página com a nova URL
+        window.location.href = '?None';
+    }
+});
+
+// Verifica e define os checkboxes selecionados ao carregar a página
+checkSelectedCheckboxes();

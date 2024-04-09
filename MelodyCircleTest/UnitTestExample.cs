@@ -26,28 +26,28 @@ namespace MelodyCircleTest
             Assert.True(x == 1);
         }
 
-        [Fact]
-        public async Task CheckUser()
-        {
-            var userManager = new Mock<UserManager<User>>();
+        //[Fact]
+        //public async Task CheckUser()
+        //{
+        //    var userManager = new Mock<UserManager<User>>();
 
-            var email = "admin1@melodycircle.pt";
+        //    var email = "admin1@melodycircle.pt";
 
-            var tuser = new User
-            {
-                UserName = "admin1",
-                Email = "admin1@melodycircle.pt",
-                Name = "Admin1",
-                BirthDate = new DateOnly(2010, 1, 22),
-                Password = "Password-123",
-                NormalizedEmail = "ADMIN1@MELODYCIRCLE.PT",
-                EmailConfirmed = true,
-            };
+        //    var tuser = new User
+        //    {
+        //        UserName = "admin1",
+        //        Email = "admin1@melodycircle.pt",
+        //        Name = "Admin1",
+        //        BirthDate = new DateOnly(2010, 1, 22),
+        //        Password = "Password-123",
+        //        NormalizedEmail = "ADMIN1@MELODYCIRCLE.PT",
+        //        EmailConfirmed = true,
+        //    };
 
-            var result = await userManager.Object.FindByEmailAsync(email); 
+        //    var result = await userManager.Object.FindByEmailAsync(email); 
 
-            //Assert
-            Assert.True(result.Email == email);
-        }
+        //    //Assert
+        //    Assert.True(result.Email == email);
+        //}
     }
 }

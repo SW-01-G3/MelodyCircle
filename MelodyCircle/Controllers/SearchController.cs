@@ -35,7 +35,8 @@ namespace MelodyCircle.Controllers
                         .ToListAsync();
 
                     var collabs = await _context.Collaborations
-                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .Where(t => t.Title.Contains(search.SearchTerm) &&
+                        t.AccessMode == AccessMode.Public)
                         .ToListAsync();
 
                     var viewModel = new SearchResultViewModel
@@ -69,7 +70,8 @@ namespace MelodyCircle.Controllers
                 if (search.SearchType == SearchType.Collaboration)
                 {
                     var collabs = await _context.Collaborations
-                        .Where(t => t.Title.Contains(search.SearchTerm))
+                        .Where(t => t.Title.Contains(search.SearchTerm) &&
+                        t.AccessMode == AccessMode.Public)
                         .ToListAsync();
 
                     return View("CollaborationSearchResult", collabs);

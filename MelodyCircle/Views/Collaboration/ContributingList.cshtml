@@ -1,0 +1,114 @@
+﻿@model MelodyCircle.Models.Collaboration
+
+@{
+    ViewData["Title"] = "Lista de Contribuintes";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="rounded border border-purple table-responsive row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome de Utilizador</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.ContributingUsers)
+                {
+                    <tr>
+                        <td><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></td>
+                        <td>
+                            <form method="post" action="@Url.Action("RemoveUser", "Collaboration", new { collaborationId = Model.Id, userId = user.Id })">
+                                @Html.AntiForgeryToken()
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    Remover
+                                </button>
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Remover da Colaboração?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Remover</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.ContributingUsers.Any())
+                {
+                    <tr>
+                        <td colspan="2">Não há utilizadores a contribuir nesta colaboração</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar</a>
+</div>
+
+<!-- Chat Component Integration -->
+<div id="chatComponent" class="rounded border border-purple row bg-white my-3 py-3 px-3 w-25  align-items-center ">
+    <h5>Chat da Colaboração</h5>
+    @Html.Partial("_ChatPartial", Model)
+</div>
+
+@section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <!-- Include any additional JavaScript files required for the chat component here -->
+}
+@* <div id="chatWindow">
+    <!-- Messages will be displayed here -->
+</div>
+<input type="text" id="messageInput" />
+<button onclick="sendMessage()" >Send</button>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+<button id="sendButton" class="btn btn-primary">Send</button>
+
+<script>
+    // Ensure that the document is fully loaded before attaching event handlers
+    document.addEventListener('DOMContentLoaded', function () {
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+        var sendButton = document.getElementById("sendButton");
+
+        // Disable the send button until the connection is established.
+        sendButton.disabled = true;
+
+        // Start the connection.
+        connection.start().then(function () {
+            console.log("Connected!");
+            sendButton.disabled = false; // Enable send button.
+        }).catch(function (err) {
+            console.error(err.toString());
+            alert("An error occurred while connecting to the chat service. Please try again later."); // Notify the user.
+        });
+
+        // Assuming sendMessage is your function to send messages.
+        sendButton.addEventListener("click", function (event) {
+            var message = document.getElementById("messageInput").value;
+            // Only send a message if the connection is in the 'Connected' state.
+            if (connection.state === signalR.HubConnectionState.Connected) {
+                connection.invoke("SendMessage", "@Model.Id", message).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            } else {
+                console.error("Connection not established.");
+                // Optionally, try to reconnect or notify the user.
+            }
+            event.preventDefault();
+        });
+    });
+</script> *@

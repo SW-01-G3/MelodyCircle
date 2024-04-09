@@ -1,0 +1,16 @@
+﻿@model ForumPost
+
+@{
+    ViewData["Title"] = "Fechar Post";
+}
+
+<h1>Confirmação de Encerramento de Post</h1>
+
+<p>Deseja fechar este post:</p>
+<p><strong>Título: </strong>@Model.Title</p>
+<p><strong>Conteúdo: </strong>@Model.Content</p>
+
+<form asp-action="ConfirmClosePost" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Confirmar</button>
+    <a asp-action="Comments" asp-controller="Forum" asp-route-id="@Model.Id" class="btn btn-secondary">Cancelar</a>
+</form>

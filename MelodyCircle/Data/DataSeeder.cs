@@ -11,7 +11,7 @@ namespace MelodyCircle.Data
             await SeedAdminUser(userManager);
             await SeedModUser(userManager);
             await SeedModUser2(userManager);
-            await SeedCollaborations(context);
+            //await SeedCollaborations(context);
         }
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -32,7 +32,7 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-                    UserName = "admin1",
+					UserName = "admin1",
                     Email = "admin@melodycircle.pt",
                     Name = "Admin1",
                     BirthDate = new DateOnly(2002, 1, 22),
@@ -43,7 +43,8 @@ namespace MelodyCircle.Data
                     ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<UserRating>()
+                    Ratings = new List<UserRating>(),
+                    CreationDate = DateTime.Now
                 };
 
                 var result = await userManager.CreateAsync(user, "Password-123");
@@ -63,8 +64,14 @@ namespace MelodyCircle.Data
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
                     NormalizedEmail = "PROFESSOR1@MELODYCIRCLE.PT",
-                    EmailConfirmed = true,
-                };
+					EmailConfirmed = true,
+					Gender = Gender.Other,
+					ProfilePicture = [],
+					Locality = "Portugal",
+					Connections = new List<User>(),
+					Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -77,14 +84,20 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-                    UserName = "professor2",
+					UserName = "professor2",
                     Email = "professor2@melodycircle.pt",
                     Name = "professor2",
                     BirthDate = new DateOnly(2024, 1, 22),
                     Password = "Password-123",
                     NormalizedEmail = "PROFESSOR2@MELODYCIRCLE.PT",
-                    EmailConfirmed = true,
-                };
+					EmailConfirmed = true,
+					Gender = Gender.Other,
+					ProfilePicture = [],
+					Locality = "Portugal",
+					Connections = new List<User>(),
+					Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -99,7 +112,7 @@ namespace MelodyCircle.Data
             {
                 var user = new User
                 {
-                    UserName = "mod1",
+					UserName = "mod1",
                     Email = "mod@melodycircle.pt",
                     Name = "Moderator1",
                     BirthDate = new DateOnly(2002, 1, 22),
@@ -110,8 +123,10 @@ namespace MelodyCircle.Data
                     ProfilePicture = [],
                     Locality = "Portugal",
                     Connections = new List<User>(),
-                    Ratings = new List<UserRating>()
-                };
+                    Ratings = new List<UserRating>(),
+					CreationDate = DateTime.Now
+
+				};
 
                 var result = await userManager.CreateAsync(user, "Password-123");
                 if (result.Succeeded)
@@ -125,7 +140,7 @@ namespace MelodyCircle.Data
         {
             var user2 = new User
             {
-                UserName = "mod2",
+				UserName = "mod2",
                 Email = "mod2@melodycircle.pt",
                 Name = "Moderator2",
                 BirthDate = new DateOnly(2002, 1, 22),
@@ -136,8 +151,9 @@ namespace MelodyCircle.Data
                 ProfilePicture = [],
                 Locality = "Portugal",
                 Connections = new List<User>(),
-                Ratings = new List<UserRating>()
-            };
+                Ratings = new List<UserRating>(),
+				CreationDate = DateTime.Now
+			};
 
             var result2 = await userManager.CreateAsync(user2, "Password-123");
             if (result2.Succeeded)
@@ -146,34 +162,34 @@ namespace MelodyCircle.Data
             }
         }
 
-        private static async Task SeedCollaborations(ApplicationDbContext context)
-        {
-            if (!context.Collaborations.Any())
-            {
-                var collaboration1 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Collaboration 1"
-                };
+        //private static async Task SeedCollaborations(ApplicationDbContext context)
+        //{
+        //    if (!context.Collaborations.Any())
+        //    {
+        //        var collaboration1 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "Collaboration 1"
+        //        };
 
-                var collaboration2 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Collaboration 2"
-                };
+        //        var collaboration2 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "Collaboration 2"
+        //        };
 
-                var collaboration3 = new Collaboration
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "ad"
-                };
+        //        var collaboration3 = new Collaboration
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Title = "ad"
+        //        };
 
-                context.Collaborations.Add(collaboration1);
-                context.Collaborations.Add(collaboration2);
-                context.Collaborations.Add(collaboration3);
+        //        context.Collaborations.Add(collaboration1);
+        //        context.Collaborations.Add(collaboration2);
+        //        context.Collaborations.Add(collaboration3);
 
-                await context.SaveChangesAsync();
-            }
-        }
+        //        await context.SaveChangesAsync();
+        //    }
+        //}
     }
 }
