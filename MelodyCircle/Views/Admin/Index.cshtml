@@ -10,19 +10,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 <div class="d-flex justify-content-center align-items-center">
-	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasStatistics" aria-controls="offcanvasStatistics">
 		<img src="~/img/statistic.svg" width="32" height="32" class="mt-5 w-100" />
+	</button>
+	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
+		<img src="~/img/add.svg" width="32" height="32" class="mt-5 w-100" />
 	</button>
 </div>
 
-<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-75 text-center align-items-center d-flex flex-column" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+
+@*Estatisticas*@
+<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-75 text-center align-items-center d-flex flex-column" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasStatistics" aria-labelledby="offcanvasStatistics">
 	<div class="offcanvas-header">
-		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
+		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Informações da Aplicação</h2>
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 
 	<div class="offcanvas-body">
-		<h4>Informações da Aplicação</h4>
+		<h4>Estatísticas</h4>
 
 		<div class="my-4">
 			<h6>Utilizadores: @Context.Users.Count()</h6>
@@ -52,9 +57,79 @@
 	</div>
 </div>
 
+@*ADICIONAR DADOS*@
+<div class="offcanvas offcanvas-end border-purple rounded mt-auto m-4 w-25 h-75 text-center align-items-center d-flex flex-column " data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasAdd" aria-labelledby="offcanvasAdd">
+	<div class="offcanvas-header">
+		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Informações da Aplicação</h2>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+
+	<div class="offcanvas-body">
+		<h4>
+			Adicionar Dados
+		</h4>
+
+		<div class="border-purple rounded m-4 p-3 ">
+			<form method="post" asp-action="CreateMultipleUsers">
+				<div class="form-group">
+					<label for="numberOfUsers">Número de Utilizadores:</label>
+					<input type="number" class="form-control" id="numberOfUsers" name="numberOfUsers" value="100">
+				</div>
+				<button type="submit" class="btn bg-purple text-white mt-2">Criar Users</button>
+			</form>
+			<p></p>
+			<form asp-action="DeleteAddedUsers" method="post" asp-controller="Admin">
+				<button type="submit" class="btn bg-purple text-white">Excluir Users Criados</button>
+			</form>
+		</div>
+
+		<div class="border-purple rounded m-4 p-3 ">
+			<form method="post" asp-action="CreateMultipleTutorials">
+				<div class="form-group">
+					<label for="numberOfTutorials">Número de Tutoriais:</label>
+					<input type="number" class="form-control" id="numberOfTutorials" name="numberOfTutorials" value="100">
+				</div>
+				<button type="submit" class="btn bg-purple text-white mt-2">Criar Tutorials</button>
+			</form>
+			<p></p>
+			<form asp-action="DeleteAddedTutorials" method="post" asp-controller="Admin">
+				<button type="submit" class="btn bg-purple text-white">Excluir Tutorials Criados</button>
+			</form>
+		</div>
+
+		<div class="border-purple rounded m-4 p-3 ">
+			<form method="post" asp-action="CreateMultipleCollaborations">
+				<div class="form-group">
+					<label for="numberOfCollaborations">Número de Colaborações:</label>
+					<input type="number" class="form-control" id="numberOfCollaborations" name="numberOfCollaborations" value="100">
+				</div>
+				<button type="submit" class="btn bg-purple text-white mt-2">Criar Collaborations</button>
+			</form>
+			<p></p>
+			<form asp-action="DeleteAddedCollaborations" method="post" asp-controller="Admin">
+				<button type="submit" class="btn bg-purple text-white">Excluir Collaborations Criados</button>
+			</form>
+		</div>
+
+		<div class="border-purple rounded m-4 p-3 ">
+			<form method="post" asp-action="CreateMultipleSteps">
+				<div class="form-group">
+					<label for="numberOfSteps">Número de Passos:</label>
+					<input type="number" class="form-control" id="numberOfSteps" name="numberOfSteps" value="100">
+				</div>
+				<button type="submit" class="btn bg-purple text-white mt-2">Criar Steps</button>
+			</form>
+			<p></p>
+			<form asp-action="DeleteAddedSteps" method="post" asp-controller="Admin">
+				<button type="submit" class="btn bg-purple text-white">Excluir Steps Criados</button>
+			</form>
+		</div>
+	</div>
+</div>
 
 
-<table class="table">
+
+<table class="table text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center mt-2">
 	<thead>
 	<tr>
 		<th>Username</th>
@@ -77,67 +152,10 @@
 				@rolesString
 			</td>
 			<td>
-				<a asp-action="EditUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName">Edit</a> |
-				<a asp-action="DeleteUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName">Delete</a>
+                    <a asp-action="EditUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName"><img src="~/img/edit.svg" /></a>
+                    <a asp-action="DeleteUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName"><img src="~/img/delete.svg" /></a>
 			</td>
 		</tr>
 	}
 	</tbody>
 </table>
-
-<div>
-	<form method="post" asp-action="CreateMultipleUsers">
-		<div class="form-group">
-			<label for="numberOfUsers">Número de Utilizadores:</label>
-			<input type="number" class="form-control" id="numberOfUsers" name="numberOfUsers" value="100">
-		</div>
-		<button type="submit" class="btn bg-purple text-white">Criar Users</button>
-	</form>
-	<p></p>
-	<form asp-action="DeleteAddedUsers" method="post" asp-controller="Admin">
-		<button type="submit" class="btn bg-purple text-white">Excluir Users Criados</button>
-	</form>
-</div>
-
-<div>
-	<form method="post" asp-action="CreateMultipleTutorials">
-		<div class="form-group">
-			<label for="numberOfTutorials">Número de Tutoriais:</label>
-			<input type="number" class="form-control" id="numberOfTutorials" name="numberOfTutorials" value="100">
-		</div>
-		<button type="submit" class="btn bg-purple text-white">Criar Tutorials</button>
-	</form>
-	<p></p>
-	<form asp-action="DeleteAddedTutorials" method="post" asp-controller="Admin">
-		<button type="submit" class="btn bg-purple text-white">Excluir Tutorials Criados</button>
-	</form>
-</div>
-
-<div>
-	<form method="post" asp-action="CreateMultipleCollaborations">
-		<div class="form-group">
-			<label for="numberOfCollaborations">Número de Colaborações:</label>
-			<input type="number" class="form-control" id="numberOfCollaborations" name="numberOfCollaborations" value="100">
-		</div>
-		<button type="submit" class="btn bg-purple text-white">Criar Collaborations</button>
-	</form>
-	<p></p>
-	<form asp-action="DeleteAddedCollaborations" method="post" asp-controller="Admin">
-		<button type="submit" class="btn bg-purple text-white">Excluir Collaborations Criados</button>
-	</form>
-</div>
-
-<div>
-	<form method="post" asp-action="CreateMultipleSteps">
-		<div class="form-group">
-			<label for="numberOfSteps">Número de Passos:</label>
-			<input type="number" class="form-control" id="numberOfSteps" name="numberOfSteps" value="100">
-		</div>
-		<button type="submit" class="btn bg-purple text-white">Criar Steps</button>
-	</form>
-	<p></p>
-	<form asp-action="DeleteAddedSteps" method="post" asp-controller="Admin">
-		<button type="submit" class="btn bg-purple text-white">Excluir Steps Criados</button>
-	</form>
-</div>
-

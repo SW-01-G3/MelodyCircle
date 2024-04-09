@@ -3,7 +3,7 @@
 @model List<Notification>
 @inject ApplicationDbContext Context
 
-<h2>Notifications</h2>
+<h2 class="text-center">Notifications</h2>
 
 @if (Model != null || Model.Count > 0)
 {
@@ -12,7 +12,7 @@
        
         @if (notification.Status == NotificationStatus.Pending)
         {
-             <div class="row bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between">
+            <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-25 justify-content-center align-items-center">
                 <h3>Collaboration Invitation</h3>
                 <p><strong>@notification.CollaborationTitle</strong></p>
                 <p>@notification.CollaborationDescription</p>
@@ -24,9 +24,9 @@
                 <p>The user <strong>@username</strong> is inviting you to a collab. Join?</p>
                 <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
                     <input type="hidden" name="notificationId" value="@notification.Id" />
-                    <button type="submit" class="btn btn-primary">Accept</button>
+                    <button type="submit" class="btn bg-purple text-white">Accept</button>
                 </form>
-                <form asp-action="DeclineInvite" asp-controller="Notification" method="post">
+                <form asp-action="DeclineInvite" asp-controller="Notification" method="post" class="pt-2">
                     <input type="hidden" name="notificationId" value="@notification.Id" />
                     <button type="submit" class="btn btn-danger">Decline</button>
                 </form>
