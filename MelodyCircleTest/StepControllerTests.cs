@@ -1,8 +1,12 @@
 ﻿using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
+using MelodyCircleTest;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +17,16 @@ namespace MelodyCircle.Tests.Controllers
 {
     public class StepControllerTests
     {
+        private readonly UserManager<User> _userManager;
+
+
+        public StepControllerTests()
+        {
+            var store = new Mock<IUserStore<User>>();
+            _userManager = new UserManager<User>(store.Object, null, null, null, null, null, null, null, null);
+        }
+           
+
         [Fact]
         public async Task Index_ReturnsViewResult_WithListOfSteps()
         {
@@ -40,7 +54,7 @@ namespace MelodyCircle.Tests.Controllers
             );
             await context.SaveChangesAsync();
 
-            var controller = new StepController(context);
+            var controller = new StepController(context, _userManager);
 
             // Act
             var result = await controller.Index(tutorial.Id);
@@ -68,7 +82,7 @@ namespace MelodyCircle.Tests.Controllers
             context.Steps.Add(step);
             await context.SaveChangesAsync();
 
-            var controller = new StepController(context);
+            var controller = new StepController(context, _userManager);
 
             // Act
             var result = await controller.DeleteConfirmed(stepId);
@@ -92,7 +106,6 @@ namespace MelodyCircle.Tests.Controllers
                 .Options;
             var context = new ApplicationDbContext(options);
 
-            // Adiciona um tutorial e um step fictício ao contexto do banco de dados em memória
             var tutorialId = Guid.NewGuid();
             var stepId = Guid.NewGuid();
             var originalTitle = "Original Step";
@@ -100,10 +113,10 @@ namespace MelodyCircle.Tests.Controllers
             context.Steps.Add(step);
             await context.SaveChangesAsync();
 
-            var controller = new StepController(context);
+            var controller = new StepController(context, _userManager);
 
             // Act
-            var result = await controller.Edit(tutorialId);
+            var result = await controller.Edit(stepId);
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -134,7 +147,7 @@ namespace MelodyCircle.Tests.Controllers
             // Set up the controller with the context
             using (var context = new ApplicationDbContext(options))
             {
-                var controller = new StepController(context);
+                var controller = new StepController(context, _userManager);
 
                 // Act
                 var step = new Step { Id = stepId, TutorialId = tutorialId, Title = "Updated Title", Content = "Updated Content", Order = 1 };

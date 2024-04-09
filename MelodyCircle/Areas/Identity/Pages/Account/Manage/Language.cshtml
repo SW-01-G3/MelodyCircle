@@ -6,19 +6,19 @@
 }
 
 <h4 class="text-white ">@ViewData["Title"]</h4>
-<partial name="_StatusMessage" for="StatusMessage" />
+
 
 	<div class="col-md-6">
 		<p>Pode colocar o site me Português ou Inglês.</p>
-
-		<form id="pt-pt" asp-page="" method="post">
+		<form id="pt-pt" asp-page-handler="ChangeLanguage" method="post">
+			<input type="hidden" name="culture" value="pt-PT" />
 			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Português</button>
 		</form>
-		<p>
-		<form id="gb-gb" asp-page="" method="post">
+
+		<form id="en-us" asp-page-handler="ChangeLanguage" method="post">
+			<input type="hidden" name="culture" value="en-US" />
 			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Inglês</button>
 		</form>
-		</p>
 	</div>
 
 @section Scripts {

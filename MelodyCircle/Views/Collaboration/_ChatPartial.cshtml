@@ -1,0 +1,73 @@
+﻿<div id="chatWindow">
+    <!-- Messages will be displayed here -->
+</div>
+<div class="text-center">
+    <input type="text" class="pb-2 d-block mx-auto" id="messageInput" />
+    <button class="btn bg-purple text-white w-50 pt-2 d-block mx-auto" id="sendButton">Enviar</button>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub?collaborationId=@Model.Id").build();
+
+    connection.on("ReceiveMessage", function (userName, message, timestamp) {
+        var msg = document.createElement("div");
+        msg.innerHTML =
+            `<div class="message">
+                <div class="user">${userName}</div>
+                <div class="text">${message}</div>
+                <div class="timestamp">${timestamp}</div>
+             </div>`;
+        document.getElementById("chatWindow").appendChild(msg);
+    });
+
+    connection.on("ReceiveMessageHistory", function (messages) {
+        var chatWindow = document.getElementById("chatWindow");
+        chatWindow.innerHTML = '';
+
+        messages.forEach(function (message) {
+            var msg = document.createElement("div");
+            msg.innerHTML =
+                `<div class="message">
+                    <div class="user">${message.userName}</div>
+                    <div class="text">${message.messageText}</div>
+                    <div class="timestamp">${message.timestamp}</div>
+                 </div>`;
+            chatWindow.appendChild(msg);
+        });
+    });
+
+    connection.start().then(function () {
+        connection.invoke("LoadMessageHistory", "@Model.Id").catch(function (err) {
+            return console.error(err.toString());
+        });
+        document.getElementById("sendButton").disabled = false;
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (event) {
+        var message = document.getElementById("messageInput").value;
+        connection.invoke("SendMessage", "@Model.Id", message).catch(function (err) {
+            return console.error(err.toString());
+        });
+        document.getElementById("messageInput").value = '';
+        event.preventDefault();
+    });
+</script>
+
+
+<style>
+    .message {
+        margin-bottom: 10px;
+    }
+
+    .user {
+        font-weight: bold;
+    }
+
+    .timestamp {
+        font-size: 0.8em;
+        color: grey;
+    }
+</style>

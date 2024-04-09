@@ -5,8 +5,6 @@ namespace MelodyCircle.Models
 {
     public class User : IdentityUser
     {
-        public Guid Id { get; set; }
-
         //[PersonalData]
         //[Required]
         //[EmailAddress]
@@ -53,7 +51,14 @@ namespace MelodyCircle.Models
 
         public virtual List<string> MusicURI { get; set; } = new List<string>();
 
-        //public List<int> Ratings { get; set; } = new List<int>();
+        public virtual List<Collaboration>? ContributingCollaborations { get; set; }
+        public virtual List<Collaboration>? WaitingCollaborations { get; set; }
+
+		public int? LoginCount { get; set; } 
+		public DateTime? LastLoginTime { get; set; }
+        public DateTime? SignupTime { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 
     public enum Gender

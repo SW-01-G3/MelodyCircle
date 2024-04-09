@@ -1,4 +1,7 @@
-﻿@{
+﻿@using MelodyCircle.Models
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject UserManager<User> UserManager
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
     {
         Layout = parentLayout.ToString();
@@ -8,25 +11,74 @@
         Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     }
 }
+
+<div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-50 text-center align-items-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+	<div class="offcanvas-header text-center">
+		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
+		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	</div>
+
+
+	<h4>Estatísticas do Utilizador</h4>
+
+	<div class="col-8 mt-4">
+@* 		<h6>Tutoriais:  </h6> *@
+		<a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Tutoriais</a>
+        <a class="btn btn-primary" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Passos</a>
+		<a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">Ver Estatísticas de Criação de Colaborações</a>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-md-7 mx-auto">
+        <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="m-0">Altere as definições da sua conta</h2>
+                <button type="button" class="border-0 bg-white unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                    <img src="~/img/statistic.svg" width="32" height="32" class="w-100" />
+                </button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-4">
+                    <partial name="_ManageNav" />
+                </div>
+                <div class="col-md-8">
+                    @RenderBody()
+                </div>
+            </div>
+        </section>
+		<br/>
+		<br/>
 		<section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
 			<div>
-				<h2>Altere as definições da sua conta</h2>
-				<br/>
-				<div class="row">
-					<div class="col-md-4">
-						<partial name="_ManageNav" />
-					</div>
-
-					<div class="col-md-8">
-						@RenderBody()
-					</div>
-				</div>
+				<p>Last Login: @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime</p>
+				<p>Login Amount:  @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LoginCount</p>
+				<p id="sessionTime"> </p>
 			</div>
 		</section>
 	</div>
 </div>
+<script>
+    // Function to calculate and update session time
+    function updateSessionTime() {
+        var lastLoginTime = new Date('@UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime');
+
+        var currentTime = new Date();
+        var sessionTimeInSeconds = Math.floor((currentTime - lastLoginTime) / 1000);
+
+        var hours = String(Math.floor(sessionTimeInSeconds / 3600)).padStart(2, '0');
+        var minutes = String(Math.floor((sessionTimeInSeconds % 3600) / 60)).padStart(2, '0');
+        var seconds = String(sessionTimeInSeconds % 60).padStart(2, '0');
+        document.getElementById('sessionTime').textContent = 'Session Time: ' + hours + ' : ' + minutes + ' : ' + seconds;
+    }
+
+    updateSessionTime();
+    setInterval(updateSessionTime, 1000);
+</script>
+
 @section Scripts {
     @RenderSection("Scripts", required: false)
 }

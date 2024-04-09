@@ -64,7 +64,7 @@ namespace MelodyCircle.Controllers
             var userId = _userManager.GetUserId(User);
 
             var tutoriaisInscritos = await _context.SubscribeTutorials
-                .Where(s => s.User.Id == Guid.Parse(userId))
+                .Where(s => s.User.Id == userId)
                 .Include(s => s.Tutorial)
                 .ToListAsync();
 
@@ -91,6 +91,5 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MyTutorials));
         }
-
     }
 }

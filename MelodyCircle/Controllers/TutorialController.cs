@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 
 namespace MelodyCircle.Controllers
 {
@@ -32,11 +31,23 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> EditMode()
         {
             var userId = _userManager.GetUserId(User);
+
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name)
+                .Select(tutorial => new
+                {
+                    Tutorial = tutorial,
+                    StepCount = _context.Steps.Count(step => step.TutorialId == tutorial.Id)
+                })
                 .ToListAsync();
 
-            return View("EditMode", tutoriaisCriados);
+            var tutoriaisCriadosComContagem = tutoriaisCriados
+                .Select(t => { t.Tutorial.StepCount = t.StepCount;
+                    return t.Tutorial;
+                })
+                .ToList();
+
+            return View("EditMode", tutoriaisCriadosComContagem);
         }
 
         // GET: Tutorial/ViewMode
@@ -61,11 +72,10 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description) || photo == null || photo.Length == 0) 
+            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
             {
                 ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
                 ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Photo), "Campo obrigatório");
             }
 
             else
@@ -77,15 +87,23 @@ namespace MelodyCircle.Controllers
                 if (user != null)
                     tutorial.Creator = user.UserName;
 
-                using (var memoryStream = new MemoryStream())
+
+                if (photo != null || photo.Length > 0)
                 {
-                    await photo.CopyToAsync(memoryStream);
-                    tutorial.Photo = memoryStream.ToArray();
-                    tutorial.PhotoContentType = photo.ContentType;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await photo.CopyToAsync(memoryStream);
+                        tutorial.Photo = memoryStream.ToArray();
+                        tutorial.PhotoContentType = photo.ContentType;
+                        
+                    }
                 }
+
+                tutorial.CreationDate = DateTime.Now;
 
                 _context.Add(tutorial);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -109,7 +127,7 @@ namespace MelodyCircle.Controllers
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile image)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
         {
             if (id != tutorial.Id)
                 return NotFound();
@@ -122,20 +140,23 @@ namespace MelodyCircle.Controllers
 
             else 
             {
-                _context.Entry(tutorial).State = EntityState.Detached;
+                var existingTutorial = await _context.Tutorials.FindAsync(id);
 
-                _context.Attach(tutorial);
-                _context.Entry(tutorial).Property("Title").IsModified = true;
-                _context.Entry(tutorial).Property("Description").IsModified = true;
-
-                if (tutorial.Photo != null && tutorial.Photo.Length > 0)
+                if (photo != null && photo.Length > 0)
                 {
-                    _context.Entry(tutorial).Property("Photo").IsModified = true;
-                    _context.Entry(tutorial).Property("PhotoContentType").IsModified = true;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await photo.CopyToAsync(memoryStream);
+                        existingTutorial.Photo = memoryStream.ToArray();
+                        existingTutorial.PhotoContentType = photo.ContentType;
+                    }
                 }
 
-                await _context.SaveChangesAsync();
+                existingTutorial.Title = existingTutorial.Title;
+                existingTutorial.Description = existingTutorial.Description;
 
+                _context.Update(existingTutorial);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(tutorial);
@@ -175,6 +196,39 @@ namespace MelodyCircle.Controllers
         public IActionResult AddStep(Guid id)
         {
             return RedirectToAction("Index", "Step", new { tutorialId = id });
+        }
+
+        public async Task<IActionResult> RateTutorial(Guid id, int rating)
+        {
+            if (rating < 0 || rating > 10)
+                return BadRequest("Rating value must be between 0 and 10");
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+                return NotFound("User not found");
+
+            var tutorialToRate = await _context.Tutorials.FindAsync(id);
+
+            if (tutorialToRate == null)
+                return NotFound("Tutorial to rate not found");
+
+            if (tutorialToRate.Ratings == null)
+                tutorialToRate.Ratings = new List<TutorialRating>();
+
+            var existingRatings = _context.TutorialRating.AsEnumerable().Where(r => r.UserName.Equals(currentUser.UserName));
+            var existingRating = existingRatings.FirstOrDefault(u => u.TutorialId.Equals(id));
+
+            if (existingRating != null)
+                existingRating.Value = rating;
+
+            else
+                tutorialToRate.Ratings.Add(new TutorialRating { UserName = currentUser.UserName, TutorialId = id, Value = rating });
+
+            // Update the user in the database
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
 
         private bool TutorialExists(Guid id)

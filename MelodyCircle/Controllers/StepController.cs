@@ -1,5 +1,7 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +10,13 @@ namespace MelodyCircle.Controllers
     public class StepController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
+        private int maxSteps = 100;
 
-        public StepController(ApplicationDbContext context)
+        public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(Guid? tutorialId)
@@ -22,6 +27,7 @@ namespace MelodyCircle.Controllers
             var steps = await _context.Steps
                 .Include(s => s.Tutorial)
                 .Where(s => s.TutorialId == tutorialId)
+                .OrderBy(s => s.Order)
                 .ToListAsync();
 
             var creator = await _context.Tutorials
@@ -29,8 +35,14 @@ namespace MelodyCircle.Controllers
                 .Select(t => t.Creator)
                 .FirstOrDefaultAsync();
 
+            var title = await _context.Tutorials
+                .Where(t => t.Id == tutorialId)
+                .Select(t => t.Title)
+                .FirstOrDefaultAsync();
+
             ViewBag.TutorialId = tutorialId;
             ViewBag.Creator = creator;
+            ViewBag.Title = title;
 
             return View(steps);
         }
@@ -57,13 +69,46 @@ namespace MelodyCircle.Controllers
             if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
                 ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
 
+            var currentStepCount = _context.Steps.Count(s => s.TutorialId == step.TutorialId);
+
+            if (currentStepCount >= maxSteps)
+                ModelState.AddModelError(string.Empty, "Limite máximo de Passos atingido para este tutorial");
+
+            var existingStep = await _context.Steps
+                .FirstOrDefaultAsync(s => s.TutorialId == step.TutorialId && s.Order == step.Order);
+
+            if (existingStep != null)
+            {
+                ModelState.AddModelError(nameof(step.Order), $"A Order '{step.Order}' já está ocupada");
+
+                var occupiedOrders = await _context.Steps
+                    .Where(s => s.TutorialId == step.TutorialId)
+                    .OrderBy(s => s.Order)
+                    .Select(s => s.Order + 1)
+                    .ToListAsync();
+
+                var stepsWithOrders = await _context.Steps
+                    .Where(s => s.TutorialId == step.TutorialId)
+                    .OrderBy(s => s.Order)
+                    .Select(s => new { Order = s.Order + 1, s.Title })
+                    .ToListAsync();
+
+                var availableOrders = Enumerable.Range(1, maxSteps).Except(occupiedOrders).ToList();
+
+                ViewBag.StepsWithOrders = stepsWithOrders;
+                ViewBag.OccupiedOrders = occupiedOrders;
+                ViewBag.AvailableOrders = availableOrders;
+            }
+
             else 
             {
+                step.CreationDate = DateTime.Now;
                 _context.Add(step);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
+
             return View(step);
         }
 
@@ -137,22 +182,100 @@ namespace MelodyCircle.Controllers
                 {
                     _context.Entry(existingStep).State = EntityState.Detached;
                     _context.Update(step);
+
                     await _context.SaveChangesAsync();
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!StepExists(step.Id))
-                    {
                         return NotFound();
-                    }
+
                     else
-                    {
                         throw;
-                    }
                 }
+
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
+
             return View(step);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> CompleteStep(Guid tutorialId, Guid stepId)
+        {
+            var userId = _userManager.GetUserId(User);
+
+
+            var subscription = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+            if (subscription == null)
+                return NotFound();
+
+            var step = await _context.Steps.FindAsync(stepId);
+
+            if (step == null)
+                return NotFound();
+
+            bool alreadyCompleted = subscription.CompletedSteps.Any(s => s.Id == stepId);
+
+            if (!alreadyCompleted)
+                subscription.CompletedSteps.Add(step);
+
+            else
+                subscription.CompletedSteps.RemoveAll(s => s.Id == stepId);
+
+            int savedChanges =  await _context.SaveChangesAsync();
+
+            var subscriptionAfterSave = await _context.SubscribeTutorials
+                .Where(s => s.User.Id.ToString() == userId)
+                .Include(st => st.CompletedSteps)
+                .FirstOrDefaultAsync(st => st.User.Id.ToString() == userId && st.TutorialId == tutorialId);
+
+            int completedStepsCount = subscriptionAfterSave.CompletedSteps.Count;
+            int totalStepsCount = await _context.Steps.Where(s => s.TutorialId == tutorialId).CountAsync();
+
+            ViewBag.CompletedStepsCount = completedStepsCount;
+            ViewBag.TotalStepsCount = totalStepsCount;
+
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder([FromBody] List<Guid> stepOrder)
+        {
+            try
+            {
+                if (stepOrder == null || stepOrder.Count == 0)
+                    return Json(new { success = false, message = "Invalid order list" });
+
+                int order = 0;
+
+                foreach (var stepId in stepOrder)
+                {
+                    var step = await _context.Steps.FindAsync(stepId);
+
+                    if (step != null)
+                    {
+                        step.Order = order++;
+                        _context.Steps.Update(step);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Order updated successfully" });
+            }
+
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error updating order: {ex.Message}" });
+            }
         }
 
         private bool StepExists(Guid tutorialId)
