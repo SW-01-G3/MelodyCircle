@@ -59,6 +59,13 @@ namespace MelodyCircle.Controllers
                 .Select(s => s.Tutorial)
                 .ToListAsync();
 
+            //var tutoriaisInscritos = await _context.SubscribeTutorials
+            //    .Where(elem => elem.User.Name == User.Identity.Name)
+            //    .Select(tutorial => new {Tutorial = tutorial.Tutorial, StepCount = _context.Steps.Count(elem => elem.TutorialId == tutorial.TutorialId)})
+            //    .ToListAsync();
+
+            //var tutoriaisInscritosComContagem = tutoriaisInscritos.Select(elem => { elem.Tutorial.StepCount = elem.StepCount; return elem.Tutorial; }).ToList();
+
             return View("ViewMode", tutoriaisInscritos);
         }
 
