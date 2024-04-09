@@ -201,12 +201,12 @@ namespace MelodyCircle.Controllers
 
             if (userToRemove != null)
             {
-                collaboration.ContributingUsers.Remove(userToRemove);
+                collaboration.ContributingUsers.Remove(userToRemove);   
 
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
+            return RedirectToAction(nameof(ContributingUsers), new { id = collaborationId });
         }
 
         public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
