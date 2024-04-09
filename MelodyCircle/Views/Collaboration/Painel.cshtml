@@ -42,21 +42,25 @@
             event.preventDefault();
 
             var instrumentName = event.dataTransfer.getData("text/plain");
+            console.log("Instrumento: ", instrumentName)
+
             var trackContainer = event.target.closest('.track');
             var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+            console.log("TrackId: ", trackId)
+
             var mouseX = event.clientX;
             var trackRect = trackContainer.getBoundingClientRect();
             var trackStartX = trackRect.left;
             var trackWidth = trackRect.width;
             var relativePosition = (mouseX - trackStartX) / trackWidth;
 
-            var startTimeSeconds = relativePosition * 4 * 60; // 4 minutos em segundos
+            var startTimeSeconds = relativePosition * 4 * 60;
+            console.log("StartTime Seconds: ", startTimeSeconds)
 
-            if (trackId && instrumentName) {
+            if (trackId && instrumentName)
                 updateTrack(trackId, instrumentName, startTimeSeconds);
-            } else {
+            else
                 console.error("Drop target is not a track container or trackId/instrumentName is missing.");
-            }
         }
 
         function updateTrack(trackId, instrumentName, startTimeSeconds) {
@@ -75,42 +79,79 @@
                     StartTime: startTimeSeconds
                 })
             })
-                .then(response => {
-                    if (!response.ok)
-                        return response.text().then(text => { throw new Error(text) });
+            .then(response => {
+                if (!response.ok)
+                    return response.text().then(text => { throw new Error(text) });
 
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        console.log('Instrument added successfully:', data.instrumentId);
-                        // Aqui você adicionaria o elemento visual da faixa no front-end
-                    } else
-                        console.error('Error adding instrument:', data.message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log('Instrument added successfully:', data.instrumentId);
+
+                    addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration);
+                } else
+                    console.error('Error adding instrument:', data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
-        function createInstrumentElement(instrumentName, instrumentId) {
+        function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement) {
+            console.log("Creating instrument element:", instrumentName);
+
             var element = document.createElement('div');
             element.classList.add('instrument-track');
-            element.textContent = instrumentName.toUpperCase(); // Nome do instrumento em maiúsculas
-            element.setAttribute('data-instrument-id', instrumentId);
+            element.textContent = instrumentName;
+            element.style.position = 'absolute';
+            element.style.whiteSpace = 'nowrap';
+            element.style.overflow = 'hidden';
+            element.style.textOverflow = 'ellipsis';
 
-            element.style.border = '2px solid #000'; // Borda mais grossa
-            element.style.backgroundColor = '#FFF'; // Fundo branco
-            element.style.color = '#000'; // Texto preto
-            element.style.textAlign = 'center'; // Texto centralizado
-            element.style.lineHeight = '50px'; // Altura da linha para centralizar verticalmente
+            // Define as dimensões e a posição do elemento do instrumento
+            var trackLengthInSeconds = 240;
+            var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
+            element.style.width = `${pxPerSecond * durationInSeconds}px`;
+            element.style.left = `${pxPerSecond * startTimeSeconds}px`;
+
+            // Adicione o elemento <span> para exibir o nome completo do instrumento
+            var tooltipSpan = document.createElement('span');
+            tooltipSpan.textContent = instrumentName;
+            tooltipSpan.classList.add('tooltip');
+            tooltipSpan.style.display = 'none'; // Inicialmente escondido
+            element.appendChild(tooltipSpan);
+
+            // Anexar o elemento ao documento antes de calcular a largura real
+            trackElement.appendChild(element);
+
+            var elementRect = element.getBoundingClientRect();
+            var elementVisibleWidth = pxPerSecond * durationInSeconds;
+
+            // Verifique se o texto do instrumento está cortado e só então ative a tooltip
+            if (elementRect.width < elementVisibleWidth) {
+                console.log("Tooltip activated for:", instrumentName);
+
+                element.onmouseenter = function () {
+                    console.log("Mouse enter:", instrumentName);
+                    tooltipSpan.style.display = 'block'; // Mostra a tooltip quando o mouse está sobre o elemento
+                };
+                element.onmouseleave = function () {
+                    console.log("Mouse leave:", instrumentName);
+                    tooltipSpan.style.display = 'none'; // Esconde a tooltip quando o mouse sai do elemento
+                };
+            } else console.log("erro")
+
+            // Estilização adicional
+            element.style.border = '2px solid #000';
+            element.style.backgroundColor = '#FFF';
+            element.style.color = '#000';
+            element.style.textAlign = 'center';
+            element.style.lineHeight = '50px';
             element.style.marginTop = '5px';
             element.style.padding = '5px';
-            element.style.fontSize = '1.5rem'; // Tamanho da fonte maior
-            element.style.fontWeight = 'bold'; // Texto em negrito
-            element.style.width = 'calc(100% - 10px)'; // Largura ajustada
-            element.style.boxSizing = 'border-box'; // Box sizing para incluir borda e padding
-            element.style.borderColor = 'black';
+            element.style.fontSize = '1rem';
+            element.style.fontWeight = 'bold';
 
             return element;
         }
@@ -153,10 +194,10 @@
             });
         }
 
-        function addInstrumentToTrackElement(trackId, instrumentName) {
+        function addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, durationInSeconds) {
             const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
             if (trackElement) {
-                const instrumentElement = createInstrumentElement(instrumentName, instrumentName); // Segundo parâmetro pode ser um ID único se necessário
+                const instrumentElement = createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement);
                 trackElement.appendChild(instrumentElement);
             }
         }
@@ -213,7 +254,9 @@
                             <!-- Área droppable -->
                             @if (track.AssignedUserId.ToString() == userId)
                             {
-                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)">
+                                    <span class="instrument-tooltip"></span>
+                                </div>
                             }
                         </div>
                     </div>

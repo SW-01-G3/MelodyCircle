@@ -15,8 +15,6 @@ html {
   scrollbar-width: none;
 }
 
-
-
 .unselectable {
   user-select: none;
 }
@@ -325,6 +323,20 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--purple);
     border-radius: 30px;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    z-index: 9999; /* Garanta que a tooltip seja exibida acima de outros elementos */
+    bottom: 110%; /* Posicione a tooltip 10% abaixo do elemento do instrumento */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
 }
 
 /* FINAL DO PAINEL DE ARRANJO */
