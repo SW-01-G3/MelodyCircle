@@ -472,14 +472,14 @@ namespace MelodyCircle.Controllers
                     CollaborationId = id,
                     BPM = 102,
                     Duration = TimeSpan.FromMinutes(4)
-            };
+                };
 
                 _context.Tracks.Add(userTrack);
 
                 await _context.SaveChangesAsync();
             }
 
-            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
+            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
 
             var arrangementViewModel = new ArrangementPanelViewModel
             {
