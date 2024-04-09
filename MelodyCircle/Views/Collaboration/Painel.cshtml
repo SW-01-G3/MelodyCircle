@@ -101,28 +101,32 @@
         function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement) {
             var element = document.createElement('div');
             element.classList.add('instrument-track');
-            element.textContent = instrumentName.toUpperCase(); // Nome do instrumento em maiúsculas
+            element.textContent = instrumentName; // Nome do instrumento
+            element.title = instrumentName; // Tooltip com o nome completo do instrumento
 
-            var trackLengthInSeconds = 240; // Duração total da track em segundos
+            var trackLengthInSeconds = 240;
             var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
-            var width = pxPerSecond * durationInSeconds; // Largura baseada na duração
-            var left = pxPerSecond * startTimeSeconds; // Posição baseada no startTime
+            var width = pxPerSecond * durationInSeconds;
+            var left = pxPerSecond * startTimeSeconds;
 
-            element.style.width = `${width}px`; // Definindo a largura baseada na duração
-            element.style.left = `${left}px`; // Definindo a posição esquerda baseada no startTime
+            element.style.width = `${width}px`;
+            element.style.left = `${left}px`;
             element.style.position = 'absolute';
-            element.style.border = '2px solid #000'; // Borda mais grossa
-            element.style.backgroundColor = '#FFF'; // Fundo branco
-            element.style.color = '#000'; // Texto preto
-            element.style.textAlign = 'center'; // Texto centralizado
-            element.style.lineHeight = '50px'; // Altura da linha para centralizar verticalmente
+            element.style.border = '2px solid #000';
+            element.style.backgroundColor = '#FFF';
+            element.style.color = '#000';
+            element.style.textAlign = 'center';
+            element.style.lineHeight = '50px';
             element.style.marginTop = '5px';
             element.style.padding = '5px';
-            element.style.fontSize = '1.5rem'; // Tamanho da fonte maior
-            element.style.fontWeight = 'bold'; // Texto em negrito
-            // Removida a linha de largura duplicada
-            element.style.boxSizing = 'border-box'; // Box sizing para incluir borda e padding
+            element.style.boxSizing = 'border-box';
             element.style.borderColor = 'black';
+
+            // Ajusta o tamanho da fonte baseado na largura do elemento
+            element.style.fontSize = width > 100 ? '1.5rem' : '0.8rem'; // Se a largura for maior que 100px, usa 1.5rem; senão, usa 0.8rem
+            element.style.whiteSpace = 'nowrap';
+            element.style.overflow = 'hidden';
+            element.style.textOverflow = 'ellipsis'; // Adiciona "..." se o texto for muito grande
 
             return element;
         }
