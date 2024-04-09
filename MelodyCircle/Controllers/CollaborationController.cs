@@ -566,8 +566,15 @@ namespace MelodyCircle.Controllers
                 IsContributorOrCreator = isContributorOrCreator,
                 UserTrack = userTrack,
                 AssignedTrackNumber = assignedTrackNumber,
-                AvailableInstruments = InstrumentData.AvailableInstruments
+                AvailableInstruments = InstrumentData.AvailableInstruments,
+                UploadedInstruments = new List<UploadedInstrument>()
             };
+
+            var uploadedInstruments = await _context.UploadedInstruments
+                .Where(ui => ui.CollaborationId == id)
+                .ToListAsync();
+
+            arrangementViewModel.UploadedInstruments = uploadedInstruments;
 
             return View("Painel", arrangementViewModel);
         }
@@ -586,10 +593,29 @@ namespace MelodyCircle.Controllers
             if (track.AssignedUserId.ToString() != userId)
                 return Forbid();
 
-            var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
-            var duration = GetAudioDuration(instrumentFilePath);
+            TimeSpan duration;
+            if (dto.IsUploaded)
+            {
+                if (!dto.InstrumentId.HasValue)
+                    return BadRequest("Uploaded instrument ID is required.");
 
-            var instrument = new InstrumentOnTrack
+                var uploadedInstrument = await _context.UploadedInstruments.FirstOrDefaultAsync(ui => ui.Id == dto.InstrumentId.Value);
+                if (uploadedInstrument == null)
+                    return NotFound("Uploaded instrument not found.");
+
+                using (var stream = new MemoryStream(uploadedInstrument.SoundContent))
+                using (var reader = new Mp3FileReader(stream))
+                {
+                    duration = reader.TotalTime;
+                }
+            }
+            else
+            {
+                var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
+                duration = GetAudioDuration(instrumentFilePath);
+            }
+
+            var instrumentOnTrack = new InstrumentOnTrack
             {
                 Id = Guid.NewGuid(),
                 TrackId = dto.TrackId,
@@ -597,21 +623,61 @@ namespace MelodyCircle.Controllers
                 StartTime = TimeSpan.FromSeconds(dto.StartTime),
                 Duration = duration,
                 Track = track,
+                // If it's an uploaded instrument, set the InstrumentId
+                InstrumentId = dto.IsUploaded ? dto.InstrumentId : null
             };
 
-            if (instrument.Id == null || instrument.TrackId == null || instrument.InstrumentType == null || instrument.StartTime == null || instrument.Duration == null || track == null)
-                return NotFound();
-
-            _context.InstrumentOnTrack.Add(instrument);
-
+            _context.InstrumentOnTrack.Add(instrumentOnTrack);
             await _context.SaveChangesAsync();
 
             return Json(new
             {
                 success = true,
-                instrumentId = instrument.Id,
+                instrumentId = instrumentOnTrack.Id,
                 duration = duration.TotalSeconds
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
+        {
+            if (soundFile != null && soundFile.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await soundFile.CopyToAsync(memoryStream);
+
+                var uploadedInstrument = new UploadedInstrument
+                {
+                    Id = Guid.NewGuid(),
+                    Name = instrumentName,
+                    SoundContent = memoryStream.ToArray(),
+                    CollaborationId = collaborationId
+                };
+
+                _context.UploadedInstruments.Add(uploadedInstrument);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+
+            //return Json(new { success = false, message = "Invalid file." });
+
+            return RedirectToAction("ArrangementPanel", new { id = collaborationId });
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInstrumentAudio(Guid id)
+        {
+            var uploadedInstrument = await _context.UploadedInstruments
+                .FirstOrDefaultAsync(ui => ui.Id == id);
+
+            if (uploadedInstrument == null)
+            {
+                return NotFound();
+            }
+
+            return File(uploadedInstrument.SoundContent, "audio/mp3");
         }
 
         private TimeSpan GetAudioDuration(string filePath)

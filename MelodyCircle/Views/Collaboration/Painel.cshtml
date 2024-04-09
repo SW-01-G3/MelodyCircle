@@ -18,15 +18,49 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.instrument').forEach(item => {
-            item.addEventListener('click', event => {
-                let instrumentName = item.getAttribute('data-instrument').toLowerCase();
-                let soundId = `sound-${instrumentName}`;
-                let sound = document.getElementById(soundId);
-                if (sound) sound.play();
-                else console.error('Sound element not found:', soundId);
+        // document.querySelectorAll('.instrument').forEach(item => {
+        //     item.addEventListener('click', event => {
+        //         let instrumentName = item.getAttribute('data-instrument').toLowerCase();
+        //         let soundId = `sound-${instrumentName}`;
+        //         let sound = document.getElementById(soundId);
+        //         if (sound) sound.play();
+        //         else console.error('Sound element not found:', soundId);
+        //     });
+        // });
+
+        function playSound(instrumentElement) {
+            const instrumentName = instrumentElement.getAttribute('data-instrument').toLowerCase();
+            const isUploaded = instrumentElement.classList.contains('uploaded');
+            let soundId;
+
+            if (isUploaded) {
+                // If it's an uploaded instrument, use a different ID pattern
+                const instrumentId = instrumentElement.getAttribute('data-instrument-id');
+                soundId = `sound-uploaded-${instrumentId}`;
+            } else {
+                soundId = `sound-${instrumentName}`;
+            }
+
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                if (isUploaded && !sound.src) {
+                    // For uploaded instruments, set the src dynamically if it's not already set
+                    sound.src = `/Collaboration/GetInstrumentAudio/${instrumentElement.getAttribute('data-instrument-id')}`;
+                }
+                sound.play();
+            } else {
+                console.error('Sound element not found:', soundId);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.instrument').forEach(item => {
+                item.addEventListener('click', event => {
+                    playSound(item);
+                });
             });
         });
+
+
 
         function allowDrop(event) {
             console.log("Drag over the drop area");
@@ -34,68 +68,70 @@
         }
 
         function drag(event) {
-            console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
-            event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
+            const instrumentElement = event.target;
+            const isUploaded = instrumentElement.classList.contains('uploaded');
+            const instrumentData = {
+                name: instrumentElement.getAttribute('data-instrument'),
+                isUploaded: isUploaded,
+                id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
+            };
+
+            event.dataTransfer.setData("text", JSON.stringify(instrumentData));
         }
 
         function drop(event) {
             event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const instrumentData = JSON.parse(data);
 
-            var instrumentName = event.dataTransfer.getData("text/plain");
-            console.log("Instrumento: ", instrumentName)
+            const trackContainer = event.target.closest('.track');
+            const trackId = trackContainer.getAttribute('data-track-id');
 
-            var trackContainer = event.target.closest('.track');
-            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
-            console.log("TrackId: ", trackId)
+            const mouseX = event.clientX;
+            const trackRect = trackContainer.getBoundingClientRect();
+            const trackStartX = trackRect.left;
+            const trackWidth = trackRect.width;
+            const relativePosition = (mouseX - trackStartX) / trackWidth;
 
-            var mouseX = event.clientX;
-            var trackRect = trackContainer.getBoundingClientRect();
-            var trackStartX = trackRect.left;
-            var trackWidth = trackRect.width;
-            var relativePosition = (mouseX - trackStartX) / trackWidth;
-
-            var startTimeSeconds = relativePosition * 4 * 60;
-            console.log("StartTime Seconds: ", startTimeSeconds)
-
-            if (trackId && instrumentName)
-                updateTrack(trackId, instrumentName, startTimeSeconds);
-            else
-                console.error("Drop target is not a track container or trackId/instrumentName is missing.");
+            const startTimeSeconds = relativePosition * 4 * 60;
+            console.log("StartTime Seconds:", startTimeSeconds);
+                
+            if (trackId) {
+                updateTrack(trackId, instrumentData, startTimeSeconds); // Pass instrumentData object
+            } else {
+                console.error("Drop target is not a track container or trackId/instrument information is missing.");
+            }
         }
 
-        function updateTrack(trackId, instrumentName, startTimeSeconds) {
-            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-            var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+        function updateTrack(trackId, instrumentData, startTimeSeconds) {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const payload = {
+                TrackId: trackId,
+                InstrumentName: instrumentData.name,
+                StartTime: startTimeSeconds,
+                IsUploaded: instrumentData.isUploaded,
+                InstrumentId: instrumentData.id // This could be null for default instruments
+            };
 
-            fetch(url, {
+            fetch('@Url.Action("AddInstrumentToTrack", "Collaboration")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
-                body: JSON.stringify({
-                    TrackId: trackId,
-                    InstrumentName: instrumentName,
-                    StartTime: startTimeSeconds
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Instrument added successfully:', data.instrumentId);
+                        addInstrumentToTrackElement(trackId, instrumentData.name, startTimeSeconds, data.duration);
+                        // Additional logic to visually represent the instrument on the track
+                    }
                 })
-            })
-            .then(response => {
-                if (!response.ok)
-                    return response.text().then(text => { throw new Error(text) });
-
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    console.log('Instrument added successfully:', data.instrumentId);
-
-                    addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration);
-                } else
-                    console.error('Error adding instrument:', data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
         function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement) {
@@ -222,8 +258,16 @@
 
                     </div>
                 }
+
+                @foreach (var uploadedInstrument in Model.UploadedInstruments)
+                {
+                    <div id="uploaded-@uploadedInstrument.Id" class="instrument uploaded" draggable="true" ondragstart="drag(event)" data-instrument="@uploadedInstrument.Name" data-instrument-id="@uploadedInstrument.Id">
+                        @uploadedInstrument.Name
+                        <audio id="@($"sound-uploaded-{uploadedInstrument.Id}")"></audio>
+                    </div>
+                }
                 <!-- Botão de Upload de Instrumento -->
-                <button id="upload-button">UPLOAD</button>
+                <button type="button" id="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">UPLOAD</button>
             </div>
         </div>
         <div class="col-md-10">
@@ -261,6 +305,33 @@
                         </div>
                     </div>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Instrument</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-instrument-form" asp-action="UploadInstrument" asp-route-collaborationId="@Model.Collaboration.Id" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="instrumentName">Instrument Name</label>
+                        <input type="text" class="form-control" id="instrumentName" name="instrumentName" placeholder="Enter instrument name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="soundFile">Instrument File (.mp3)</label>
+                        <input type="file" class="form-control-file" id="soundFile" name="soundFile" accept=".mp3" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="upload-instrument-btn">Upload</button>
+                </form>
             </div>
         </div>
     </div>

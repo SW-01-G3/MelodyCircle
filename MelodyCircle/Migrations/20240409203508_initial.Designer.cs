@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MelodyCircle.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240408190755_initial")]
+    [Migration("20240409203508_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -210,6 +210,9 @@ namespace MelodyCircle.Migrations
 
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
+
+                    b.Property<Guid?>("InstrumentId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InstrumentType")
                         .IsRequired()
@@ -409,6 +412,30 @@ namespace MelodyCircle.Migrations
                     b.HasIndex("TutorialId");
 
                     b.ToTable("TutorialRating");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.UploadedInstrument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollaborationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("SoundContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollaborationId");
+
+                    b.ToTable("UploadedInstruments");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
@@ -826,6 +853,17 @@ namespace MelodyCircle.Migrations
                         .IsRequired();
 
                     b.Navigation("Tutorial");
+                });
+
+            modelBuilder.Entity("MelodyCircle.Models.UploadedInstrument", b =>
+                {
+                    b.HasOne("MelodyCircle.Models.Collaboration", "Collaboration")
+                        .WithMany()
+                        .HasForeignKey("CollaborationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collaboration");
                 });
 
             modelBuilder.Entity("MelodyCircle.Models.User", b =>
