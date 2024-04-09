@@ -164,14 +164,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
                 user.Gender = Gender.Male;
-                byte[] defaultProfilePictureBytes;
-
-                using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-                {
-                    defaultProfilePictureBytes = new byte[fs.Length];
-
-                    fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-                }
+                byte[] defaultProfilePictureBytes = [];
 
                 user.ProfilePicture = defaultProfilePictureBytes;
 				user.CreationDate = DateTime.Now;

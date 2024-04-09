@@ -5,8 +5,6 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MelodyCircle", "MelodyCircle\MelodyCircle.csproj", "{F6F71D08-1926-4EC7-94A2-CC795E6767B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MelodyCircleTest", "MelodyCircleTest\MelodyCircleTest.csproj", "{284F1A00-3714-4CFB-A890-149844B39776}"
-EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "melodycirclecollaboration.client", "MelodyCircleCollaboration\melodycirclecollaboration.client\melodycirclecollaboration.client.esproj", "{B55357F2-512F-4F08-9916-131506F337DB}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6F71D08-1926-4EC7-94A2-CC795E6767B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{284F1A00-3714-4CFB-A890-149844B39776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{284F1A00-3714-4CFB-A890-149844B39776}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{284F1A00-3714-4CFB-A890-149844B39776}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{284F1A00-3714-4CFB-A890-149844B39776}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B55357F2-512F-4F08-9916-131506F337DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B55357F2-512F-4F08-9916-131506F337DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B55357F2-512F-4F08-9916-131506F337DB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

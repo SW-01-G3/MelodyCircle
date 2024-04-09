@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -43,11 +43,14 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="SendGrid" Version="9.29.1" />
+
 	  
+    <PackageReference Include="SendGrid" Version="9.29.2" />
+	
 	  <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="8.0.2" />
+	  <PackageReference Include="System.Composition.Runtime" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

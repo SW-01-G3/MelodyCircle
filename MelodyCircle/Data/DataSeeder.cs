@@ -106,7 +106,6 @@ namespace MelodyCircle.Data
                 }
             }
         }
-
         private static async Task SeedModUser(UserManager<User> userManager)
         {
             if (await userManager.FindByEmailAsync("mod@melodycircle.pt") == null)

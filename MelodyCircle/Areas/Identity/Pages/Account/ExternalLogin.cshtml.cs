@@ -185,14 +185,14 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                 user.BirthDate = Input.BirthDate;
                 user.Password = Input.Password;
                 user.Gender = Gender.Male;
-                byte[] defaultProfilePictureBytes;
+                byte[] defaultProfilePictureBytes = [];
 
-                using (FileStream fs = new FileStream("./Images/default_pf.png", FileMode.Open, FileAccess.Read))
-                {
-                    defaultProfilePictureBytes = new byte[fs.Length];
+                //using (FileStream fs = new FileStream("./img/default_pf.png", FileMode.Open, FileAccess.Read))
+                //{
+                //    defaultProfilePictureBytes = new byte[fs.Length];
 
-                    fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
-                }
+                //    fs.Read(defaultProfilePictureBytes, 0, defaultProfilePictureBytes.Length);
+                //}
 
                 user.ProfilePicture = defaultProfilePictureBytes;
 
