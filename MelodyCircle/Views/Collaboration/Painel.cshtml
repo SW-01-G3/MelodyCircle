@@ -206,6 +206,40 @@
         document.addEventListener('DOMContentLoaded', () => {
             createTimeline();
         });
+
+        document.getElementById('play-button').addEventListener('click', function () {
+            const tracks = document.querySelectorAll('.track');
+            let playPromises = [];
+
+            tracks.forEach(track => {
+                const audios = track.querySelectorAll('audio');
+                audios.forEach(audio => {
+                    let startTime = parseFloat(audio.dataset.startTime);
+
+                    let playPromise = new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(audio.play());
+                        }, startTime * 1000);
+                    });
+
+                    playPromises.push(playPromise);
+                });
+            });
+
+            Promise.all(playPromises).then(() => {
+                console.log('Todas as faixas estão tocando.');
+            }).catch(error => {
+                console.error('Erro ao tocar as faixas: ', error);
+            });
+
+            setTimeout(() => {
+                const allAudios = document.querySelectorAll('audio');
+                allAudios.forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+            }, 4 * 60 * 1000);
+        });
     </script>
 }
 
@@ -246,6 +280,8 @@
             <!-- Painel de Arranjo -->
             <div id="arrangement-panel">
                 <div class="header">
+                    <button id="play-button">Play</button>
+
                     <span>BPM: <input type="number" id="bpm" value="102" min="60" max="150" /></span>
                     @if (userHasTrack)
                     {
@@ -253,7 +289,7 @@
                     }
                     else
                     {
-                        <span>Você não tem faixa atribuída</span>
+                        <span>Não tem faixa atribuída</span>
                     }
                 </div>
                 <!-- Faixas -->
@@ -276,6 +312,11 @@
                             }>
                                 @foreach (var instrument in track.InstrumentsOnTrack)
                                 {
+                                    <audio preload="auto" id="audio-@instrument.Id"
+                                           data-start-time="@instrument.StartTime.TotalSeconds"
+                                           src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
+                                    </audio>
+
                                     <div class="instrument-on-track" style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
                                         <span>@instrument.InstrumentType</span>
                                     </div>
