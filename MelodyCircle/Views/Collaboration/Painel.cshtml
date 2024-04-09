@@ -99,19 +99,50 @@
         }
 
         function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement) {
+            console.log("Creating instrument element:", instrumentName);
+
             var element = document.createElement('div');
             element.classList.add('instrument-track');
-            element.textContent = instrumentName; // Nome do instrumento
-            element.title = instrumentName; // Tooltip com o nome completo do instrumento
+            element.textContent = instrumentName;
+            element.style.position = 'absolute';
+            element.style.whiteSpace = 'nowrap';
+            element.style.overflow = 'hidden';
+            element.style.textOverflow = 'ellipsis';
 
+            // Define as dimensões e a posição do elemento do instrumento
             var trackLengthInSeconds = 240;
             var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
-            var width = pxPerSecond * durationInSeconds;
-            var left = pxPerSecond * startTimeSeconds;
+            element.style.width = `${pxPerSecond * durationInSeconds}px`;
+            element.style.left = `${pxPerSecond * startTimeSeconds}px`;
 
-            element.style.width = `${width}px`;
-            element.style.left = `${left}px`;
-            element.style.position = 'absolute';
+            // Adicione o elemento <span> para exibir o nome completo do instrumento
+            var tooltipSpan = document.createElement('span');
+            tooltipSpan.textContent = instrumentName;
+            tooltipSpan.classList.add('tooltip');
+            tooltipSpan.style.display = 'none'; // Inicialmente escondido
+            element.appendChild(tooltipSpan);
+
+            // Anexar o elemento ao documento antes de calcular a largura real
+            trackElement.appendChild(element);
+
+            var elementRect = element.getBoundingClientRect();
+            var elementVisibleWidth = pxPerSecond * durationInSeconds;
+
+            // Verifique se o texto do instrumento está cortado e só então ative a tooltip
+            if (elementRect.width < elementVisibleWidth) {
+                console.log("Tooltip activated for:", instrumentName);
+
+                element.onmouseenter = function () {
+                    console.log("Mouse enter:", instrumentName);
+                    tooltipSpan.style.display = 'block'; // Mostra a tooltip quando o mouse está sobre o elemento
+                };
+                element.onmouseleave = function () {
+                    console.log("Mouse leave:", instrumentName);
+                    tooltipSpan.style.display = 'none'; // Esconde a tooltip quando o mouse sai do elemento
+                };
+            } else console.log("erro")
+
+            // Estilização adicional
             element.style.border = '2px solid #000';
             element.style.backgroundColor = '#FFF';
             element.style.color = '#000';
@@ -119,14 +150,8 @@
             element.style.lineHeight = '50px';
             element.style.marginTop = '5px';
             element.style.padding = '5px';
-            element.style.boxSizing = 'border-box';
-            element.style.borderColor = 'black';
-
-            // Ajusta o tamanho da fonte baseado na largura do elemento
-            element.style.fontSize = width > 100 ? '1.5rem' : '0.8rem'; // Se a largura for maior que 100px, usa 1.5rem; senão, usa 0.8rem
-            element.style.whiteSpace = 'nowrap';
-            element.style.overflow = 'hidden';
-            element.style.textOverflow = 'ellipsis'; // Adiciona "..." se o texto for muito grande
+            element.style.fontSize = '1rem';
+            element.style.fontWeight = 'bold';
 
             return element;
         }
@@ -229,7 +254,9 @@
                             <!-- Área droppable -->
                             @if (track.AssignedUserId.ToString() == userId)
                             {
-                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                                <div class="drop-area" ondragover="allowDrop(event)" ondrop="drop(event)">
+                                    <span class="instrument-tooltip"></span>
+                                </div>
                             }
                         </div>
                     </div>
