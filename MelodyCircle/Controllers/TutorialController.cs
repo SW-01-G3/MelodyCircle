@@ -54,12 +54,15 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> ViewMode()
         {
             var userId = _userManager.GetUserId(User);
+
             var tutoriaisInscritos = await _context.SubscribeTutorials
-                .Where(s => s.User.Id.ToString() == userId)
-                .Select(s => s.Tutorial)
+                .Where(elem => elem.User.Id.ToString() == userId)
+                .Select(tutorial => new { Tutorial = tutorial.Tutorial, StepCount = _context.Steps.Count(elem => elem.TutorialId == tutorial.TutorialId) })
                 .ToListAsync();
 
-            return View("ViewMode", tutoriaisInscritos);
+            var tutoriaisInscritosComContagem = tutoriaisInscritos.Select(elem => { elem.Tutorial.StepCount = elem.StepCount; return elem.Tutorial; }).ToList();
+
+            return View("ViewMode", tutoriaisInscritosComContagem);
         }
 
         // GET: Tutorial/Create
