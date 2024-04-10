@@ -91,22 +91,7 @@
             </div>
             <div class="col-2 px-3">tag</div>
             <div class="col-2 px-3">
-@*                 @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Editar</a>
-                    <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Eliminar</a>
-                    <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
-                    <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
-                    <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Contribuidores</a>
-                }
-                else
-                {
-                    <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn bg-purple text-white">Entrar</button>
-                    </form>
-            <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Abrir Painel de Arranjo</a>
-                } *@
+                <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Abrir Painel de Arranjo</a>
             </div>
         </div>
     }
@@ -118,23 +103,22 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const stars = document.querySelectorAll(".star");
-        //const baseUrl = '@Url.Content("~/img/")';
 
         stars.forEach(star => {
             star.addEventListener("mouseover", function () {
                 const value = parseInt(this.getAttribute("data-value"));
-                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
             });
 
             star.addEventListener("mouseleave", function () {
                 const rating = parseInt(document.getElementById("starRating").value);
-                fillStars(rating, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+                fillStars(rating, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
             });
 
             star.addEventListener("click", function () {
                 const value = parseInt(this.getAttribute("data-value"));
                 document.getElementById("starRating").value = value;
-                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
+                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
             });
         });
 

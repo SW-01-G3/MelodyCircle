@@ -4,6 +4,26 @@
     ViewData["Title"] = "Adicionar tutorial";
 }
 
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#editor', {
+            placeholder: 'Compose an epic...',
+            theme: 'snow',
+        });
+        let contentInput = document.getElementById("contentInput");
+        contentInput.value = JSON.stringify(quill.getContents());
+        quill.on('text-change', function(delta, oldDelta, source) {
+            contentInput.value = JSON.stringify(quill.getContents());
+        })  
+    </script>
+}
+
+
 <div class="row justify-content-center">
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <div class="text-end">
@@ -22,9 +42,13 @@
                 <input asp-for="Title" class="form-control border-purple" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group text-center">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea>
+            <div class="form-group text-center ">
+                <label asp-for="Description" class="control-label "></label>
+                @* <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea> *@
+                <input type="hidden" asp-for="Description" id="contentInput" value="" />
+                <div id="editor">
+                    <p>Hello, <strong>World</strong></p>
+                </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
@@ -38,6 +62,6 @@
         </form>
     </div>
 </div>
-<div>
-    <a asp-action="Index" asp-controller="Tutorial">Voltar à lista de Tutoriais</a>
+<div  class="text-center mt-2">
+    <a asp-action="Index" asp-controller="Tutorial" >Voltar à lista de Tutoriais</a>
 </div>

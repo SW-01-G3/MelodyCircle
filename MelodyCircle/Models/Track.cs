@@ -16,6 +16,6 @@
 
         public virtual Collaboration Collaboration { get; set; }
 
-        public virtual ICollection<InstrumentOnTrack> InstrumentsOnTrack { get; set; }
+        public virtual ICollection<InstrumentOnTrack>? InstrumentsOnTrack { get; set; } = new List<InstrumentOnTrack>();
     }
 }

@@ -15,10 +15,12 @@ html {
   scrollbar-width: none;
 }
 
-
-
 .unselectable {
   user-select: none;
+}
+
+a {
+    text-decoration: none;
 }
 
 @media (min-width: 768px) {
@@ -152,10 +154,11 @@ body {
 .floating-button-center {
   position: fixed;
   bottom: 1.5rem;
-  right: 50%;
-  left: 50%;
+  right: 0;
+  left: 0;
+  margin-inline: auto;
   height: 40px;
-  width: 100px;
+  width: fit-content;
 }
 
 .fill-purple {
@@ -245,16 +248,16 @@ body {
 .instrument {
     margin: 5px;
     padding: 5px;
-    background-color: #f8f9fa; /* Mais claro do que o anterior para contraste */
+    background-color: #f8f9fa;
     border: 1px solid #ccc;
     cursor: grab;
 }
 
 .drop-area {
-    width: 1030; /* Ajuste para compensar o padding */
-    height: 97px; /* Altura da sua track */
+    width: 1053px;
+    height: 97px;
     border: 2px dashed #ccc;
-    position: relative; /* Para posicionar os elementos internos absolutamente se necessário */
+    position: relative;
 }
 
 .track-container {
@@ -266,23 +269,23 @@ body {
 
 .timeline {
     display: flex;
-    width: 100%; /* Ajuste para que a timeline ocupe a largura total do seu contêiner */
-    position: relative; /* Ajuste para posicionar os elementos absolutamente dentro dela */
-    margin-top: 0px; /* Desloque a timeline para cima para que os números fiquem acima */
+    width: 100%;
+    position: relative;
+    margin-top: 0px;
     top: 50px;
     left: 0px;
 }
 
 .track {
     border: 1px solid #ccc;
-    height: 100x; /* A altura da sua track */
-    background-color: #f8f9fa; /* Cor de fundo */
-    margin-top: 25px; /* Espaço acima da track */
+    height: 100px;
+    background-color: #f8f9fa;
+    margin-top: 25px;
     width: 1055px;
 }
 
 .time-marker {
-    flex: 1; /* Isso fará com que cada marcador de tempo tenha o mesmo tamanho */
+    flex: 1;
     position: relative;
     text-align: center;
 }
@@ -298,7 +301,7 @@ body {
 
 .time-marker span {
     position: absolute;
-    bottom: 20px; /* Ajuste para que os números fiquem acima da timeline */
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.75rem;
@@ -307,10 +310,10 @@ body {
 .track-number {
     position: absolute;
     top: 50px;
-    left: -2.5%; /* Posição da numeração da track */
+    left: -2.5%;
     font-weight: bold;
-    background-color: #fff; /* Cor de fundo para destacar a numeração */
-    padding: 2px 5px; /* Preenchimento em torno do texto da numeração */
+    background-color: #fff;
+    padding: 2px 5px;
 }
 
 ::-webkit-scrollbar {
@@ -325,6 +328,40 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--purple);
     border-radius: 30px;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: black;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    z-index: 255;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.instrument-on-track {
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    border: 2px solid #000;
+    background-color: #FFF;
+    color: #000;
+    text-align: left;
+    line-height: 50px;
+    margin-top: 5px;
+    padding: 5px;
+    font-size: 1rem;
+    font-weight: bold
+}
+
+.instrument-on-track span {
+    display: inline-block;
+    padding: 0px;
 }
 
 /* FINAL DO PAINEL DE ARRANJO */
