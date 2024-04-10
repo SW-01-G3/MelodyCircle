@@ -59,14 +59,8 @@ namespace MelodyCircle.Controllers
         public async Task<IActionResult> EditMode()
         {
             var userId = _userManager.GetUserId(User);
-            var collabsCriados = _context.Collaborations
-                .Where(t => t.CreatorId == userId);
-
-            var publicCollaborations = await _context.Collaborations
-                .Include(c => c.WaitingUsers)
-                .Include(c => c.ContributingUsers)
-                .Where(c => c.AccessMode == AccessMode.Public)
-                .ToListAsync();
+            var collabsCriados = await _context.Collaborations
+                .Where(t => t.CreatorId == userId).ToListAsync();
 
             return View("EditModeCollab", collabsCriados);
         }

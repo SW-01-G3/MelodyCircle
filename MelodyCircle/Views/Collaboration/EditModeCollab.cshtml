@@ -2,7 +2,7 @@
 @using MelodyCircle.ExtensionMethods
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
-@model IEnumerable<Collaboration>
+@model IEnumerable<MelodyCircle.Models.Collaboration>
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
@@ -42,11 +42,7 @@
                 int halfStar = roundedRating % 2;
                 int emptyStars = 5 - fullStars - halfStar;
             }
-  @*           <div class="col-1 ">
-                <button type="button" class="border-purple bg-purple rounded" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
-                    <img src="~/img/star-add-filled-svgrepo-com.svg" />
-                </button>
-            </div> *@
+
             <div class="col-2 ">
                 <div class="star-rating ">
                     @for (int i = 0; i < fullStars; i++)
@@ -67,29 +63,6 @@
             <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
             <div class="col-2 px-3">Finalizada: @(collaboration.IsFinished ? "Sim" : "Não")</div>
             <br />
-
-            <div class="modal fade" id="addStarRatingModal" tabindex="-1" aria-labelledby="addStarRatingModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addStarRatingModalLabel">@Html.Translate("LB_010")</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="starRatingForm" asp-action="RateCollaboration" asp-route-id="@collaboration.Id" method="post" class=" text-center">
-                                <div class="star-rating">
-                                    @for (int i = 1; i <= 10; i++)
-                                    {
-                                        <img class="star" src="~/img/estrelaEmpty.svg" data-value="@i" />
-                                    }
-                                </div>
-                                <input type="hidden" name="rating" id="starRating" value="0" />
-                                <button type="submit" class="mt-3 btn bg-purple text-white border-darkPurple rounded ">@Html.Translate("LB_GIVESTARS")</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="col-2 px-3 ">
                 @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -117,40 +90,6 @@
 <a class="btn bg-purple text-white rounded-circle floating-button z-3" href="/Collaboration/Create">+</a>
 
 <div class="text-end">
-        <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
+    <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const stars = document.querySelectorAll(".star");
-
-        stars.forEach(star => {
-            star.addEventListener("mouseover", function () {
-                const value = parseInt(this.getAttribute("data-value"));
-                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
-            });
-
-            star.addEventListener("mouseleave", function () {
-                const rating = parseInt(document.getElementById("starRating").value);
-                fillStars(rating, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
-            });
-
-            star.addEventListener("click", function () {
-                const value = parseInt(this.getAttribute("data-value"));
-                document.getElementById("starRating").value = value;
-                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
-            });
-        });
-
-        function fillStars(value, filledSrc, emptySrc) {
-            stars.forEach(star => {
-                const starValue = parseInt(star.getAttribute("data-value"));
-                if (starValue <= value) {
-                    star.src = filledSrc;
-                } else {
-                    star.src = emptySrc;
-                }
-            });
-        }
-    });
-</script>

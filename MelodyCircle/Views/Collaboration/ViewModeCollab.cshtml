@@ -107,18 +107,18 @@
         stars.forEach(star => {
             star.addEventListener("mouseover", function () {
                 const value = parseInt(this.getAttribute("data-value"));
-                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
+                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
             });
 
             star.addEventListener("mouseleave", function () {
                 const rating = parseInt(document.getElementById("starRating").value);
-                fillStars(rating, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
+                fillStars(rating, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
             });
 
             star.addEventListener("click", function () {
                 const value = parseInt(this.getAttribute("data-value"));
                 document.getElementById("starRating").value = value;
-                fillStars(value, "~/img/star-filled-svgrepo-com.svg", "~/img/estrelaEmpty.svg");
+                fillStars(value, "/img/star-filled-svgrepo-com.svg", "/img/estrelaEmpty.svg");
             });
         });
 

@@ -4,13 +4,17 @@
     ViewData["Title"] = "Fechar Post";
 }
 
-<h1>Confirmação de Encerramento de Post</h1>
+<div class="border border-purple bg-white text-center p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 mx-auto w-50">
+    <div class="d-flex flex-column align-items-center">
+        <h1>Confirmação de Encerramento de Post</h1>
 
-<p>Deseja fechar este post:</p>
-<p><strong>Título: </strong>@Model.Title</p>
-<p><strong>Conteúdo: </strong>@Model.Content</p>
+        <p>Deseja fechar este post:</p>
+        <p><strong>Título: </strong>@Model.Title</p>
+        <p><strong>Conteúdo: </strong>@Model.Content</p>
 
-<form asp-action="ConfirmClosePost" asp-route-id="@Model.Id" method="post">
-    <button type="submit" class="btn btn-danger">Confirmar</button>
-    <a asp-action="Comments" asp-controller="Forum" asp-route-id="@Model.Id" class="btn btn-secondary">Cancelar</a>
-</form>
+        <form asp-action="ConfirmClosePost" asp-route-id="@Model.Id" method="post" class="text-center">
+            <button type="submit" class="btn btn-danger">Confirmar</button>
+            <a asp-action="Comments" asp-controller="Forum" asp-route-id="@Model.Id" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
