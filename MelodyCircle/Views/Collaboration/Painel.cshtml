@@ -22,6 +22,7 @@
         let currentPlaybackPosition = 0;
         let trackTimers = [];
         let masterTimer;
+        let playbackLineInterval;
 
         document.querySelectorAll('.instrument').forEach(item => {
             item.addEventListener('click', event => {
@@ -262,24 +263,25 @@
                 // Parar o timer mestre que controla o fim da reprodução.
                 clearTimeout(masterTimer);
 
-                const line = document.getElementById('playback-line');
-                line.style.display = 'none';
+                clearInterval(playbackLineInterval);
             }
         }
 
         function restartTracks() {
-            pauseTracks();
+            pauseTracks(); // Isto irá parar a reprodução atual e limpar todos os timers.
 
+            // Reseta o tempo atual de reprodução e a posição dos áudios.
             currentPlaybackPosition = 0;
-
-            // Parar todos os audios e reinicie seu tempo.
             const audios = document.querySelectorAll('.track audio');
             audios.forEach(audio => {
-                audio.pause();
                 audio.currentTime = 0;
             });
 
-            playTracks();
+            // Inicia a reprodução desde o início.
+            playTracks(); // Isto irá configurar todos os timers de áudio novamente.
+
+            // Inicia a linha de reprodução desde o início.
+            updatePlaybackLine(240); // Isto irá mover a linha de reprodução novamente.
         }
 
         function updatePlaybackLine(duration) {
@@ -287,23 +289,24 @@
             const panel = document.getElementById('arrangement-panel');
             const panelWidth = panel.offsetWidth;
 
-            line.style.display = 'block';
+            clearInterval(playbackLineInterval);
 
-            // Calcula a nova posição da linha a cada segundo.
-            let startTime = Date.now();
-            let endTime = startTime + duration * 1000;
-            let interval = setInterval(() => {
+            // Calcula a nova posição da linha a cada frame.
+            let startTime = Date.now() - (currentPlaybackPosition * 1000); // Subtrai o tempo já passado.
+
+            playbackLineInterval = setInterval(() => {
                 let currentTime = Date.now();
                 let elapsed = currentTime - startTime;
-                if (currentTime <= endTime) {
-                    let percentage = elapsed / (duration * 1000);
-                    line.style.left = (panelWidth * percentage) + 'px';
-                } else {
-                    // Limpa o intervalo quando a reprodução termina.
-                    clearInterval(interval);
+                let percentage = elapsed / (duration * 1000);
+                line.style.left = (panelWidth * percentage) + 'px';
+
+                if (percentage >= 1) {
+                    clearInterval(playbackLineInterval);
                     line.style.display = 'none'; // Esconde a linha quando a reprodução termina.
                 }
-            }, 1000 / 60);
+            }, 1000 / 60); // Atualiza 60 vezes por segundo para uma animação suave.
+
+            line.style.display = 'block'; // Assegura que a linha esteja visível se o play foi pressionado.
         }
 
         document.getElementById('play-button').addEventListener('click', playTracks);
@@ -315,7 +318,6 @@
 @functions {
     public string CalculateLeftPosition(TimeSpan startTime, TimeSpan totalDuration)
     {
-        // Calcula a porcentagem do StartTime em relação à duração total da track.
         double positionPercentage = (startTime.TotalSeconds / totalDuration.TotalSeconds) * 100;
         return $"{positionPercentage}%";
     }
