@@ -18,9 +18,8 @@
 
 @section Scripts {
     <script>
-        // Variáveis globais para controlar o estado da reprodução.
         let isPlaying = false;
-        let currentPlaybackPosition = 0; // Em segundos.
+        let currentPlaybackPosition = 0;
         let trackTimers = [];
         let masterTimer;
 
@@ -213,7 +212,6 @@
             createTimeline();
         });
 
-        // Função para iniciar a reprodução.
         function playTracks() {
             if (!isPlaying) {
                 isPlaying = true;
@@ -241,10 +239,11 @@
                 // Parar a reprodução depois da duração máxima menos o tempo atual.
                 clearTimeout(masterTimer);
                 masterTimer = setTimeout(pauseTracks, (240 - currentPlaybackPosition) * 1000);
+
+                updatePlaybackLine(240);
             }
         }
 
-        // Função para pausar a reprodução.
         function pauseTracks() {
             if (isPlaying) {
                 isPlaying = false;
@@ -262,25 +261,49 @@
 
                 // Parar o timer mestre que controla o fim da reprodução.
                 clearTimeout(masterTimer);
+
+                const line = document.getElementById('playback-line');
+                line.style.display = 'none';
             }
         }
 
         function restartTracks() {
-            // Primeiro, pause todas as tracks.
             pauseTracks();
 
-            // Em seguida, reinicie o tempo de reprodução.
             currentPlaybackPosition = 0;
 
-            // Agora, pare todos os audios e reinicie seu tempo.
+            // Parar todos os audios e reinicie seu tempo.
             const audios = document.querySelectorAll('.track audio');
             audios.forEach(audio => {
                 audio.pause();
                 audio.currentTime = 0;
             });
 
-            // Por fim, comece a tocar as tracks desde o início.
             playTracks();
+        }
+
+        function updatePlaybackLine(duration) {
+            const line = document.getElementById('playback-line');
+            const panel = document.getElementById('arrangement-panel');
+            const panelWidth = panel.offsetWidth;
+
+            line.style.display = 'block';
+
+            // Calcula a nova posição da linha a cada segundo.
+            let startTime = Date.now();
+            let endTime = startTime + duration * 1000;
+            let interval = setInterval(() => {
+                let currentTime = Date.now();
+                let elapsed = currentTime - startTime;
+                if (currentTime <= endTime) {
+                    let percentage = elapsed / (duration * 1000);
+                    line.style.left = (panelWidth * percentage) + 'px';
+                } else {
+                    // Limpa o intervalo quando a reprodução termina.
+                    clearInterval(interval);
+                    line.style.display = 'none'; // Esconde a linha quando a reprodução termina.
+                }
+            }, 1000 / 60);
         }
 
         document.getElementById('play-button').addEventListener('click', playTracks);
@@ -340,40 +363,45 @@
                         <span>Não tem faixa atribuída</span>
                     }
                 </div>
-                <!-- Faixas -->
-                @foreach (var track in Model.Tracks)
-                {
-                    <div class="track-container">
-                        <div class="timeline">
-                            <!-- Marcadores de tempo serão inseridos aqui -->
-                        </div>
 
-                        <div class="track-number">Faixa @(Model.Tracks.IndexOf(track) + 1)</div>
+                <div id="arrangement-container" style="position: relative; width: 100%;">
+                    <div id="playback-line" style="position: absolute; margin-top: 27px; margin-left: 50px; height: 100%; width: 2px; background-color: red; display: none; z-index: 1;"></div> <!-- ajuste o left para alinhar com o início das faixas -->
+                    <!-- Faixas -->
+                    @foreach (var track in Model.Tracks)
+                    {
+                        <div class="track-container">
+                            <div class="timeline">
+                                <!-- Régua Temporal inserida aqui -->
+                            </div>
 
-                        <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
-                            <!-- Área droppable -->
-                            <div class="drop-area"
-                            @if (track.AssignedUserId.ToString() == userId)
-                            {
-                                @:ondragover="allowDrop(event)"
-                                @:ondrop="drop(event)"
-                            }>
-                                @foreach (var instrument in track.InstrumentsOnTrack)
-                                {
-                                    <audio preload="auto" id="audio-@instrument.Id"
-                                           data-start-time="@instrument.StartTime.TotalSeconds"
-                                           src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
-                                    </audio>
+                            <div class="track-number">Faixa @(Model.Tracks.IndexOf(track) + 1)</div>
 
-                                    <div class="instrument-on-track" style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
-                                        <span>@instrument.InstrumentType</span>
-                                    </div>
-                                }
+                            <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
+
+                                <!-- Área droppable -->
+                                <div class="drop-area"
+                                    @if (track.AssignedUserId.ToString() == userId)
+                                    {
+                                        @:ondragover="allowDrop(event)"
+                                        @:ondrop="drop(event)"
+                                    }>
+
+                                    @foreach (var instrument in track.InstrumentsOnTrack)
+                                    {
+                                        <audio preload="auto" id="audio-@instrument.Id"
+                                                data-start-time="@instrument.StartTime.TotalSeconds"
+                                                src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
+                                        </audio>
+
+                                        <div class="instrument-on-track" style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
+                                            <span>@instrument.InstrumentType</span>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-
+                    }
+                </div>
             </div>
         </div>
     </div>
