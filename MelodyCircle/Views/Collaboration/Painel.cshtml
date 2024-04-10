@@ -25,7 +25,6 @@
         let playbackLineInterval;
         let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-
         function allowDrop(event) {
             console.log("Drag over the drop area");
             event.preventDefault();
@@ -112,12 +111,6 @@
             element.style.whiteSpace = 'nowrap';
             element.style.overflow = 'hidden';
             element.style.textOverflow = 'ellipsis';
-
-            element.setAttribute('data-instrument-id', instrumentId);
-            element.addEventListener('click', function (event) {
-                event.stopPropagation();
-                removeInstrumentFromTrack(instrumentId, element);
-            });
 
             var trackLengthInSeconds = 240;
             var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
@@ -329,6 +322,21 @@
             line.style.display = 'block';
         }
 
+        function attachClickEventToRemoveInstrument() {
+            document.querySelectorAll('.removable-instrument').forEach(item => {
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    var instrumentId = this.getAttribute('data-instrument-id');
+                    removeInstrumentFromTrack(instrumentId, this);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            createTimeline();
+            attachClickEventToRemoveInstrument();
+        });
+
         document.querySelectorAll('.instrument').forEach(item => {
             item.addEventListener('click', event => {
                 let instrumentName = item.getAttribute('data-instrument').toLowerCase();
@@ -424,7 +432,7 @@
 
                                     @foreach (var instrument in track.InstrumentsOnTrack)
                                     {
-                                        <div class="instrument-on-track" data-instrument-id="@instrument.Id"
+                                        <div class="instrument-on-track removable-instrument" data-instrument-id="@instrument.Id"
                                              style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration);
                                                     width: @CalculateWidth(instrument.Duration, track.Duration);">
 
