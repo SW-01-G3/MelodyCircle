@@ -550,14 +550,14 @@ namespace MelodyCircle.Controllers
                     CollaborationId = id,
                     BPM = 102,
                     Duration = TimeSpan.FromMinutes(4)
-            };
+                };
 
                 _context.Tracks.Add(userTrack);
 
                 await _context.SaveChangesAsync();
             }
 
-            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 0;
+            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
 
             var arrangementViewModel = new ArrangementPanelViewModel
             {
@@ -595,37 +595,29 @@ namespace MelodyCircle.Controllers
                 TrackId = dto.TrackId,
                 InstrumentType = dto.InstrumentName,
                 StartTime = TimeSpan.FromSeconds(dto.StartTime),
-                Duration = duration
+                Duration = duration,
+                Track = track,
             };
 
-            if (instrument.Id == null)
+            if (instrument.Id == null || instrument.TrackId == null || instrument.InstrumentType == null || instrument.StartTime == null || instrument.Duration == null || track == null)
                 return NotFound();
 
-            if (instrument.TrackId == null)
-                return NotFound();
-
-            if (instrument.InstrumentType == null)
-                return NotFound();
-
-            if (instrument.StartTime == null)
-                return NotFound();
-
-            if (instrument.Duration == null)
-                return NotFound();
-
-            track.InstrumentsOnTrack.Add(instrument);
+            _context.InstrumentOnTrack.Add(instrument);
 
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true, instrumentId = instrument.Id });
+            return Json(new
+            {
+                success = true,
+                instrumentId = instrument.Id,
+                duration = duration.TotalSeconds
+            });
         }
 
         private TimeSpan GetAudioDuration(string filePath)
         {
-            using (var reader = new Mp3FileReader(filePath))
-            {
-                return reader.TotalTime;
-            }
+            using var reader = new Mp3FileReader(filePath);
+            return reader.TotalTime;
         }
 
         private bool CollaborationExists(Guid id)
