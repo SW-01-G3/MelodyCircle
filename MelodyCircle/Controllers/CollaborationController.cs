@@ -3,8 +3,6 @@ using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using System.Security.Claims;
 using MelodyCircle.Services;
 using NAudio.Wave;
 
@@ -586,9 +584,9 @@ namespace MelodyCircle.Controllers
             var instrument = new InstrumentOnTrack
             {
                 Id = Guid.NewGuid(),
-                TrackId = dto.TrackId,
+                TrackId = (Guid)dto.TrackId,
                 InstrumentType = dto.InstrumentName,
-                StartTime = TimeSpan.FromSeconds(dto.StartTime),
+                StartTime = TimeSpan.FromSeconds((double)dto.StartTime),
                 Duration = duration,
                 Track = track,
             };
@@ -606,6 +604,28 @@ namespace MelodyCircle.Controllers
                 instrumentId = instrument.Id,
                 duration = duration.TotalSeconds
             });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveInstrumentFromTrack([FromBody] InstrumentOnTrackDto dto)
+        {
+            var instrumentOnTrack = await _context.InstrumentOnTrack.FindAsync(dto.InstrumentId);
+
+            if (instrumentOnTrack == null)
+                return NotFound();
+
+            var track = await _context.Tracks.FirstOrDefaultAsync(t => t.Id == instrumentOnTrack.TrackId);
+
+            var userId = _userManager.GetUserId(User);
+
+            if (track == null || track.AssignedUserId.ToString() != userId)
+                return Forbid();
+
+            _context.InstrumentOnTrack.Remove(instrumentOnTrack);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Instrumento removido com sucesso" });
         }
 
         private TimeSpan GetAudioDuration(string filePath)

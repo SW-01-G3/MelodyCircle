@@ -264,7 +264,7 @@ body {
     position: relative;
     width: 100%;
     margin-bottom: 20px;
-    padding-left: 50px; /* Espaço para a numeração da track */
+    padding-left: 50px;
 }
 
 .timeline {

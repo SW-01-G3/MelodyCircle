@@ -23,16 +23,7 @@
         let trackTimers = [];
         let masterTimer;
         let playbackLineInterval;
-
-        document.querySelectorAll('.instrument').forEach(item => {
-            item.addEventListener('click', event => {
-                let instrumentName = item.getAttribute('data-instrument').toLowerCase();
-                let soundId = `sound-${instrumentName}`;
-                let sound = document.getElementById(soundId);
-                if (sound) sound.play();
-                else console.error('Sound element not found:', soundId);
-            });
-        });
+        let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
         function allowDrop(event) {
             console.log("Drag over the drop area");
@@ -70,7 +61,6 @@
         }
 
         function updateTrack(trackId, instrumentName, startTimeSeconds) {
-            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
 
             fetch(url, {
@@ -94,8 +84,7 @@
             .then(data => {
                 if (data.success) {
                     console.log('Instrument added successfully:', data.instrumentId);
-
-                    addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration);
+                    addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration, data.instrumentId);
                 } else
                     console.error('Error adding instrument:', data.message);
             })
@@ -104,7 +93,15 @@
             });
         }
 
-        function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement) {
+        function addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, durationInSeconds, instrumentId) {
+            const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
+            if (trackElement) {
+                const instrumentElement = createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, instrumentId, trackElement);
+                trackElement.appendChild(instrumentElement);
+            }
+        }
+
+        function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, instrumentId, trackElement) {
             console.log("Creating instrument element:", instrumentName);
 
             var element = document.createElement('div');
@@ -115,41 +112,36 @@
             element.style.overflow = 'hidden';
             element.style.textOverflow = 'ellipsis';
 
-            // Define as dimensões e a posição do elemento do instrumento
             var trackLengthInSeconds = 240;
             var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
             element.style.width = `${pxPerSecond * durationInSeconds}px`;
             element.style.left = `${pxPerSecond * startTimeSeconds}px`;
 
-            // Adicione o elemento <span> para exibir o nome completo do instrumento
             var tooltipSpan = document.createElement('span');
             tooltipSpan.textContent = instrumentName;
             tooltipSpan.classList.add('tooltip');
-            tooltipSpan.style.display = 'none'; // Inicialmente escondido
+            tooltipSpan.style.display = 'none';
             element.appendChild(tooltipSpan);
 
-            // Anexar o elemento ao documento antes de calcular a largura real
             trackElement.appendChild(element);
 
             var elementRect = element.getBoundingClientRect();
             var elementVisibleWidth = pxPerSecond * durationInSeconds;
 
-            // Verifique se o texto do instrumento está cortado e só então ative a tooltip
             if (elementRect.width < elementVisibleWidth) {
                 console.log("Tooltip activated for:", instrumentName);
 
                 element.onmouseenter = function () {
                     console.log("Mouse enter:", instrumentName);
-                    tooltipSpan.style.display = 'block'; // Mostra a tooltip quando o mouse está sobre o elemento
+                    tooltipSpan.style.display = 'block';
                 };
 
                 element.onmouseleave = function () {
                     console.log("Mouse leave:", instrumentName);
-                    tooltipSpan.style.display = 'none'; // Esconde a tooltip quando o mouse sai do elemento
+                    tooltipSpan.style.display = 'none';
                 };
-            } else console.log("erro")
+            }
 
-            // Estilização adicional
             element.style.border = '2px solid #000';
             element.style.backgroundColor = '#FFF';
             element.style.color = '#000';
@@ -163,21 +155,48 @@
             return element;
         }
 
+        function removeInstrumentFromTrack(instrumentId, element) {
+            var url = '@Url.Action("RemoveInstrumentFromTrack", "Collaboration")';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ InstrumentId: instrumentId })
+            })
+                .then(response => {
+                    if (!response.ok)
+                        return response.text().then(text => { throw new Error(text) });
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        console.log('Instrument removed successfully:', instrumentId);
+                        element.remove();
+                    } else
+                        console.error('Error removing instrument:', data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
         function createTimeline() {
             const tracks = document.querySelectorAll('.track');
-            const trackLength = 240; // Duração total em segundos (4 minutos)
-            const interval = 30; // Intervalo em segundos para as marcações
+            const trackLength = 240;
+            const interval = 30;
 
-            // Criar a régua para cada faixa
             tracks.forEach(track => {
                 const timeline = document.createElement('div');
                 timeline.className = 'timeline';
                 timeline.style.display = 'flex';
                 timeline.style.position = 'absolute';
-                timeline.style.width = '100%'; // Isso fará com que a timeline e a track tenham o mesmo tamanho
+                timeline.style.width = '100%';
                 timeline.style.height = '20px';
 
-                // Criar as marcações de tempo
                 for (let time = 0; time <= trackLength; time += interval) {
                     const timeMarker = document.createElement('div');
                     timeMarker.className = 'time-marker';
@@ -190,35 +209,22 @@
                     markerLabel.style.position = 'absolute';
                     markerLabel.style.left = '50%';
                     markerLabel.style.transform = 'translateX(-50%)';
-                    markerLabel.style.bottom = '20px'; // Posicionando os números acima da régua
+                    markerLabel.style.bottom = '20px';
 
                     timeMarker.appendChild(markerLabel);
                     timeline.appendChild(timeMarker);
                 }
 
                 const trackContainer = track.parentNode;
-                trackContainer.insertBefore(timeline, track); // Insere a timeline acima da track
+                trackContainer.insertBefore(timeline, track);
             });
         }
-
-        function addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, durationInSeconds) {
-            const trackElement = document.querySelector(`[data-track-id="${trackId}"] .drop-area`);
-            if (trackElement) {
-                const instrumentElement = createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, trackElement);
-                trackElement.appendChild(instrumentElement);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            createTimeline();
-        });
 
         function playTracks() {
             if (!isPlaying) {
                 isPlaying = true;
                 const tracks = document.querySelectorAll('.track');
 
-                // Cancelar todos os timeouts anteriores para garantir uma nova inicialização.
                 trackTimers.forEach(clearTimeout);
                 trackTimers = [];
 
@@ -227,7 +233,13 @@
                     audios.forEach(audio => {
                         let startTime = parseFloat(audio.dataset.startTime);
 
-                        // Apenas tocar sons que ainda não começaram.
+                        audio.addEventListener('play', () => {
+                            currentPlaybackPosition = audio.currentTime;
+                        });
+
+                        if (currentPlaybackPosition !== 0)
+                            audio.currentTime = currentPlaybackPosition;
+
                         if (startTime >= currentPlaybackPosition) {
                             let timerId = setTimeout(() => {
                                 audio.play();
@@ -237,11 +249,10 @@
                     });
                 });
 
-                // Parar a reprodução depois da duração máxima menos o tempo atual.
+                updatePlaybackLine(240 - currentPlaybackPosition, true);
+
                 clearTimeout(masterTimer);
                 masterTimer = setTimeout(pauseTracks, (240 - currentPlaybackPosition) * 1000);
-
-                updatePlaybackLine(240);
             }
         }
 
@@ -250,64 +261,95 @@
                 isPlaying = false;
                 const audios = document.querySelectorAll('.track audio');
                 audios.forEach(audio => {
-                    if (!audio.paused) {
-                        audio.pause();
+                    audio.pause();
+                    currentPlaybackPosition = audio.currentTime;
+                    audio.addEventListener('pause', () => {
                         currentPlaybackPosition = audio.currentTime;
-                    }
+                    });
+                    console.log('Current Playback Position on Pause:', currentPlaybackPosition);
                 });
 
-                // Cancelar todos os timers restantes.
                 trackTimers.forEach(clearTimeout);
                 trackTimers = [];
 
-                // Parar o timer mestre que controla o fim da reprodução.
                 clearTimeout(masterTimer);
-
                 clearInterval(playbackLineInterval);
             }
         }
 
         function restartTracks() {
-            pauseTracks(); // Isto irá parar a reprodução atual e limpar todos os timers.
+            pauseTracks();
 
-            // Reseta o tempo atual de reprodução e a posição dos áudios.
             currentPlaybackPosition = 0;
             const audios = document.querySelectorAll('.track audio');
             audios.forEach(audio => {
                 audio.currentTime = 0;
             });
 
-            // Inicia a reprodução desde o início.
-            playTracks(); // Isto irá configurar todos os timers de áudio novamente.
-
-            // Inicia a linha de reprodução desde o início.
-            updatePlaybackLine(240); // Isto irá mover a linha de reprodução novamente.
+            playTracks();
+            updatePlaybackLine(240);
         }
 
-        function updatePlaybackLine(duration) {
+        function updatePlaybackLine(duration, startFromCurrentPosition = false) {
             const line = document.getElementById('playback-line');
             const panel = document.getElementById('arrangement-panel');
             const panelWidth = panel.offsetWidth;
 
             clearInterval(playbackLineInterval);
 
-            // Calcula a nova posição da linha a cada frame.
-            let startTime = Date.now() - (currentPlaybackPosition * 1000); // Subtrai o tempo já passado.
+            let startTime = Date.now();
+            let startPosition = 0;
+
+            if (startFromCurrentPosition) {
+                // Ajustar o startTime com base no currentPlaybackPosition
+                startTime -= currentPlaybackPosition * 1000;
+                // Calcular a posição inicial da linha de reprodução com base no currentPlaybackPosition
+                startPosition = (panelWidth * currentPlaybackPosition) / duration;
+            }
 
             playbackLineInterval = setInterval(() => {
                 let currentTime = Date.now();
                 let elapsed = currentTime - startTime;
                 let percentage = elapsed / (duration * 1000);
-                line.style.left = (panelWidth * percentage) + 'px';
+                line.style.left = startPosition + (panelWidth * percentage) + 'px';
 
                 if (percentage >= 1) {
                     clearInterval(playbackLineInterval);
-                    line.style.display = 'none'; // Esconde a linha quando a reprodução termina.
+                    line.style.display = 'none';
                 }
-            }, 1000 / 60); // Atualiza 60 vezes por segundo para uma animação suave.
+            }, 1000 / 60);
 
-            line.style.display = 'block'; // Assegura que a linha esteja visível se o play foi pressionado.
+            line.style.display = 'block';
         }
+
+        function attachClickEventToRemoveInstrument() {
+            document.querySelectorAll('.removable-instrument').forEach(item => {
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    var instrumentId = this.getAttribute('data-instrument-id');
+                    removeInstrumentFromTrack(instrumentId, this);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            createTimeline();
+            attachClickEventToRemoveInstrument();
+        });
+
+        document.querySelectorAll('.instrument').forEach(item => {
+            item.addEventListener('click', event => {
+                let instrumentName = item.getAttribute('data-instrument').toLowerCase();
+                let soundId = `sound-${instrumentName}`;
+                let sound = document.getElementById(soundId);
+                if (sound) sound.play();
+                else console.error('Sound element not found:', soundId);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            createTimeline();
+        });
 
         document.getElementById('play-button').addEventListener('click', playTracks);
         document.getElementById('pause-button').addEventListener('click', pauseTracks);
@@ -390,13 +432,16 @@
 
                                     @foreach (var instrument in track.InstrumentsOnTrack)
                                     {
-                                        <audio preload="auto" id="audio-@instrument.Id"
-                                                data-start-time="@instrument.StartTime.TotalSeconds"
-                                                src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
-                                        </audio>
+                                        <div class="instrument-on-track removable-instrument" data-instrument-id="@instrument.Id"
+                                             style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration);
+                                                    width: @CalculateWidth(instrument.Duration, track.Duration);">
 
-                                        <div class="instrument-on-track" style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
                                             <span>@instrument.InstrumentType</span>
+
+                                            <audio preload="auto" id="audio-@instrument.Id"
+                                                   data-start-time="@instrument.StartTime.TotalSeconds"
+                                                   src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
+                                            </audio>
                                         </div>
                                     }
                                 </div>
