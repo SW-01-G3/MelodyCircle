@@ -12,4 +12,14 @@ test('test', async ({ page }) => {
   await page.getByRole('link', { name: 'Ver Estatísticas de Utilizadores' }).click();
   await page.getByRole('link', { name: 'Admin.' }).click();
   await page.getByRole('button').nth(1).click();
+  await page.getByRole('link', { name: 'Ver Estatísticas de Tutoriais' }).click();
+  await page.getByRole('link', { name: 'Admin.' }).click();
+  await page.getByRole('button').nth(1).click();
+  await page.getByRole('link', { name: 'Ver Estatísticas de Passos' }).click();
+  await page.getByRole('link', { name: 'Admin.' }).click();
+  await page.getByRole('button').nth(1).click();
+  await page.getByRole('link', { name: 'Ver Estatísticas de Colaborações' }).click();
+  await page.getByRole('link', { name: 'Admin.' }).click();
+  await page.getByRole('button').nth(1).click();
+
 });
