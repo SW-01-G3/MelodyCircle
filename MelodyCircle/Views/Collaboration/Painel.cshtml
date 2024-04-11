@@ -61,6 +61,7 @@
         }
 
         function updateTrack(trackId, instrumentName, startTimeSeconds) {
+            console.log("updateTrack")
             var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
 
             fetch(url, {
@@ -111,6 +112,9 @@
             element.style.whiteSpace = 'nowrap';
             element.style.overflow = 'hidden';
             element.style.textOverflow = 'ellipsis';
+
+            // element.setAttribute('data-bs-toggle', 'tooltip');
+            // element.setAttribute('data-bs-title', instrumentName);
 
             var trackLengthInSeconds = 240;
             var pxPerSecond = trackElement.offsetWidth / trackLengthInSeconds;
