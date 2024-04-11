@@ -1,7 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Antiforgery
 @using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data;
 @inject UserManager<User> UserManager
 @inject IAntiforgery Antiforgery
+
+
+
+
 
 @model ArrangementPanelViewModel
 
@@ -387,6 +392,28 @@
                 }
                 <!-- Botão de Upload de Instrumento -->
                 <button id="upload-button">UPLOAD</button>
+
+
+
+                <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
+                    Ver Descrição
+                </button>
+
+                <div class="modal fade" id="collabDescriptionModal-@Model.Collaboration.Id" tabindex="-1" aria-labelledby="collabDescriptionLabel-@Model.Collaboration.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h5 class="modal-title" id="collabDescriptionLabel-@Model.Collaboration.Id">@Model.Collaboration.Title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                @Html.Raw(Model.Collaboration.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
             </div>
         </div>
         <div class="col-md-10">
