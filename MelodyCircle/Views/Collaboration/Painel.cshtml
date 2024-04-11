@@ -121,6 +121,7 @@
             tooltipSpan.textContent = instrumentName;
             tooltipSpan.classList.add('tooltip');
             tooltipSpan.style.display = 'none';
+
             element.appendChild(tooltipSpan);
 
             trackElement.appendChild(element);
@@ -216,6 +217,7 @@
                 }
 
                 const trackContainer = track.parentNode;
+
                 trackContainer.insertBefore(timeline, track);
             });
         }
@@ -287,6 +289,7 @@
             });
 
             playTracks();
+
             updatePlaybackLine(240);
         }
 
@@ -301,11 +304,11 @@
             let startPosition = 0;
 
             if (startFromCurrentPosition) {
-                // Ajustar o startTime com base no currentPlaybackPosition
                 startTime -= currentPlaybackPosition * 1000;
-                // Calcular a posição inicial da linha de reprodução com base no currentPlaybackPosition
                 startPosition = (panelWidth * currentPlaybackPosition) / duration;
             }
+
+            startTime = Date.now() - (currentPlaybackPosition * 1000);
 
             playbackLineInterval = setInterval(() => {
                 let currentTime = Date.now();
@@ -332,10 +335,15 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            createTimeline();
-            attachClickEventToRemoveInstrument();
-        });
+        function adjustPlaybackSpeed(bpm) {
+            const defaultBpm = 102;
+            const playbackRate = bpm / defaultBpm;
+
+            const audios = document.querySelectorAll('.track audio');
+            audios.forEach(audio => {
+                audio.playbackRate = playbackRate;
+            });
+        }
 
         document.querySelectorAll('.instrument').forEach(item => {
             item.addEventListener('click', event => {
@@ -349,6 +357,8 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             createTimeline();
+            attachClickEventToRemoveInstrument();
+            adjustPlaybackSpeed(document.getElementById('bpm').value);
         });
 
         document.getElementById('play-button').addEventListener('click', playTracks);
@@ -397,7 +407,10 @@
                     <button id="pause-button">Pause</button>
                     <button id="restart-button">Restart</button>
 
-                    <span>BPM: <input type="number" id="bpm" value="102" min="60" max="150" /></span>
+                   <span>BPM: 
+                       <input type="number" id="bpm" value="102" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
+                   </span>
+
                     @if (userHasTrack)
                     {
                         <span>A tua faixa: @assignedTrackNumber</span>
