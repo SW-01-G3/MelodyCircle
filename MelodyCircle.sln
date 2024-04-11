@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MelodyCircle", "MelodyCircl
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "melodycirclecollaboration.client", "MelodyCircleCollaboration\melodycirclecollaboration.client\melodycirclecollaboration.client.esproj", "{B55357F2-512F-4F08-9916-131506F337DB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MelodyCircleTest", "MelodyCircleTest\MelodyCircleTest.csproj", "{35B76BF7-B01F-423D-AB09-DE29774F3035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{B55357F2-512F-4F08-9916-131506F337DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B55357F2-512F-4F08-9916-131506F337DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B55357F2-512F-4F08-9916-131506F337DB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{35B76BF7-B01F-423D-AB09-DE29774F3035}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B76BF7-B01F-423D-AB09-DE29774F3035}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B76BF7-B01F-423D-AB09-DE29774F3035}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B76BF7-B01F-423D-AB09-DE29774F3035}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
