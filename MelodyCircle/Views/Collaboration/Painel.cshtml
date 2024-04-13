@@ -4,10 +4,6 @@
 @inject UserManager<User> UserManager
 @inject IAntiforgery Antiforgery
 
-
-
-
-
 @model ArrangementPanelViewModel
 
 @{
@@ -38,6 +34,16 @@
         function drag(event) {
             console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
             event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
+
+            // const instrumentElement = event.target;
+            // const isUploaded = instrumentElement.classList.contains('uploaded');
+            // const instrumentData = {
+            //     name: instrumentElement.getAttribute('data-instrument'),
+            //     isUploaded: isUploaded,
+            //     id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
+            // };
+
+            // event.dataTransfer.setData("text", JSON.stringify(instrumentData));
         }
 
         function drop(event) {
@@ -350,15 +356,45 @@
             });
         }
 
-        document.querySelectorAll('.instrument').forEach(item => {
-            item.addEventListener('click', event => {
-                let instrumentName = item.getAttribute('data-instrument').toLowerCase();
-                let soundId = `sound-${instrumentName}`;
-                let sound = document.getElementById(soundId);
-                if (sound) sound.play();
-                else console.error('Sound element not found:', soundId);
+        // document.querySelectorAll('.instrument').forEach(item => {
+        //     item.addEventListener('click', event => {
+        //         let instrumentName = item.getAttribute('data-instrument').toLowerCase();
+        //         let soundId = `sound-${instrumentName}`;
+        //         let sound = document.getElementById(soundId);
+        //         if (sound) sound.play();
+        //         else console.error('Sound element not found:', soundId);
+        //     });
+        // });
+        function playSound(instrumentElement) {
+            const instrumentName = instrumentElement.getAttribute('data-instrument').toLowerCase();
+            const isUploaded = instrumentElement.classList.contains('uploaded');
+            let soundId;
+
+            if (isUploaded) {
+                const instrumentId = instrumentElement.getAttribute('data-instrument-id');
+                soundId = `sound-uploaded-${instrumentId}`;
+            } else {
+                soundId = `sound-${instrumentName}`;
+            }
+
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                if (isUploaded && !sound.src) {
+                    sound.src = `/Collaboration/GetInstrumentAudio/${instrumentElement.getAttribute('data-instrument-id')}`;
+                }
+                sound.play();
+            } else {
+                console.error('Sound element not found:', soundId);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.instrument').forEach(item => {
+                item.addEventListener('click', event => {
+                    playSound(item);
+                });
             });
         });
+
 
         document.addEventListener('DOMContentLoaded', function () {
             createTimeline();
@@ -400,8 +436,15 @@
 
                     </div>
                 }
+                @foreach (var uploadedInstrument in Model.UploadedInstruments)
+                {
+                    <div id="uploaded-@uploadedInstrument.Id" class="instrument uploaded" draggable="true" ondragstart="drag(event)" data-instrument="@uploadedInstrument.Name" data-instrument-id="@uploadedInstrument.Id">
+                        @uploadedInstrument.Name
+                        <audio id="@($"sound-uploaded-{uploadedInstrument.Id}")"></audio>
+                    </div>
+                }
                 <!-- Botão de Upload de Instrumento -->
-                <button id="upload-button">UPLOAD</button>
+                <button type="button" id="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">UPLOAD</button>
 
 
 
@@ -489,6 +532,32 @@
                         </div>
                     }
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Upload Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Upload Instrument</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-instrument-form" asp-action="UploadInstrument" asp-route-collaborationId="@Model.Collaboration.Id" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="instrumentName">Instrument Name</label>
+                        <input type="text" class="form-control" id="instrumentName" name="instrumentName" placeholder="Enter instrument name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="soundFile">Instrument File (.mp3)</label>
+                        <input type="file" class="form-control-file" id="soundFile" name="soundFile" accept=".mp3" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="upload-instrument-btn">Upload</button>
+                </form>
             </div>
         </div>
     </div>
