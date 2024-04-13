@@ -341,6 +341,26 @@ namespace MelodyCircle.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UploadedInstruments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SoundContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    CollaborationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UploadedInstruments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UploadedInstruments_Collaborations_CollaborationId",
+                        column: x => x.CollaborationId,
+                        principalTable: "Collaborations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserContributingCollaborations",
                 columns: table => new
                 {
@@ -467,7 +487,8 @@ namespace MelodyCircle.Migrations
                     TrackId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     InstrumentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    InstrumentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -618,6 +639,11 @@ namespace MelodyCircle.Migrations
                 column: "TutorialId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UploadedInstruments_CollaborationId",
+                table: "UploadedInstruments",
+                column: "CollaborationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserContributingCollaborations_ContributingUsersId",
                 table: "UserContributingCollaborations",
                 column: "ContributingUsersId");
@@ -671,6 +697,9 @@ namespace MelodyCircle.Migrations
 
             migrationBuilder.DropTable(
                 name: "TutorialRating");
+
+            migrationBuilder.DropTable(
+                name: "UploadedInstruments");
 
             migrationBuilder.DropTable(
                 name: "UserContributingCollaborations");

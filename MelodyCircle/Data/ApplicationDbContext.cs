@@ -21,6 +21,8 @@ namespace MelodyCircle.Data
         public DbSet<InstrumentOnTrack> InstrumentOnTrack { get; set; }
         public DbSet<ForumPost> ForumPost { get; set; } = default!;
 
+        public DbSet<UploadedInstrument> UploadedInstruments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

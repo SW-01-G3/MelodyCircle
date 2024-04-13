@@ -12,6 +12,8 @@
 
         public TimeSpan Duration { get; set; }
 
+        public Guid? InstrumentId { get; set; }
+
         public virtual Track Track { get; set; }
     }
 }
