@@ -23,7 +23,6 @@
         let stepData = [];
         let tutorialDescription = @Html.Raw(Context.Tutorials.Where(elem => elem.Title == ViewData["Title"].ToString()).First().Description);
         
-        console.log(tutorialDescription);
         
         function convertToHtml(editor, contents) {
             editor.setContents(contents);
