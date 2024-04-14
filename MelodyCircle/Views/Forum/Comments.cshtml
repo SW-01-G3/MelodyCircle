@@ -1,18 +1,62 @@
 ﻿@model MelodyCircle.Models.ForumPost
 
+@section Head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#editor', {
+            placeholder: 'Compose an epic...',
+            theme: 'snow',
+        });
+        let commentDivs = document.getElementsByName("commentDiv");
+        let descriptionDiv = document.getElementById("descriptionDiv");
+        let commentData = [];
+
+
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
+        @if (Model.Comments != null && Model.Comments.Any())
+        {
+            @foreach (var step in Model.Comments)
+            {
+                @:commentData.push(@Html.Raw(step.Content));
+            }
+        }
+
+        for (let cnt = 0; cnt < stepData.length; cnt++) {
+            commentDivs[cnt].innerHTML = convertToHtml(quill, commentData[cnt]);
+        }
+
+        let contentInput = document.getElementById("contentInput");
+        contentInput.value = JSON.stringify(quill.getContents());
+        quill.on('text-change', function (delta, oldDelta, source) {
+            contentInput.value = JSON.stringify(quill.getContents());
+        })
+    </script>
+}
+
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto" style="width: 50%;">
     <h1>@Model.Title</h1>
-    <p>@Model.Content</p>
+    <div></div>
 </div>
 
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto my-4 w-50">
     @if (!Model.IsClosed)
     {
-    
             <h3>Adicionar comentário</h3>
             <form asp-action="Comment" asp-route-id="@Model.Id" method="post">
-                <div class="form-group">
+                <div class="">
                     <textarea asp-for="Content" class="form-control"></textarea>
+                    @* <input type="hidden" asp-for="Content" id="contentInput" />
+                    <div id="editor">
+                        <p>Hello, <strong>World</strong></p>
+                    </div> *@
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -30,7 +74,6 @@
     
     @if (Model.Comments.Any())
     {
-    
             <h2>Comentários</h2>
             @foreach (var comment in Model.Comments)
             {
@@ -42,11 +85,12 @@
                     <div class="text-start">@comment.Content</div>
                 </div>
             }
-        
     }
     else
     {
         <div class="text-center my-4"><p>Sem comentários</p></div>
     }
+
+    <span>@Model.Comments.Count</span>
 </div>
 
