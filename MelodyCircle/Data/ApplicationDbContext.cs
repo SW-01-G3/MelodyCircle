@@ -19,7 +19,7 @@ namespace MelodyCircle.Data
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Track> Tracks { get; set; }
         public DbSet<InstrumentOnTrack> InstrumentOnTrack { get; set; }
-        public DbSet<ForumPost> ForumPost { get; set; } = default!;
+        public DbSet<ForumPost> ForumPost { get; set; }
 
         public DbSet<UploadedInstrument> UploadedInstruments { get; set; }
 
