@@ -110,6 +110,7 @@
             if (trackElement) {
                 const instrumentElement = createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, instrumentId, trackElement);
                 trackElement.appendChild(instrumentElement);
+                attachClickEventToRemoveInstrument();
             }
         }
 
@@ -118,6 +119,7 @@
 
             var element = document.createElement('div');
             element.classList.add('instrument-on-track');
+            element.classList.add('removable-instrument');
             element.textContent = instrumentName;
 
             var trackLengthInSeconds = 240;
@@ -321,6 +323,7 @@
                 item.addEventListener('click', function (event) {
                     event.stopPropagation();
                     var instrumentId = this.getAttribute('data-instrument-id');
+
                     removeInstrumentFromTrack(instrumentId, this);
                 });
             });
@@ -549,6 +552,24 @@
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Remove track confirmation modal -->
+<div id="confirm-remove-modal" class="modal fade" tabindex="-1" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remover faixa de audio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem a certeza que quer remover esta faixa de audio?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn bg-purple text-white" data-bs-dismiss="modal">Não</button>
+                <button type="button" class="btn bg-darkPurple text-white">Sim</button>
             </div>
         </div>
     </div>
