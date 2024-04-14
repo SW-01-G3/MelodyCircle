@@ -33,6 +33,25 @@
             editor.setContents(contents);
             return editor.root.innerHTML;
         }
+
+        document.getElementById("getPartial").addEventListener("click", () => {
+            let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+            $.ajax({
+                url: 'Forum/Posts',
+                type: 'GET',
+                data: {
+                    lastId: lastId
+                },
+                success: function (response) {
+                    $('#content-container').append(response);
+                    console.log(response);
+                },
+                error: function () {
+                    console.error('Failed to fetch the HTML');
+                }
+            });
+            console.log(lastId)
+        });
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
@@ -46,10 +65,10 @@
 
 @if (Model != null && Model.Any())
 {
-    <div class="d-flex flex-wrap justify-content-center">
+    <div class="d-flex flex-wrap justify-content-center" id="content-container">
         @foreach (var item in Model)
         {
-            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;">
+            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;" data-tutorial-id="@item.Id" >
                 <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
                 <hr>
                 <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
@@ -63,6 +82,7 @@
             </div>
         }
     </div>
+    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button>
 }
 
 @if (User.Identity.IsAuthenticated)

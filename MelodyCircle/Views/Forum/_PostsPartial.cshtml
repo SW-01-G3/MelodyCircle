@@ -1,0 +1,25 @@
+﻿@using System.Security.Claims
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Identity
+@using MelodyCircle.Data
+@model IEnumerable<ForumPost>
+@inject UserManager<User> UserManager
+@inject ApplicationDbContext Context
+
+
+        @foreach (var item in Model)
+        {
+            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;" data-tutorial-id="@item.Id">
+                <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
+                <hr>
+                <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
+                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">Ver comentários</a>
+                @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
+                {
+                    <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
+                        <button type="submit" class="btn btn-danger mt-2 mb-1">Fechar Post</button>
+                    </form>
+                }
+            </div>
+        }
+    </div>
