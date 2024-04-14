@@ -106,12 +106,8 @@
             console.log("Creating instrument element:", instrumentName);
 
             var element = document.createElement('div');
-            element.classList.add('instrument-track');
+            element.classList.add('instrument-on-track');
             element.textContent = instrumentName;
-            element.style.position = 'absolute';
-            element.style.whiteSpace = 'nowrap';
-            element.style.overflow = 'hidden';
-            element.style.textOverflow = 'ellipsis';
 
             // element.setAttribute('data-bs-toggle', 'tooltip');
             // element.setAttribute('data-bs-title', instrumentName);
@@ -145,16 +141,6 @@
                     tooltipSpan.style.display = 'none';
                 };
             }
-
-            element.style.border = '2px solid #000';
-            element.style.backgroundColor = '#FFF';
-            element.style.color = '#000';
-            element.style.textAlign = 'center';
-            element.style.lineHeight = '50px';
-            element.style.marginTop = '5px';
-            element.style.padding = '5px';
-            element.style.fontSize = '1rem';
-            element.style.fontWeight = 'bold';
 
             return element;
         }
@@ -196,10 +182,6 @@
             tracks.forEach(track => {
                 const timeline = document.createElement('div');
                 timeline.className = 'timeline';
-                timeline.style.display = 'flex';
-                timeline.style.position = 'absolute';
-                timeline.style.width = '100%';
-                timeline.style.height = '20px';
 
                 for (let time = 0; time <= trackLength; time += interval) {
                     const timeMarker = document.createElement('div');
@@ -210,10 +192,6 @@
 
                     const markerLabel = document.createElement('span');
                     markerLabel.textContent = `${time / 60}min`;
-                    markerLabel.style.position = 'absolute';
-                    markerLabel.style.left = '50%';
-                    markerLabel.style.transform = 'translateX(-50%)';
-                    markerLabel.style.bottom = '20px';
 
                     timeMarker.appendChild(markerLabel);
                     timeline.appendChild(timeMarker);
@@ -390,7 +368,7 @@
                     </div>
                 }
                 <!-- Botão de Upload de Instrumento -->
-                <button id="upload-button">UPLOAD</button>
+                <button id="upload-button" class="upload-button">UPLOAD</button>
             </div>
         </div>
         <div class="col-md-10">
@@ -412,8 +390,8 @@
                     }
                 </div>
 
-                <div id="arrangement-container" style="position: relative; width: 100%;">
-                    <div id="playback-line" style="position: absolute; margin-top: 27px; margin-left: 50px; height: 100%; width: 2px; background-color: red; display: none; z-index: 1;"></div> <!-- ajuste o left para alinhar com o início das faixas -->
+                <div id="arrangement-container" style="">
+                    <div id="playback-line" class="playback-line" style=""></div> <!-- ajuste o left para alinhar com o início das faixas -->
                     <!-- Faixas -->
                     @foreach (var track in Model.Tracks)
                     {
