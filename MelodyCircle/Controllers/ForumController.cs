@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace MelodyCircle.Controllers
 {
@@ -15,10 +16,21 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
-        // GET: Forum
-        public async Task<IActionResult> Index()
+        //// GET: Forum
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.ForumPost.OrderBy(elem => elem.Id)
+        //        .Take(1).ToListAsync());
+        //}
+
+        public async Task<IActionResult> Posts(Guid lastId)
         {
-            return View(await _context.ForumPost.ToListAsync());
+            var forumPosts = await _context.ForumPost.Where(elem => (elem.Id > lastId))
+                .OrderBy(elem => elem.Id)
+                .Take(3)
+                .ToListAsync();
+
+            return PartialView("_PostsPartial", forumPosts);
         }
 
         // GET: Forum/Create

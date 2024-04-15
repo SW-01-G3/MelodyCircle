@@ -248,9 +248,20 @@ body {
 .instrument {
     margin: 5px;
     padding: 5px;
-    background-color: #f8f9fa;
+    background-color: var(--purple);
+    color: white;
     border: 1px solid #ccc;
     cursor: grab;
+    border-radius: 10px;
+}
+
+.upload-button {
+    background-color: var(--darkPurple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
 }
 
 .drop-area {
@@ -264,7 +275,7 @@ body {
     position: relative;
     width: 100%;
     margin-bottom: 20px;
-    padding-left: 50px; /* Espaço para a numeração da track */
+    padding-left: 50px;
 }
 
 .timeline {
@@ -282,6 +293,7 @@ body {
     background-color: #f8f9fa;
     margin-top: 25px;
     width: 1055px;
+    margin-bottom: 5px;
 }
 
 .time-marker {
@@ -349,8 +361,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     border: 2px solid #000;
-    background-color: #FFF;
-    color: #000;
+    background-color: var(--darkPurple);
+    color: white;
     text-align: left;
     line-height: 50px;
     margin-top: 5px;
@@ -362,6 +374,43 @@ body {
 .instrument-on-track span {
     display: inline-block;
     padding: 0px;
+}
+
+.timeline {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 20px;
+}
+
+.timeMarker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
+}
+
+.playback-line {
+    position: absolute;
+    margin-top: 27px;
+    margin-left: 50px;
+    height: 100%;
+    width: 2px;
+    background-color: red;
+    display: none;
+    z-index: 1;
+}
+
+.arrangement-container {
+    position: relative;
+    width: 100%;
+}
+
+.marker-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
 }
 
 /* FINAL DO PAINEL DE ARRANJO */

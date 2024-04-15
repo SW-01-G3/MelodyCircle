@@ -34,6 +34,8 @@ namespace MelodyCircle.Controllers
 
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name)
+                .OrderBy(t => t.Id)
+                .Take(10)
                 .Select(tutorial => new
                 {
                     Tutorial = tutorial,
@@ -50,6 +52,32 @@ namespace MelodyCircle.Controllers
             return View("EditMode", tutoriaisCriadosComContagem);
         }
 
+        public async Task<IActionResult> EditModePartials(Guid lastId)
+        {
+            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+
+            // Modifying the query to take the next 10 tutorials after the last received ID
+            var tutoriaisCriados = await _context.Tutorials
+                .Where(t => t.Creator == User.Identity.Name && (lastId == null || t.Id > lastId))
+                .OrderBy(t => t.Id)
+                .Take(10)
+                .Select(tutorial => new
+                {
+                    Tutorial = tutorial,
+                    StepCount = _context.Steps.Count(step => step.TutorialId == tutorial.Id)
+                })
+                .ToListAsync();
+
+            var tutoriaisCriadosComContagem = tutoriaisCriados
+                .Select(t => {
+                    t.Tutorial.StepCount = t.StepCount;
+                    return t.Tutorial;
+                })
+                .ToList();
+
+            return PartialView("_EditModePartial", tutoriaisCriadosComContagem);
+        }
+
         // GET: Tutorial/ViewMode
         public async Task<IActionResult> ViewMode()
         {
@@ -57,12 +85,30 @@ namespace MelodyCircle.Controllers
 
             var tutoriaisInscritos = await _context.SubscribeTutorials
                 .Where(elem => elem.User.Id.ToString() == userId)
+                .OrderBy(t => t.Id)
+                .Take(2)
                 .Select(tutorial => new { Tutorial = tutorial.Tutorial, StepCount = _context.Steps.Count(elem => elem.TutorialId == tutorial.TutorialId) })
                 .ToListAsync();
 
             var tutoriaisInscritosComContagem = tutoriaisInscritos.Select(elem => { elem.Tutorial.StepCount = elem.StepCount; return elem.Tutorial; }).ToList();
 
             return View("ViewMode", tutoriaisInscritosComContagem);
+        }
+
+        public async Task<IActionResult> ViewModePartials(Guid lastId)
+        {
+            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+
+            var tutoriaisInscritos = await _context.SubscribeTutorials
+                .Where(elem => elem.User.Id.ToString() == userId && (elem.Tutorial.Id > lastId))
+                .OrderBy(t => t.Id)
+                .Take(10)
+                .Select(tutorial => new { Tutorial = tutorial.Tutorial, StepCount = _context.Steps.Count(elem => elem.TutorialId == tutorial.TutorialId) })
+                .ToListAsync();
+
+            var tutoriaisInscritosComContagem = tutoriaisInscritos.Select(elem => { elem.Tutorial.StepCount = elem.StepCount; return elem.Tutorial; }).ToList();
+
+            return PartialView("_ViewModePartial", tutoriaisInscritosComContagem);
         }
 
         // GET: Tutorial/Create
@@ -98,7 +144,6 @@ namespace MelodyCircle.Controllers
                         await photo.CopyToAsync(memoryStream);
                         tutorial.Photo = memoryStream.ToArray();
                         tutorial.PhotoContentType = photo.ContentType;
-                        
                     }
                 }
 
