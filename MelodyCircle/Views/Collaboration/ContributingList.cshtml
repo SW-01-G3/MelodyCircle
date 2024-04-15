@@ -61,7 +61,7 @@
 <!-- Chat Component Integration -->
 <div id="chatComponent" class="rounded border border-purple row bg-white my-3 py-3 px-3 w-25  align-items-center ">
     <h5>Chat da Colaboração</h5>
-    @Html.Partial("_ChatPartial", Model)
+    @await Html.PartialAsync("_ChatPartial", Model)
 </div>
 
 @section Scripts {
