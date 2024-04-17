@@ -39,9 +39,17 @@
                     <ul class="navbar-nav flex-grow-1 justify-content-center">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
-                                <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
-                            </li>
+                            @if (currentController != null && currentController.Equals("Notification"))
+                            {
+                                <li class="nav-item rounded-pill bg-white text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif2.svg" alt="Notif." class="icon" /></a>
+                                </li>
+                            }
+                            else{
+                                <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                    <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
+                                </li>
+                            }
                         }
 
                         @if (User.IsInRole("Admin"))
@@ -108,7 +116,7 @@
                         }
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            @if ((currentAction != null && currentAction.Equals("Profile")) || (currentPage != null && currentPage.Equals("/Account/Manage/Index")))
+                            @if ((currentAction != null && currentAction.Equals("Profile")) || (currentPage != null && currentPage.StartsWith("/Account/Manage/")))
                             {
                                 <li class="nav-item dropdown rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;">
