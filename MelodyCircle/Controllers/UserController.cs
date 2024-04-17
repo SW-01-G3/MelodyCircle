@@ -386,10 +386,21 @@ namespace MelodyCircle.Controllers
 
         private bool IsValidSpotifyUri(string uri)
         {
-            // O URI da música do Spotify deve começar com "https://open.spotify.com/embed/track/" 
-            //return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 80;
-
-            return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 73;
+            if (uri.StartsWith("https://open.spotify.com/track/"))
+            {
+                int trackIdStartIndex = "https://open.spotify.com/track/".Length;
+                return uri.Length > trackIdStartIndex && uri.Length == 73;
+            }
+            else if (uri.StartsWith("https://open.spotify.com/intl-pt/track/"))
+            {
+                int trackIdStartIndex = "https://open.spotify.com/intl-pt/track/".Length;
+                return uri.Length > trackIdStartIndex && uri.Length == 81;
+            }
+            else
+            {
+                // A URI não corresponde aos formatos esperados
+                return false;
+            }
         }
 
     }
