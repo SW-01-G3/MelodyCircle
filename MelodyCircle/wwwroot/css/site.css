@@ -413,4 +413,21 @@ body {
     bottom: 20px;
 }
 
+/* Custom CSS for modal positioning */
+.modal-dialog-bottom-right {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    margin: 0;
+    width: 400px; /* Adjust the width as needed */
+}
+
+/* Style for the chat component trigger button */
+#chatComponentButton {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    z-index: 1051; /* Ensure the button stays above the modal backdrop */
+}
+
 /* FINAL DO PAINEL DE ARRANJO */

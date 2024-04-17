@@ -397,7 +397,12 @@
         document.getElementById('play-button').addEventListener('click', playTracks);
         document.getElementById('pause-button').addEventListener('click', pauseTracks);
         document.getElementById('restart-button').addEventListener('click', restartTracks);
+
+        $('#chatComponentButton').click(function () {
+            $('#chatModal').modal('show');
+        });
     </script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
 }
 
 @functions {
@@ -553,6 +558,23 @@
         </div>
     </div>
 </div>
+
+<div id="chatModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-bottom-right" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chat da Colaboração</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("_ChatPartial", Model.Collaboration)
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="chatComponentButton" class="btn bg-purple text-white rounded floating-button-center">Chat</button>
+
 
 <form id="antiforgery-form" method="post" style="display:none;">
     <input type="hidden" name="__RequestVerificationToken" value="@antiforgeryTokenSet.RequestToken" />
