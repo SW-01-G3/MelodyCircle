@@ -17,6 +17,11 @@ namespace MelodyCircle.Services
 
         public async Task SendMessage(Guid collaborationId, string message)
         {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
+
             var userId = Context.UserIdentifier; 
             var user = await _context.Users.FindAsync(userId);
             var chatMessage = new ChatMessage
