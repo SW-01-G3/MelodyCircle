@@ -35,47 +35,50 @@
         }
 
         function drag(event) {
-            console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
-            event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
+            // console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
+            // event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
 
-            // const instrumentElement = event.target;
-            // const isUploaded = instrumentElement.classList.contains('uploaded');
-            // const instrumentData = {
-            //     name: instrumentElement.getAttribute('data-instrument'),
-            //     isUploaded: isUploaded,
-            //     id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
-            // };
+            const instrumentElement = event.target;
+            const isUploaded = instrumentElement.classList.contains('uploaded');
+            const instrumentData = {
+                name: instrumentElement.getAttribute('data-instrument'),
+                isUploaded: isUploaded,
+                id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
+            };
 
-            // event.dataTransfer.setData("text", JSON.stringify(instrumentData));
+            console.log('Dragging instrument:', instrumentData); 
+            event.dataTransfer.setData("text/plain", JSON.stringify(instrumentData));
         }
 
         function drop(event) {
             event.preventDefault();
 
-            var instrumentName = event.dataTransfer.getData("text/plain");
-            console.log("Instrumento: ", instrumentName)
+            const data = event.dataTransfer.getData("text/plain");
+            console.log('Dropped data:', data); 
+            const instrumentData = JSON.parse(data);
 
-            var trackContainer = event.target.closest('.track');
-            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
-            console.log("TrackId: ", trackId)
+            console.log('Parsed instrument data:', instrumentData);
 
-            var mouseX = event.clientX;
-            var trackRect = trackContainer.getBoundingClientRect();
-            var trackStartX = trackRect.left;
-            var trackWidth = trackRect.width;
-            var relativePosition = (mouseX - trackStartX) / trackWidth;
+            const trackContainer = event.target.closest('.track');
+            const trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+            const mouseX = event.clientX;
+            const trackRect = trackContainer.getBoundingClientRect();
+            const trackStartX = trackRect.left;
+            const trackWidth = trackRect.width;
+            const relativePosition = (mouseX - trackStartX) / trackWidth;
+            const startTimeSeconds = relativePosition * 4 * 60;
 
-            var startTimeSeconds = relativePosition * 4 * 60;
-            console.log("StartTime Seconds: ", startTimeSeconds)
-
-            if (trackId && instrumentName)
-                updateTrack(trackId, instrumentName, startTimeSeconds);
-            else
-                console.error("Drop target is not a track container or trackId/instrumentName is missing.");
+            if (trackId && instrumentData) {
+                updateTrack(trackId, instrumentData, startTimeSeconds);
+            } else {
+                console.error("Drop target is not a track container or instrumentData is missing.");
+            }
         }
 
-        function updateTrack(trackId, instrumentName, startTimeSeconds) {
+        function updateTrack(trackId, instrumentData, startTimeSeconds) {
             var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+
+            console.log('Updating track with:', { trackId, instrumentData, startTimeSeconds });
 
             fetch(url, {
                 method: 'POST',
@@ -85,8 +88,10 @@
                 },
                 body: JSON.stringify({
                     TrackId: trackId,
-                    InstrumentName: instrumentName,
-                    StartTime: startTimeSeconds
+                    InstrumentName: instrumentData.name,
+                    StartTime: startTimeSeconds,
+                    IsUploaded: instrumentData.isUploaded,
+                    InstrumentId: instrumentData.id
                 })
             })
             .then(response => {
@@ -338,15 +343,6 @@
             });
         }
 
-        // document.querySelectorAll('.instrument').forEach(item => {
-        //     item.addEventListener('click', event => {
-        //         let instrumentName = item.getAttribute('data-instrument').toLowerCase();
-        //         let soundId = `sound-${instrumentName}`;
-        //         let sound = document.getElementById(soundId);
-        //         if (sound) sound.play();
-        //         else console.error('Sound element not found:', soundId);
-        //     });
-        // });
         function playSound(instrumentElement) {
             const instrumentName = instrumentElement.getAttribute('data-instrument').toLowerCase();
             const isUploaded = instrumentElement.classList.contains('uploaded');
@@ -504,14 +500,23 @@
                                     @foreach (var instrument in track.InstrumentsOnTrack)
                                     {
                                         <div class="instrument-on-track removable-instrument" data-instrument-id="@instrument.Id"
-                                             style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration);width: @CalculateWidth(instrument.Duration, track.Duration);">
-
+                                             style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
                                             <span>@instrument.InstrumentType</span>
-
-                                            <audio preload="auto" id="audio-@instrument.Id"
-                                                   data-start-time="@instrument.StartTime.TotalSeconds"
-                                                   src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
-                                            </audio>
+                                            @* Check if the instrument has an InstrumentId which implies it is uploaded *@
+                                            @if (instrument.InstrumentId != null)
+                                            {
+                                                <audio preload="auto" id="audio-@instrument.Id"
+                                                       data-start-time="@instrument.StartTime.TotalSeconds"
+                                                       src="@Url.Action("GetInstrumentAudio", "Collaboration", new { id = instrument.InstrumentId })">
+                                                </audio>
+                                            }
+                                            else
+                                            {
+                                                <audio preload="auto" id="audio-@instrument.Id"
+                                                       data-start-time="@instrument.StartTime.TotalSeconds"
+                                                       src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
+                                                </audio>
+                                            }
                                         </div>
                                     }
                                 </div>
