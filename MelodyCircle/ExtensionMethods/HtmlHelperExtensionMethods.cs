@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.DependencyInjection;
-using MelodyCircle.Utilities;
+﻿using MelodyCircle.Utilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MelodyCircle.ExtensionMethods

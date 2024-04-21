@@ -54,9 +54,8 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> EditModePartials(Guid lastId)
         {
-            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+            var userId = _userManager.GetUserId(User); 
 
-            // Modifying the query to take the next 10 tutorials after the last received ID
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name && (lastId == null || t.Id > lastId))
                 .OrderBy(t => t.Id)
@@ -65,15 +64,13 @@ namespace MelodyCircle.Controllers
                 {
                     Tutorial = tutorial,
                     StepCount = _context.Steps.Count(step => step.TutorialId == tutorial.Id)
-                })
-                .ToListAsync();
+                }).ToListAsync();
 
             var tutoriaisCriadosComContagem = tutoriaisCriados
                 .Select(t => {
                     t.Tutorial.StepCount = t.StepCount;
                     return t.Tutorial;
-                })
-                .ToList();
+                }).ToList();
 
             return PartialView("_EditModePartial", tutoriaisCriadosComContagem);
         }
@@ -97,7 +94,7 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> ViewModePartials(Guid lastId)
         {
-            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+            var userId = _userManager.GetUserId(User); 
 
             var tutoriaisInscritos = await _context.SubscribeTutorials
                 .Where(elem => elem.User.Id.ToString() == userId && (elem.Tutorial.Id > lastId))
@@ -273,7 +270,6 @@ namespace MelodyCircle.Controllers
             else
                 tutorialToRate.Ratings.Add(new TutorialRating { UserName = currentUser.UserName, TutorialId = id, Value = rating });
 
-            // Update the user in the database
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

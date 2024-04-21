@@ -1,5 +1,6 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
+using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

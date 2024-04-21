@@ -68,7 +68,6 @@ namespace MelodyCircle.Services
             if (notification != null)
             {
                 notification.Status = NotificationStatus.Declined;
-                //var collaboration = await _context.Collaborations.FindAsync(notification.CollaborationId);
 
                 var collaboration = await _context.Collaborations
                   .Include(c => c.WaitingUsers)

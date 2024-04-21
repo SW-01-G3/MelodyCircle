@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using Xunit;
-using MelodyCircle.Controllers;
+﻿using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
 public class ForumControllerTests
 {

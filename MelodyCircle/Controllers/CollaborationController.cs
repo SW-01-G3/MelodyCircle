@@ -2,6 +2,7 @@
 using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
+using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using MelodyCircle.Services;
 using NAudio.Wave;
@@ -22,30 +23,6 @@ namespace MelodyCircle.Controllers
             _hostingEnvironment = hostingEnvironment;
             _notificationService = notificationService;
         }
-
-        // GET: Collaboration
-        //public async Task<IActionResult> Index()
-        //{
-        //    var publicCollaborations = await _context.Collaborations
-        //        .Include(c => c.WaitingUsers)
-        //        //.Where(c => c.AccessMode == AccessMode.Public)
-        //        .ToListAsync();
-
-        //    var userId = _userManager.GetUserId(User);
-
-        //    var userInWaitingList = new Dictionary<Guid, bool>();
-
-        //    foreach (var collaboration in publicCollaborations)
-        //    {
-        //        var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
-
-        //        userInWaitingList.Add(collaboration.Id, isInWaitingList);
-        //    }
-
-        //    ViewBag.UserInWaitingList = userInWaitingList;
-
-        //    return View(publicCollaborations);
-        //}
 
         //GET: Collaboration
         public async Task<IActionResult> Index()
@@ -216,10 +193,6 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
         {
-            //var collaboration = await _context.Collaborations
-            //    .Include(c => c.WaitingUsers)
-            //    .FirstOrDefaultAsync(c => c.Id == id);
-
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
                 .FirstOrDefaultAsync(c => c.Id == collaborationId);
@@ -237,7 +210,7 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
 
             await _notificationService.SendCollaborationInviteAsync(
-               senderId: collaboration.CreatorId, // Assuming creator sends the invite
+               senderId: collaboration.CreatorId, 
                recipientId: userId,
                collaborationId: collaboration.Id,
                collaborationTitle: collaboration.Title,
@@ -245,16 +218,6 @@ namespace MelodyCircle.Controllers
 
             return RedirectToAction("Index");
         }
-
-        //public async Task<IActionResult> PrivateCollaborations()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var collaborations = await _context.Collaborations
-        //        .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
-        //        .ToListAsync();
-
-        //    return PartialView("_PrivateCollaborationsPartial", collaborations);
-        //}
 
         public IActionResult Create()
         {
@@ -330,9 +293,6 @@ namespace MelodyCircle.Controllers
             {
                 if (id != collaboration.Id)
                     return NotFound();
-
-                //if (collaboration.CreatorId != _userManager.GetUserId(User))
-                //    return Forbid();
 
                 if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
                 {
@@ -531,7 +491,7 @@ namespace MelodyCircle.Controllers
             if (!isContributorOrCreator)
                 return Forbid();
 
-            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
 
             if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
             {
@@ -674,10 +634,8 @@ namespace MelodyCircle.Controllers
                 _context.UploadedInstruments.Add(uploadedInstrument);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true });
+                //return Json(new { success = true , message = "Uploaded instrument!" } );
             }
-
-            //return Json(new { success = false, message = "Invalid file." });
 
             return RedirectToAction("ArrangementPanel", new { id = collaborationId });
 

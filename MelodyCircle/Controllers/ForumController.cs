@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 
 namespace MelodyCircle.Controllers
 {

@@ -111,7 +111,6 @@ namespace MelodyCircle.Tests.Controllers
 
             var tutorial = new Tutorial { Title = "Test Title", Description = "Test Description" };
 
-            // Authenticate user
             var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, "TestUser")
@@ -119,7 +118,6 @@ namespace MelodyCircle.Tests.Controllers
             var userIdentity = new ClaimsIdentity(userClaims, "TestAuthType");
             var userPrincipal = new ClaimsPrincipal(userIdentity);
 
-            // Set up controller context to use authenticated user
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = userPrincipal }
@@ -129,7 +127,6 @@ namespace MelodyCircle.Tests.Controllers
             var result = await controller.Create(tutorial, null); // Pass image file
 
             // Assert
-            // Check if the tutorial was added to the database context
             var createdTutorial = await context.Tutorials.FirstOrDefaultAsync(t => t.Title == tutorial.Title && t.Description == tutorial.Description);
             Assert.NotNull(createdTutorial);
         }
@@ -187,7 +184,7 @@ namespace MelodyCircle.Tests.Controllers
             var userManager = new UserManager<User>(userStore, null, null, null, null, null, null, null, null);
             var controller = new TutorialController(context, userManager);
 
-            var tutorial = new Tutorial { Id = Guid.NewGuid(), Title = "Test Title", Description = "Test Description", Creator = "TestUser" }; // Definindo manualmente a propriedade Creator
+            var tutorial = new Tutorial { Id = Guid.NewGuid(), Title = "Test Title", Description = "Test Description", Creator = "TestUser" };
             context.Tutorials.Add(tutorial);
             await context.SaveChangesAsync();
 
@@ -243,7 +240,7 @@ namespace MelodyCircle.Tests.Controllers
             var context = new ApplicationDbContext(options);
 
             var tutorialId = Guid.NewGuid();
-            var tutorial = new Tutorial { Id = tutorialId, Title = "Test Title", Description = "Test Description", Creator = "TestUser" }; // Definindo manualmente a propriedade Creator
+            var tutorial = new Tutorial { Id = tutorialId, Title = "Test Title", Description = "Test Description", Creator = "TestUser" }; 
             context.Tutorials.Add(tutorial);
             await context.SaveChangesAsync();
 

@@ -1,5 +1,4 @@
-﻿
-namespace MelodyCircle.Models
+﻿namespace MelodyCircle.Models
 {
     public class Search
     {

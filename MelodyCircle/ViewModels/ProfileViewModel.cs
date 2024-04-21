@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using MelodyCircle.Data;
-using MelodyCircle.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using MelodyCircle.Models;
 
 namespace MelodyCircle.ViewModels
 {

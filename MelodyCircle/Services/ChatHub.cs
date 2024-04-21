@@ -2,7 +2,6 @@
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace MelodyCircle.Services
 {

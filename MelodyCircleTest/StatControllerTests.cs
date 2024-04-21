@@ -1,19 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
-using MelodyCircle.Controllers;
+﻿using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace MelodyCircleTest
 {
-	public class StatControllerTests
+    public class StatControllerTests
 	{
 		private readonly Mock<ApplicationDbContext> _mockContext;
 		private readonly Mock<UserManager<User>> _mockUserManager;

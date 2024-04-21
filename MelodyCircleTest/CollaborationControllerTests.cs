@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
-using MelodyCircle.Controllers;
+﻿using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
+using Moq;
 
 public class CollaborationControllerTests
 {

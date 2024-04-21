@@ -12,7 +12,5 @@
 	{
 		<li id="external-logins" class="nav-item"><a id="external-login" class="nav-link text-dark @(ManageNavPages.ExternalLoginsNavClass(ViewContext)) @(ViewContext.RouteData.Values["page"]?.ToString() == "/Account/Manage/ExternalLogins" ? "selected" : "")" asp-page="./ExternalLogins">Logins Externos</a></li>
 	}
-	@* <li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/TwoFactorAuthentication" ? "selected" : "")" id="two-factor" asp-page="./TwoFactorAuthentication">Autenticação de dois-fatores</a></li> *@
-	@* <li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.PersonalDataNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/PersonalData" ? "selected" : "")" id="personal-data" asp-page="./PersonalData">Dados Pessoais</a></li> *@
 	<li class="nav-item"><a class="nav-link text-dark @(ManageNavPages.LanguageNavClass(ViewContext)) @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Account/Manage/Language" ? "selected" : "")" id="language" asp-page="./Language">Língua</a></li>
 </ul>
