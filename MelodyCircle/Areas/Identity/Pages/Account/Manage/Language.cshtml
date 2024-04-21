@@ -1,23 +1,25 @@
 ﻿@page
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model LanguageModel
 @{
-    ViewData["Title"] = "Língua";
+	ViewData["Title"] = @Html.Translate("LB_LANGUAGE");
     ViewData["ActivePage"] = ManageNavPages.Language;
 }
 
-<h4 class="text-white ">@ViewData["Title"]</h4>
+<h4>@ViewData["Title"]</h4>
 
 
 	<div class="col-md-6">
-		<p>Pode colocar o site me Português ou Inglês.</p>
+	<p>@Html.Translate("LB_CHANGELANGUAGE")</p>
 		<form id="pt-pt" asp-page-handler="ChangeLanguage" method="post">
 			<input type="hidden" name="culture" value="pt-PT" />
-			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Português</button>
+		<button class="w-100 mt-2 btn bg-purple text-white" type="submit">@Html.Translate("LB_PT")</button>
 		</form>
 
 		<form id="en-us" asp-page-handler="ChangeLanguage" method="post">
 			<input type="hidden" name="culture" value="en-US" />
-			<button class="w-100 mt-2 btn bg-purple text-white" type="submit">Inglês</button>
+		<button class="w-100 mt-2 btn bg-purple text-white" type="submit">@Html.Translate("LB_EN")</button>
 		</form>
 	</div>
 

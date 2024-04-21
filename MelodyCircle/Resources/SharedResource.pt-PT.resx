@@ -123,8 +123,35 @@
   <data name="LB_ADD" xml:space="preserve">
     <value>Adicionar</value>
   </data>
+  <data name="LB_ADDANOTHERSERVICE" xml:space="preserve">
+    <value>Adicionar outro serviço para iniciar sessão.</value>
+  </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
+  </data>
+  <data name="LB_CHANGEACCOUNT" xml:space="preserve">
+    <value>Altere as definições da sua conta</value>
+  </data>
+  <data name="LB_CHANGEEMAIL" xml:space="preserve">
+    <value>Mudar Email</value>
+  </data>
+  <data name="LB_CHANGELANGUAGE" xml:space="preserve">
+    <value>Pode alterar a linguagem na plataforma aqui.</value>
+  </data>
+  <data name="LB_CHANGEPASS" xml:space="preserve">
+    <value>Mudar a palavra-passe</value>
+  </data>
+  <data name="LB_CHANGEPASSWORD" xml:space="preserve">
+    <value>Confirmar alteração da palavra-passe</value>
+  </data>
+  <data name="LB_COLLABCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Colaborações</value>
+  </data>
+  <data name="LB_CONFIRMNEWPASSWORD" xml:space="preserve">
+    <value>Confirmar a Palavra-passe Nova</value>
+  </data>
+  <data name="LB_CONNECTIONS" xml:space="preserve">
+    <value>Conexões</value>
   </data>
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Definições</value>
@@ -135,8 +162,17 @@
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Alterar a Música</value>
   </data>
+  <data name="LB_EN" xml:space="preserve">
+    <value>Inglês</value>
+  </data>
+  <data name="LB_EXTERNALLOGINS" xml:space="preserve">
+    <value>Logins Externos</value>
+  </data>
   <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
     <value>Músicas Favoritas</value>
+  </data>
+  <data name="LB_GENDER" xml:space="preserve">
+    <value>Género</value>
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Avaliar</value>
@@ -147,14 +183,44 @@
   <data name="LB_INSERT_URI" xml:space="preserve">
     <value>Insira URI da Música</value>
   </data>
+  <data name="LB_LANGUAGE" xml:space="preserve">
+    <value>Linguagem</value>
+  </data>
+  <data name="LB_LASTLOGIN" xml:space="preserve">
+    <value>Última Sessão</value>
+  </data>
+  <data name="LB_LOGINCOUNT" xml:space="preserve">
+    <value>Número de Sessões</value>
+  </data>
   <data name="LB_LOGOUT" xml:space="preserve">
     <value>Terminar Sessão</value>
+  </data>
+  <data name="LB_MANAGEEXTERNALS" xml:space="preserve">
+    <value>Gerir os seus logins externos</value>
+  </data>
+  <data name="LB_NEWPASSWORD" xml:space="preserve">
+    <value>Palavra-passe Nova</value>
+  </data>
+  <data name="LB_OLDPASSWORD" xml:space="preserve">
+    <value>Palavra-passe Antiga</value>
+  </data>
+  <data name="LB_OTHER" xml:space="preserve">
+    <value>Outro</value>
+  </data>
+  <data name="LB_PASSWORD" xml:space="preserve">
+    <value>Palavra-Passe</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
+  </data>
+  <data name="LB_PT" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="LB_REGISTEREDLOGINS" xml:space="preserve">
+    <value>Logins registados</value>
   </data>
   <data name="LB_REMOVE" xml:space="preserve">
     <value>Remover</value>
@@ -164,6 +230,18 @@
   </data>
   <data name="LB_SAVE" xml:space="preserve">
     <value>Guardar</value>
+  </data>
+  <data name="LB_STATS" xml:space="preserve">
+    <value>Estatísticas</value>
+  </data>
+  <data name="LB_STEPCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Passos</value>
+  </data>
+  <data name="LB_TUTCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Tutoriais</value>
+  </data>
+  <data name="LB_USERSTATS" xml:space="preserve">
+    <value>Estatísticas de Utilizador</value>
   </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>

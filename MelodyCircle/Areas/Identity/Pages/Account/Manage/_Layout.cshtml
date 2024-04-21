@@ -1,4 +1,5 @@
-﻿@using MelodyCircle.Models
+﻿@using MelodyCircle.ExtensionMethods
+@using MelodyCircle.Models
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @inject UserManager<User> UserManager
 @{
@@ -14,18 +15,18 @@
 
 <div class="offcanvas offcanvas-start border-purple rounded mt-auto m-4 w-25 h-50 text-center align-items-center" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
 	<div class="offcanvas-header text-center">
-		<h2 class="offcanvas-title" id="offcanvasScrollingLabel">Estatísticas</h2>
+        <h2 class="offcanvas-title" id="offcanvasScrollingLabel">@Html.Translate("LB_STATS")</h2>
 		<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 	</div>
 
 
-	<h4>Estatísticas do Utilizador</h4>
+    <h4>@Html.Translate("LB_USERSTATS")</h4>
 
 	<div class="col-8 mt-4">
 @* 		<h6>Tutoriais:  </h6> *@
-		<a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Tutoriais</a>
-        <a class="btn btn-primary" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">Ver Estatísticas de Criação de Passos</a>
-		<a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">Ver Estatísticas de Criação de Colaborações</a>
+        <a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_TUTCREATIONSTATS")</a>
+        <a class="btn btn-primary" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_STEPCREATIONSTATS")</a>
+        <a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">@Html.Translate("LB_COLLABCREATIONSTATS")</a>
 	</div>
 </div>
 
@@ -33,7 +34,7 @@
 	<div class="col-md-7 mx-auto">
         <section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="m-0">Altere as definições da sua conta</h2>
+                <h2 class="m-0">@Html.Translate("LB_CHANGEACCOUNT")</h2>
                 <button type="button" class="border-0 bg-white unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
                     <img src="~/img/statistic.svg" width="32" height="32" class="w-100" />
                 </button>
@@ -54,8 +55,8 @@
 		<br/>
 		<section class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-2">
 			<div>
-				<p>Last Login: @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime</p>
-				<p>Login Amount:  @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LoginCount</p>
+                <p>@Html.Translate("LB_LASTLOGIN"): @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LastLoginTime</p>
+                <p>@Html.Translate("LB_LOGINCOUNT"):  @UserManager.Users.Where(x => x.UserName.Equals(User.Identity.Name)).FirstOrDefault().LoginCount</p>
 				<p id="sessionTime"> </p>
 			</div>
 		</section>

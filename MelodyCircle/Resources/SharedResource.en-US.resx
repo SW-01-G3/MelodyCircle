@@ -123,8 +123,35 @@
   <data name="LB_ADD" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="LB_ADDANOTHERSERVICE" xml:space="preserve">
+    <value>Add another service to log in.</value>
+  </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Add Music</value>
+  </data>
+  <data name="LB_CHANGEACCOUNT" xml:space="preserve">
+    <value>Change your account settings</value>
+  </data>
+  <data name="LB_CHANGEEMAIL" xml:space="preserve">
+    <value>Change Email</value>
+  </data>
+  <data name="LB_CHANGELANGUAGE" xml:space="preserve">
+    <value>You can change the language on the platform here.</value>
+  </data>
+  <data name="LB_CHANGEPASS" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="LB_CHANGEPASSWORD" xml:space="preserve">
+    <value>Confirm Change Password</value>
+  </data>
+  <data name="LB_COLLABCREATIONSTATS" xml:space="preserve">
+    <value>View Collaboration Creation Statistics</value>
+  </data>
+  <data name="LB_CONFIRMNEWPASSWORD" xml:space="preserve">
+    <value>Confirm New Password</value>
+  </data>
+  <data name="LB_CONNECTIONS" xml:space="preserve">
+    <value>Connections</value>
   </data>
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Settings</value>
@@ -135,8 +162,17 @@
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Edit Music</value>
   </data>
+  <data name="LB_EN" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="LB_EXTERNALLOGINS" xml:space="preserve">
+    <value>External Logins</value>
+  </data>
   <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
     <value>Favourite Music</value>
+  </data>
+  <data name="LB_GENDER" xml:space="preserve">
+    <value>Gender</value>
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Rate</value>
@@ -147,14 +183,44 @@
   <data name="LB_INSERT_URI" xml:space="preserve">
     <value>Enter Song URI</value>
   </data>
+  <data name="LB_LANGUAGE" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LB_LASTLOGIN" xml:space="preserve">
+    <value>Last Login</value>
+  </data>
+  <data name="LB_LOGINCOUNT" xml:space="preserve">
+    <value>Session Count</value>
+  </data>
   <data name="LB_LOGOUT" xml:space="preserve">
     <value>Log Out</value>
+  </data>
+  <data name="LB_MANAGEEXTERNALS" xml:space="preserve">
+    <value>Manage your external logins</value>
+  </data>
+  <data name="LB_NEWPASSWORD" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="LB_OLDPASSWORD" xml:space="preserve">
+    <value>Old password</value>
+  </data>
+  <data name="LB_OTHER" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="LB_PASSWORD" xml:space="preserve">
+    <value>Password</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Changing Profile Photo</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Profile</value>
+  </data>
+  <data name="LB_PT" xml:space="preserve">
+    <value>Portuguese</value>
+  </data>
+  <data name="LB_REGISTEREDLOGINS" xml:space="preserve">
+    <value>Registered logins</value>
   </data>
   <data name="LB_REMOVE" xml:space="preserve">
     <value>Remove</value>
@@ -164,6 +230,18 @@
   </data>
   <data name="LB_SAVE" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="LB_STATS" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="LB_STEPCREATIONSTATS" xml:space="preserve">
+    <value>View Step Creation Statistics</value>
+  </data>
+  <data name="LB_TUTCREATIONSTATS" xml:space="preserve">
+    <value>View Tutorial Creation Statistics</value>
+  </data>
+  <data name="LB_USERSTATS" xml:space="preserve">
+    <value>User's Stats</value>
   </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Welcome</value>
