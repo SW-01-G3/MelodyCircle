@@ -15,9 +15,32 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var recentUsers = await _context.Users
+                .OrderByDescending(u => u.CreationDate)
+                .Take(5)
+                .ToListAsync();
+
+            var recentTutorials = await _context.Tutorials
+                .OrderByDescending(t => t.CreationDate)
+                .Take(5)
+                .ToListAsync();
+
+            var recentCollaborations = await _context.Collaborations
+                .OrderByDescending(c => c.CreatedDate)
+                .Where(c => c.AccessMode == AccessMode.Public)
+                .Take(5)
+                .ToListAsync();
+
+            var viewModel = new SearchResultViewModel
+            {
+                Users = recentUsers,
+                Tutorials = recentTutorials,
+                Collaborations = recentCollaborations
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
