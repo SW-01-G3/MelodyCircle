@@ -184,7 +184,6 @@ namespace MelodyCircle.Controllers
             if (userToRemove != null)
             {
                 collaboration.ContributingUsers.Remove(userToRemove);   
-
                 await _context.SaveChangesAsync();
             }
 
@@ -289,15 +288,23 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Collaboration collaboration, IFormFile photo)
         {
-            var userId = _userManager.GetUserId(User);
-
-            if (userId != collaboration.CreatorId)
-                return Forbid();
-
             if (!collaboration.IsFinished)
             {
                 if (id != collaboration.Id)
                     return NotFound();
+
+                var existingCollaboration = await _context.Collaborations
+                    .Include(c => c.ContributingUsers)
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (existingCollaboration == null)
+                    return NotFound();
+
+                if (collaboration.MaxUsers < existingCollaboration.ContributingUsers.Count)
+                {
+                    ModelState.AddModelError(nameof(collaboration.MaxUsers), "O número máximo de utilizadores não pode ser menor que o número de utilizadores contribuintes");
+                    return View(collaboration);
+                }
 
                 if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
                 {
@@ -307,8 +314,6 @@ namespace MelodyCircle.Controllers
 
                 else
                 {
-                    var existingCollaboration = await _context.Collaborations.FindAsync(id);
-
                     if (photo != null && photo.Length > 0)
                     {
                         using (var memoryStream = new MemoryStream())
@@ -329,10 +334,13 @@ namespace MelodyCircle.Controllers
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                return View(collaboration);
             }
-            return Forbid();
+            else
+                return Forbid();
+
+            return View(collaboration);
         }
+
 
         // GET: /collaboration/delete/{id}
         public async Task<IActionResult> Delete(Guid? id)
