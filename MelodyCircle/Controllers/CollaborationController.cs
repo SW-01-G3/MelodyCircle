@@ -289,6 +289,11 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Collaboration collaboration, IFormFile photo)
         {
+            var userId = _userManager.GetUserId(User);
+
+            if (userId != collaboration.CreatorId)
+                return Forbid();
+
             if (!collaboration.IsFinished)
             {
                 if (id != collaboration.Id)
@@ -546,12 +551,14 @@ namespace MelodyCircle.Controllers
                 return Forbid();
 
             TimeSpan duration;
+
             if (dto.IsUploaded)
             {
                 if (!dto.InstrumentId.HasValue)
                     return BadRequest("Uploaded instrument ID is required.");
 
                 var uploadedInstrument = await _context.UploadedInstruments.FirstOrDefaultAsync(ui => ui.Id == dto.InstrumentId.Value);
+
                 if (uploadedInstrument == null)
                     return NotFound("Uploaded instrument not found.");
 
@@ -561,6 +568,7 @@ namespace MelodyCircle.Controllers
                     duration = reader.TotalTime;
                 }
             }
+
             else
             {
                 var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
@@ -653,6 +661,36 @@ namespace MelodyCircle.Controllers
             }
 
             return File(uploadedInstrument.SoundContent, "audio/mp3");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCollaborationBpm([FromBody] TrackBpmDto bpmDto)
+        {
+            if (bpmDto.BPM < 60 || bpmDto.BPM > 150)
+                return BadRequest("O BPM deve estar entre 60 e 150");
+
+            var userId = _userManager.GetUserId(User);
+
+            var collaboration = await _context.Collaborations
+                                              .Include(c => c.Tracks)
+                                              .FirstOrDefaultAsync(c => c.Id == bpmDto.CollaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            if (userId != collaboration.CreatorId)
+                return Forbid("Apenas o criador pode alterar os BPMs do painel");
+
+            foreach (var track in collaboration.Tracks)
+            {
+                track.BPM = bpmDto.BPM;
+                _context.Update(track);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private TimeSpan GetAudioDuration(string filePath)
