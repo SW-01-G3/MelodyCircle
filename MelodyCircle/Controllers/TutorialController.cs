@@ -118,41 +118,55 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png"};
+            var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+            bool hasValidationError = false;
+
+            if (string.IsNullOrWhiteSpace(tutorial.Title))
             {
-                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Title), "O título é obrigatório");
+                hasValidationError = true;
             }
 
-            else
+            if (string.IsNullOrWhiteSpace(tutorial.Description))
             {
-                tutorial.Id = Guid.NewGuid();
-
-                var user = await _userManager.GetUserAsync(User);
-
-                if (user != null)
-                    tutorial.Creator = user.UserName;
-
-
-                if (photo != null || photo.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        tutorial.Photo = memoryStream.ToArray();
-                        tutorial.PhotoContentType = photo.ContentType;
-                    }
-                }
-
-                tutorial.CreationDate = DateTime.Now;
-
-                _context.Add(tutorial);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(nameof(tutorial.Description), "A descrição é obrigatória");
+                hasValidationError = true;
             }
 
-            return View(tutorial);
+            if (photo == null && !allowedExtensions.Contains(extension))
+            {
+                if(photo == null)
+                    ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
+                if(!allowedExtensions.Contains(extension))
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+
+                hasValidationError = true;
+            }
+
+            if (hasValidationError)
+                return View(tutorial);
+
+            tutorial.Id = Guid.NewGuid();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+                tutorial.Creator = user.UserName;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await photo.CopyToAsync(memoryStream);
+                tutorial.Photo = memoryStream.ToArray();
+                tutorial.PhotoContentType = photo.ContentType;
+            }
+            
+            tutorial.CreationDate = DateTime.Now;
+            _context.Add(tutorial);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Tutorial/Edit/id
@@ -177,24 +191,38 @@ namespace MelodyCircle.Controllers
             if (id != tutorial.Id)
                 return NotFound();
 
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            bool hasValidationError = false;
+
+            if (string.IsNullOrWhiteSpace(tutorial.Title))
             {
-                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Title), "O título é obrigatório");
+                hasValidationError = true;
             }
+
+            if (string.IsNullOrWhiteSpace(tutorial.Description))
+            {
+                ModelState.AddModelError(nameof(tutorial.Description), "A descrição é obrigatória");
+                hasValidationError = true;
+            }
+
+            if (photo == null)
+            {
+                ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
+                hasValidationError = true;
+            }
+
+            if (hasValidationError)
+                return View(tutorial);
 
             else 
             {
                 var existingTutorial = await _context.Tutorials.FindAsync(id);
 
-                if (photo != null && photo.Length > 0)
+                using (var memoryStream = new MemoryStream())
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        existingTutorial.Photo = memoryStream.ToArray();
-                        existingTutorial.PhotoContentType = photo.ContentType;
-                    }
+                    await photo.CopyToAsync(memoryStream);
+                    existingTutorial.Photo = memoryStream.ToArray();
+                    existingTutorial.PhotoContentType = photo.ContentType;
                 }
 
                 existingTutorial.Title = existingTutorial.Title;
@@ -204,7 +232,6 @@ namespace MelodyCircle.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(tutorial);
         }
 
         // GET: Tutorial/Delete/id
