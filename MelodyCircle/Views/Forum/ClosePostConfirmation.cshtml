@@ -1,9 +1,10 @@
-﻿@{
-    ViewData["Title"] = "Post Fechado";
+﻿@using MelodyCircle.ExtensionMethods
+@{
+    ViewData["Title"] = @Html.Translate("LB_CLOSEDPOST");
 }
 
 <div class="border border-purple bg-white text-center p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 mx-auto w-50">
-<h1>Post Fechado com Sucesso</h1>
+    <h1>@Html.Translate("LB_CLOSEDPOSTSUCCES")</h1>
 
-<a asp-action="Index" asp-controller="Home" class="btn bg-purple text-white mt-4">Voltar para a Página Inicial</a>
+    <a asp-action="Index" asp-controller="Home" class="btn bg-purple text-white mt-4">@Html.Translate("LB_GOBACK_HP")</a>
 </div>

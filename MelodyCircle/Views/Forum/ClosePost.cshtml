@@ -1,20 +1,21 @@
-﻿@model ForumPost
+﻿@using MelodyCircle.ExtensionMethods
+@model ForumPost
 
 @{
-    ViewData["Title"] = "Fechar Post";
+    ViewData["Title"] = @Html.Translate("LB_CLOSEPOST");
 }
 
 <div class="border border-purple bg-white text-center p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 mx-auto w-50">
     <div class="d-flex flex-column align-items-center">
-        <h1>Confirmação de Encerramento de Post</h1>
+        <h1>@Html.Translate("LB_CONFIRMCLOSEPOST")</h1>
 
-        <p>Deseja fechar este post:</p>
-        <p><strong>Título: </strong>@Model.Title</p>
-        <p><strong>Conteúdo: </strong>@Model.Content</p>
+        <p>@Html.Translate("LB_WISHCLOSEPOST")?</p>
+        <p><strong>@Html.Translate("LB_TITLE"): </strong>@Model.Title</p>
+        <p><strong>@Html.Translate("LB_CONTENT"): </strong>@Model.Content</p>
 
         <form asp-action="ConfirmClosePost" asp-route-id="@Model.Id" method="post" class="text-center">
-            <button type="submit" class="btn btn-danger">Confirmar</button>
-            <a asp-action="Comments" asp-controller="Forum" asp-route-id="@Model.Id" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-danger">@Html.Translate("LB_CONFIRM")</button>
+            <a asp-action="Comments" asp-controller="Forum" asp-route-id="@Model.Id" class="btn btn-secondary">@Html.Translate("LB_CANCEL")</a>
         </form>
     </div>
 </div>

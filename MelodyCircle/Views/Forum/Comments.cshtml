@@ -1,4 +1,5 @@
-﻿@model MelodyCircle.Models.ForumPost
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.ForumPost
 
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto" style="width: 50%;">
     <h1>@Model.Title</h1>
@@ -10,29 +11,29 @@
     {
 			@if (User.Identity.IsAuthenticated)
 			{
-				<h3>Adicionar comentário</h3>
+            <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
 				<form asp-action="Comment" asp-route-id="@Model.Id" method="post">
 					<div class="form-group">
 						<textarea asp-for="Content" class="form-control"></textarea>
 						<span asp-validation-for="Content" class="text-danger"></span>
 					</div>
 					<div class="form-group">
-						<input type="submit" value="Add Comment" class="btn bg-purple text-white mt-3" />
+                    <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
 					</div>
 				</form>
 			}
     }
     else
     {
-        <div class="text-center my-4"><p>O post está fechado. Não é possível adicionar comentários</p></div>
+        <div class="text-center my-4"><p>@Html.Translate("LB_COMMENTINFO")</p></div>
     }
     
     <hr>
     
     @if (Model.Comments.Any())
     {
-    
-            <h2>Comentários</h2>
+
+        <h2>@Html.Translate("LB_COMMENTS")</h2>
             @foreach (var comment in Model.Comments)
             {
                 <div class="bg-light p-3 mb-3 rounded">
@@ -47,7 +48,7 @@
     }
     else
     {
-        <div class="text-center my-4"><p>Sem comentários</p></div>
+        <div class="text-center my-4"><p>@Html.Translate("LB_NOCOMMENTS")</p></div>
     }
 </div>
 
