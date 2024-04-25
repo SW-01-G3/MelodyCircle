@@ -1,7 +1,8 @@
 ﻿@page
+@using MelodyCircle.ExtensionMethods
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = @Html.Translate("LB_CONFIRMEMAIL");
 }
 
 <h1>@ViewData["Title"]</h1>

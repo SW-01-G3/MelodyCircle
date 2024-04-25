@@ -1,7 +1,10 @@
-﻿@model MelodyCircle.ViewModels.SearchResultViewModel
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MelodyCircle.ViewModels.SearchResultViewModel
+﻿@using MelodyCircle.ExtensionMethods
 
 @{
-    ViewData["Title"] = "Pesquisar";
+    ViewData["Title"] = @Html.Translate("LB_SEARCH");
 }
 
 <div class="text-center">
@@ -11,12 +14,12 @@
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
     <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
-        <option value="None">Nenhum filtro</option>
-        <option value="User">Artista</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Collaboration">Colaboração</option>
+        <option value="None">@Html.Translate("LB_NOFILTER")</option>
+        <option value="User">@Html.Translate("LB_ARTIST")</option>
+        <option value="Tutorial">@Html.Translate("LB_TUTORIAL")</option>
+        <option value="Collaboration">@Html.Translate("LB_COLLAB")</option>
     </select>
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
+    <input type="text" name="searchTerm" placeholder="@Html.Translate("LB_SEARCH")" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
 

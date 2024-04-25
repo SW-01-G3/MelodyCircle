@@ -1,8 +1,9 @@
 ﻿@page
+@using MelodyCircle.ExtensionMethods
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = @Html.Translate("LB_LOGIN");
 }
 
 @* <h1>@ViewData["Title"]</h1> *@
@@ -13,37 +14,38 @@
             <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div class="text-end">
                     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                            title="<p>Se ainda não se registou pode faze-lo na opção registar, com email e password, ou com a sua conta Google.</p>">
+                            title="<p>@Html.Translate("TT_LOGIN")</p>">
                         ?
                     </button>
                 </div>
-                <h2 class="text-dark text-center mb-3">Log In</h2>
+                <h2 class="text-dark text-center mb-3">@Html.Translate("LB_LOGIN")</h2>
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="mb-3 text-center">
-                    <label asp-for="Input.Email" class="form-label text-dark fs-md-4 fs-lg-3">Email ou Username</label>
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="nome@email.com" />
+                    <label asp-for="Input.Email" class="form-label text-dark fs-md-4 fs-lg-3">@Html.Translate("LB_EMAIL_OR_USERNAME")</label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="username@email.com or iamuser123" />
                     <span asp-validation-for="Input.Email" class="bg-danger text-white"></span>
                 </div>
                 <div class="mb-3 text-center">
-                    <label asp-for="Input.Password" class="form-label text-dark fs-md-4 fs-lg-3">Palavra-passe</label>
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Palavra-passe" />
+                    <label asp-for="Input.Password" class="form-label text-dark fs-md-4 fs-lg-3">@Html.Translate("LB_PASSWORD")</label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="@Html.Translate("LB_PASSWORD")" />
                     <span asp-validation-for="Input.Password" class="bg-danger text-white"></span>
                 </div>
                 <div class="checkbox mb-3 text-center">
                     <label asp-for="Input.RememberMe" class="form-label text-dark fs-md-4 fs-lg-3">
                         <input class="form-check-input bg-purple " asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        @* @Html.DisplayNameFor(m => m.Input.RememberMe) *@
+                        @Html.Translate("LB_REMEMBERME")
                     </label>
                 </div>
                 <div class="mb-3 text-center">
                     <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-dark fs-md-4 fs-lg-3">Esqueceu-se da palavra-passe?</a>
+                        <a id="forgot-password" asp-page="./ForgotPassword" class="form-label text-dark fs-md-4 fs-lg-3">@Html.Translate("LB_FORGOTTENPASSWORD?")</a>
                     </p>
                 <div>
-                        <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">Log in</button>
+                        <button id="login-submit" type="submit" class="w-75 btn btn-lg bg-purple text-white">@Html.Translate("LB_LOGIN")</button>
                 </div>
                     <div class="text-center">
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="w-75 mt-2 btn btn-lg bg-purple text-white">Register</a>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="w-75 mt-2 btn btn-lg bg-purple text-white">@Html.Translate("LB_REGISTER")</a>
                     </div>
                     @*<p>
                         <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>

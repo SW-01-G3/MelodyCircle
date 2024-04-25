@@ -123,6 +123,9 @@
   <data name="LB_ACCEPT" xml:space="preserve">
     <value>Aceitar</value>
   </data>
+  <data name="LB_ACCOUNT" xml:space="preserve">
+    <value />
+  </data>
   <data name="LB_ADD" xml:space="preserve">
     <value>Adicionar</value>
   </data>
@@ -134,6 +137,15 @@
   </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
+  </data>
+  <data name="LB_ARTIST" xml:space="preserve">
+    <value>Artista</value>
+  </data>
+  <data name="LB_ASSOCIATE" xml:space="preserve">
+    <value>Associe a sua conta</value>
+  </data>
+  <data name="LB_BIRTHDATE" xml:space="preserve">
+    <value>Data de Nascimento</value>
   </data>
   <data name="LB_CANCEL" xml:space="preserve">
     <value>Cancelar</value>
@@ -162,8 +174,17 @@
   <data name="LB_CLOSEPOST" xml:space="preserve">
     <value>Fechar Post</value>
   </data>
+  <data name="LB_COLLAB" xml:space="preserve">
+    <value>Colaboração</value>
+  </data>
   <data name="LB_COLLABCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Colaborações</value>
+  </data>
+  <data name="LB_COLLABS" xml:space="preserve">
+    <value>Colaborações</value>
+  </data>
+  <data name="LB_COLLABSEARCHRESULTS" xml:space="preserve">
+    <value>Resultados da Pesquisa das Colaborações</value>
   </data>
   <data name="LB_COMMENTINFO" xml:space="preserve">
     <value>O post está fechado. Não é possível adicionar comentários.</value>
@@ -177,8 +198,20 @@
   <data name="LB_CONFIRMCLOSEPOST" xml:space="preserve">
     <value>Confirmação de Encerramento de Post</value>
   </data>
+  <data name="LB_CONFIRMEMAIL" xml:space="preserve">
+    <value>Confirmar Email</value>
+  </data>
   <data name="LB_CONFIRMNEWPASSWORD" xml:space="preserve">
     <value>Confirmar a Palavra-passe Nova</value>
+  </data>
+  <data name="LB_CONFIRMPASSWORD" xml:space="preserve">
+    <value>Confirmar Palavra-Passe</value>
+  </data>
+  <data name="LB_CONFIRMRECOVERPASSWORD" xml:space="preserve">
+    <value>Confirmação da recuperação de palavra-passe</value>
+  </data>
+  <data name="LB_CONFIRMRESETPASSWORD" xml:space="preserve">
+    <value>Confirmação do restabelecimento de palavra-passe</value>
   </data>
   <data name="LB_CONNECTIONS" xml:space="preserve">
     <value>Conexões</value>
@@ -204,6 +237,9 @@
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Alterar a Música</value>
   </data>
+  <data name="LB_EMAIL_OR_USERNAME" xml:space="preserve">
+    <value>Email ou Nome de Utilizador</value>
+  </data>
   <data name="LB_EN" xml:space="preserve">
     <value>Inglês</value>
   </data>
@@ -212,6 +248,9 @@
   </data>
   <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
     <value>Músicas Favoritas</value>
+  </data>
+  <data name="LB_FORGOTTENPASSWORD?" xml:space="preserve">
+    <value>Esqueceu-se da palavra-passe?</value>
   </data>
   <data name="LB_GENDER" xml:space="preserve">
     <value>Género</value>
@@ -237,11 +276,17 @@
   <data name="LB_ISINVITING" xml:space="preserve">
     <value>está a convidar para uma colaboração. Entrar?</value>
   </data>
+  <data name="LB_JOIN" xml:space="preserve">
+    <value>Participar</value>
+  </data>
   <data name="LB_LANGUAGE" xml:space="preserve">
     <value>Linguagem</value>
   </data>
   <data name="LB_LASTLOGIN" xml:space="preserve">
     <value>Última Sessão</value>
+  </data>
+  <data name="LB_LOGIN" xml:space="preserve">
+    <value>Conecte-se</value>
   </data>
   <data name="LB_LOGINCOUNT" xml:space="preserve">
     <value>Número de Sessões</value>
@@ -252,14 +297,23 @@
   <data name="LB_MANAGEEXTERNALS" xml:space="preserve">
     <value>Gerir os seus logins externos</value>
   </data>
+  <data name="LB_NAME" xml:space="preserve">
+    <value>Nome Próprio</value>
+  </data>
   <data name="LB_NEWPASSWORD" xml:space="preserve">
     <value>Palavra-passe Nova</value>
   </data>
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>Sem Comentários</value>
   </data>
+  <data name="LB_NOFILTER" xml:space="preserve">
+    <value>Nenhum filtro</value>
+  </data>
   <data name="LB_NONOTIFS" xml:space="preserve">
     <value>Sem notificações!</value>
+  </data>
+  <data name="LB_NORESULT" xml:space="preserve">
+    <value>Nenhum resultado encontrado.</value>
   </data>
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notificações</value>
@@ -273,8 +327,14 @@
   <data name="LB_PASSWORD" xml:space="preserve">
     <value>Palavra-Passe</value>
   </data>
+  <data name="LB_PASSWORDWASRESET" xml:space="preserve">
+    <value>A sua palavra-passe foi restabelecida.</value>
+  </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
+  </data>
+  <data name="LB_PLEASECHECKEMAIL" xml:space="preserve">
+    <value>Verifique o e-mail para confirmar a sua conta.</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
@@ -282,8 +342,17 @@
   <data name="LB_PT" xml:space="preserve">
     <value>Português</value>
   </data>
+  <data name="LB_RECOVERPASSWORD" xml:space="preserve">
+    <value>Recuperação de palavra-passe</value>
+  </data>
+  <data name="LB_REGISTER" xml:space="preserve">
+    <value>Registar</value>
+  </data>
   <data name="LB_REGISTEREDLOGINS" xml:space="preserve">
     <value>Logins registados</value>
+  </data>
+  <data name="LB_REMEMBERME" xml:space="preserve">
+    <value>Manter autenticado?</value>
   </data>
   <data name="LB_REMOVE" xml:space="preserve">
     <value>Remover</value>
@@ -291,8 +360,17 @@
   <data name="LB_REMOVECONNECTION" xml:space="preserve">
     <value>Pretende remover esta conexão?</value>
   </data>
+  <data name="LB_RESETPASSWORD" xml:space="preserve">
+    <value>Redefinir Palavra-Passe</value>
+  </data>
   <data name="LB_SAVE" xml:space="preserve">
     <value>Guardar</value>
+  </data>
+  <data name="LB_SEARCH" xml:space="preserve">
+    <value>Pesquisar</value>
+  </data>
+  <data name="LB_SEARCHRESULTS" xml:space="preserve">
+    <value>Resultados da Pesquisa</value>
   </data>
   <data name="LB_SEECOMMENTS" xml:space="preserve">
     <value>Ver Comentários</value>
@@ -306,6 +384,9 @@
   <data name="LB_STEPCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Passos</value>
   </data>
+  <data name="LB_SUBSCRIBE" xml:space="preserve">
+    <value>Inscrever</value>
+  </data>
   <data name="LB_THEUSER" xml:space="preserve">
     <value>O utilizador</value>
   </data>
@@ -315,8 +396,29 @@
   <data name="LB_TUTCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Tutoriais</value>
   </data>
+  <data name="LB_TUTORIAL" xml:space="preserve">
+    <value>Tutorial</value>
+  </data>
+  <data name="LB_TUTORIALS" xml:space="preserve">
+    <value>Tutoriais</value>
+  </data>
+  <data name="LB_TUTOSEARCHRESULTS" xml:space="preserve">
+    <value>Resultados da Pesquisa dos Tutoriais</value>
+  </data>
+  <data name="LB_USERNAME" xml:space="preserve">
+    <value>Nome de Utilizador</value>
+  </data>
+  <data name="LB_USERS" xml:space="preserve">
+    <value>Utilizadores</value>
+  </data>
+  <data name="LB_USERSEARCHRESULTS" xml:space="preserve">
+    <value>Resultados da Pesquisa dos Utilizadores</value>
+  </data>
   <data name="LB_USERSTATS" xml:space="preserve">
     <value>Estatísticas de Utilizador</value>
+  </data>
+  <data name="LB_VERIFYRECOVERPASSWORD" xml:space="preserve">
+    <value>Verifique o seu e-mail para recuperar a sua palavra-passe.</value>
   </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>
@@ -324,7 +426,13 @@
   <data name="LB_WISHCLOSEPOST" xml:space="preserve">
     <value>Deseja fechar este post</value>
   </data>
+  <data name="TT_LOGIN" xml:space="preserve">
+    <value>Se ainda não se registou pode faze-lo na opção registar, com email e password, ou com a sua conta Google.</value>
+  </data>
   <data name="TT_PROFILE" xml:space="preserve">
     <value>Perfil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</value>
+  </data>
+  <data name="TT_REGISTER" xml:space="preserve">
+    <value>São necessários entre 6 a 20 caracteres com uma letra maiuscula (A-Z) e minuscula (a-z) para a palavra-passe.CoNfirmação tem de ser igual á palavra-passe.</value>
   </data>
 </root>
