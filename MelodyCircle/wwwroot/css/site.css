@@ -44,6 +44,12 @@ body {
 
 /* -------------------------------------------- */
 
+#editor {
+    min-height: 8rem;
+}
+
+/* -------------------------------------------- */
+
 .bg-darkPurple {
   background-color: var(--darkPurple) !important;
 }
