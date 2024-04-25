@@ -1,26 +1,73 @@
 ﻿@using MelodyCircle.ExtensionMethods
 @model MelodyCircle.Models.ForumPost
 
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script> 
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
+        const quill = new Quill('#editor', {
+            placeholder: 'Compose an epic...',
+            theme: 'snow',
+        });
+        const quillDefaultHTML = "<p>Hello, <strong>World</strong></p>";
+        let contentDiv = document.getElementById("contentDiv");
+        let contentData = @Html.Raw(@Model.Content);
+        let commentData = [];
+        let commentDivs = document.getElementsByName("commentContent");
+        
+        contentDiv.innerHTML = convertToHtml(quill, contentData);
+        
+        @if (Model != null && Model.Comments.Any())
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                @:commentData.push(@Html.Raw(comment.Content));
+            }
+        }
+
+        for (let cnt = 0; cnt < commentData.length; cnt++) {
+            commentDivs[cnt].innerHTML = convertToHtml(quill, commentData[cnt]);
+        }
+
+        
+        quill.root.innerHTML = quillDefaultHTML;
+    </script>
+}
+
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto" style="width: 50%;">
     <h1>@Model.Title</h1>
-    <p>@Model.Content</p>
+    <div id="contentDiv" class=""></div>
 </div>
+
+
 
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto my-4 w-50">
     @if (!Model.IsClosed)
     {
 			@if (User.Identity.IsAuthenticated)
 			{
-            <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
+                <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
 				<form asp-action="Comment" asp-route-id="@Model.Id" method="post">
 					<div class="form-group">
-						<textarea asp-for="Content" class="form-control"></textarea>
+						@* <textarea asp-for="Content" class="form-control"></textarea> *@
+                        <input type="hidden" asp-for="Content" id="editContent" />
+                        <div id="editor">
+                            <p>Hello, <strong>World</strong></p>
+                        </div>
 						<span asp-validation-for="Content" class="text-danger"></span>
 					</div>
 					<div class="form-group">
-                    <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
+                        <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
 					</div>
-				</form>
+			    </form>
 			}
     }
     else
@@ -41,7 +88,7 @@
                         <div><a asp-action="Profile" asp-controller="User" asp-route-id="@comment.User.UserName" class="text-decoration-none text-primary">@comment.User.UserName</a></div>
                         <div class="text-muted">@comment.CreatedAt.ToString("dd-MM-yyyy HH:mm")</div>
                     </div>
-                    <div class="text-start">@comment.Content</div>
+                    <div name="commentContent" class="text-start">@comment.Content</div>
                 </div>
             }
         
