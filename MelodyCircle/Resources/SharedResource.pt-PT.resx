@@ -120,11 +120,80 @@
   <data name="LB_010" xml:space="preserve">
     <value>Avaliação de 0 a 10.</value>
   </data>
+  <data name="LB_ACCEPT" xml:space="preserve">
+    <value>Aceitar</value>
+  </data>
   <data name="LB_ADD" xml:space="preserve">
     <value>Adicionar</value>
   </data>
+  <data name="LB_ADDANOTHERSERVICE" xml:space="preserve">
+    <value>Adicionar outro serviço para iniciar sessão.</value>
+  </data>
+  <data name="LB_ADDCOMMENTS" xml:space="preserve">
+    <value>Adcionar comentário</value>
+  </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
+  </data>
+  <data name="LB_CANCEL" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="LB_CHANGEACCOUNT" xml:space="preserve">
+    <value>Altere as definições da sua conta</value>
+  </data>
+  <data name="LB_CHANGEEMAIL" xml:space="preserve">
+    <value>Mudar Email</value>
+  </data>
+  <data name="LB_CHANGELANGUAGE" xml:space="preserve">
+    <value>Pode alterar a linguagem na plataforma aqui.</value>
+  </data>
+  <data name="LB_CHANGEPASS" xml:space="preserve">
+    <value>Mudar a palavra-passe</value>
+  </data>
+  <data name="LB_CHANGEPASSWORD" xml:space="preserve">
+    <value>Confirmar alteração da palavra-passe</value>
+  </data>
+  <data name="LB_CLOSEDPOST" xml:space="preserve">
+    <value>Post Fechado</value>
+  </data>
+  <data name="LB_CLOSEDPOSTSUCCES" xml:space="preserve">
+    <value>Post Fechado com Suceso</value>
+  </data>
+  <data name="LB_CLOSEPOST" xml:space="preserve">
+    <value>Fechar Post</value>
+  </data>
+  <data name="LB_COLLABCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Colaborações</value>
+  </data>
+  <data name="LB_COMMENTINFO" xml:space="preserve">
+    <value>O post está fechado. Não é possível adicionar comentários.</value>
+  </data>
+  <data name="LB_COMMENTS" xml:space="preserve">
+    <value>Comentários</value>
+  </data>
+  <data name="LB_CONFIRM" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="LB_CONFIRMCLOSEPOST" xml:space="preserve">
+    <value>Confirmação de Encerramento de Post</value>
+  </data>
+  <data name="LB_CONFIRMNEWPASSWORD" xml:space="preserve">
+    <value>Confirmar a Palavra-passe Nova</value>
+  </data>
+  <data name="LB_CONNECTIONS" xml:space="preserve">
+    <value>Conexões</value>
+  </data>
+  <data name="LB_CONTENT" xml:space="preserve">
+    <value>Conteúdo</value>
+  </data>
+  <data name="LB_CREATE" xml:space="preserve">
+    <value>Criar</value>
+  </data>
+  <data name="LB_CREATEPOST" xml:space="preserve">
+    <value>Criar Post</value>
+  </data>
+  <data name="LB_DECLINE" xml:space="preserve">
+    <value>Recusar</value>
   </data>
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Definições</value>
@@ -135,11 +204,26 @@
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Alterar a Música</value>
   </data>
+  <data name="LB_EN" xml:space="preserve">
+    <value>Inglês</value>
+  </data>
+  <data name="LB_EXTERNALLOGINS" xml:space="preserve">
+    <value>Logins Externos</value>
+  </data>
   <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
     <value>Músicas Favoritas</value>
   </data>
+  <data name="LB_GENDER" xml:space="preserve">
+    <value>Género</value>
+  </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Avaliar</value>
+  </data>
+  <data name="LB_GOBACK_HP" xml:space="preserve">
+    <value>Voltar para a Página Inicial</value>
+  </data>
+  <data name="LB_HOMEPAGE" xml:space="preserve">
+    <value>Página Inicial</value>
   </data>
   <data name="LB_INSERT_NEWURI" xml:space="preserve">
     <value>Insira o novo URI da Música</value>
@@ -147,14 +231,59 @@
   <data name="LB_INSERT_URI" xml:space="preserve">
     <value>Insira URI da Música</value>
   </data>
+  <data name="LB_INVITECOLLAB" xml:space="preserve">
+    <value>Convite para colaboração</value>
+  </data>
+  <data name="LB_ISINVITING" xml:space="preserve">
+    <value>está a convidar para uma colaboração. Entrar?</value>
+  </data>
+  <data name="LB_LANGUAGE" xml:space="preserve">
+    <value>Linguagem</value>
+  </data>
+  <data name="LB_LASTLOGIN" xml:space="preserve">
+    <value>Última Sessão</value>
+  </data>
+  <data name="LB_LOGINCOUNT" xml:space="preserve">
+    <value>Número de Sessões</value>
+  </data>
   <data name="LB_LOGOUT" xml:space="preserve">
     <value>Terminar Sessão</value>
+  </data>
+  <data name="LB_MANAGEEXTERNALS" xml:space="preserve">
+    <value>Gerir os seus logins externos</value>
+  </data>
+  <data name="LB_NEWPASSWORD" xml:space="preserve">
+    <value>Palavra-passe Nova</value>
+  </data>
+  <data name="LB_NOCOMMENTS" xml:space="preserve">
+    <value>Sem Comentários</value>
+  </data>
+  <data name="LB_NONOTIFS" xml:space="preserve">
+    <value>Sem notificações!</value>
+  </data>
+  <data name="LB_NOTIFS" xml:space="preserve">
+    <value>Notificações</value>
+  </data>
+  <data name="LB_OLDPASSWORD" xml:space="preserve">
+    <value>Palavra-passe Antiga</value>
+  </data>
+  <data name="LB_OTHER" xml:space="preserve">
+    <value>Outro</value>
+  </data>
+  <data name="LB_PASSWORD" xml:space="preserve">
+    <value>Palavra-Passe</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
+  </data>
+  <data name="LB_PT" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="LB_REGISTEREDLOGINS" xml:space="preserve">
+    <value>Logins registados</value>
   </data>
   <data name="LB_REMOVE" xml:space="preserve">
     <value>Remover</value>
@@ -165,8 +294,35 @@
   <data name="LB_SAVE" xml:space="preserve">
     <value>Guardar</value>
   </data>
+  <data name="LB_SEECOMMENTS" xml:space="preserve">
+    <value>Ver Comentários</value>
+  </data>
+  <data name="LB_SEEMORE" xml:space="preserve">
+    <value>Ver Mais</value>
+  </data>
+  <data name="LB_STATS" xml:space="preserve">
+    <value>Estatísticas</value>
+  </data>
+  <data name="LB_STEPCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Passos</value>
+  </data>
+  <data name="LB_THEUSER" xml:space="preserve">
+    <value>O utilizador</value>
+  </data>
+  <data name="LB_TITLE" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="LB_TUTCREATIONSTATS" xml:space="preserve">
+    <value>Ver Estatísticas de Criação de Tutoriais</value>
+  </data>
+  <data name="LB_USERSTATS" xml:space="preserve">
+    <value>Estatísticas de Utilizador</value>
+  </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>
+  </data>
+  <data name="LB_WISHCLOSEPOST" xml:space="preserve">
+    <value>Deseja fechar este post</value>
   </data>
   <data name="TT_PROFILE" xml:space="preserve">
     <value>Perfil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</value>

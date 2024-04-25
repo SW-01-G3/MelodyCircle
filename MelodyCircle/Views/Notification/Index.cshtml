@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
+@using MelodyCircle.ExtensionMethods
 @model List<Notification>
 @inject ApplicationDbContext Context
 
-<h2 class="text-center">Notifications</h2>
+<h2 class="text-center">@Html.Translate("LB_NOTIFS")</h2>
 
 @if (Model != null || Model.Count > 0)
 {
@@ -13,7 +14,7 @@
         @if (notification.Status == NotificationStatus.Pending)
         {
             <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-25 justify-content-center align-items-center">
-                <h3>Collaboration Invitation</h3>
+                <h3>@Html.Translate("LB_INVITECOLLAB")</h3>
                 <p><strong>@notification.CollaborationTitle</strong></p>
                 <p>@notification.CollaborationDescription</p>
 
@@ -21,21 +22,21 @@
                     var username = Context.Users.Where(s => s.Id.ToString() == notification.SenderId).FirstOrDefault().UserName;
                 }
 
-                <p>The user <strong>@username</strong> is inviting you to a collab. Join?</p>
+                <p>@Html.Translate("LB_THEUSER") <strong>@username</strong> @Html.Translate("LB_ISINVITING")</p>
                 <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
                     <input type="hidden" name="notificationId" value="@notification.Id" />
-                    <button type="submit" class="btn bg-purple text-white">Accept</button>
+                    <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_ACCEPT")</button>
                 </form>
                 <form asp-action="DeclineInvite" asp-controller="Notification" method="post" class="pt-2">
                     <input type="hidden" name="notificationId" value="@notification.Id" />
-                    <button type="submit" class="btn btn-danger">Decline</button>
+                    <button type="submit" class="btn btn-danger">@Html.Translate("LB_DECLINE")</button>
                 </form>
             </div>
         }
     }
 }
-else
+else if (Model.Count > 0 && Model.Any(s => s.Status == NotificationStatus.Pending))
 {
-    <h2>No Notifications!</h2>
+    <h2>@Html.Translate("LB_NONOTIFS")</h2>
 }
 

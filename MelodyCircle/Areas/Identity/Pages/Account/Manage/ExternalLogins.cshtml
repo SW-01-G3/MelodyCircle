@@ -1,14 +1,15 @@
 ﻿@page
+@using MelodyCircle.ExtensionMethods
 @model ExternalLoginsModel
 @{
-    ViewData["Title"] = "Manage your external logins";
+    ViewData["Title"] = @Html.Translate("LB_MANAGEEXTERNALS");
     ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
 @if (Model.CurrentLogins?.Count > 0)
 {
-    <h4>Registered Logins</h4>
+    <h4>@Html.Translate("LB_REGISTEREDLOGINS")</h4>
     <table class="table">
         <tbody>
             @foreach (var login in Model.CurrentLogins)
@@ -22,7 +23,7 @@
                                 <div>
                                     <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
                                     <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
-                                    <button type="submit" class="w-100 mt-2 btn bg-purple text-white" title="Remove this @login.ProviderDisplayName login from your account">Remove</button>
+                                    <button type="submit" class="w-100 mt-2 btn bg-purple text-white" title="Remove this @login.ProviderDisplayName login from your account">@Html.Translate("LB_REMOVE")</button>
                                 </div>
                             </form>
                         }
@@ -38,7 +39,7 @@
 }
 @if (Model.OtherLogins?.Count > 0)
 {
-    <h4>Add another service to log in.</h4>
+    <h4>@Html.Translate("LB_ADDANOTHERSERVICE")</h4>
     <hr />
     <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
         <div id="socialLoginList">

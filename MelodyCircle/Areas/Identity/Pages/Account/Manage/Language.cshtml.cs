@@ -31,7 +31,7 @@ namespace MelodyCircle.Areas.Identity.Pages.Account.Manage
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 cookieOptions);
 
-            return LocalRedirect("~/"); // Redirect to home page or any other desired page
+            return LocalRedirect("~/Identity/Account/Manage/Language"); // Redirect to home page or any other desired page
         }
     }
 }
