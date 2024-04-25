@@ -4,6 +4,42 @@
 @model List<Notification>
 @inject ApplicationDbContext Context
 
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
+        const quill = new Quill('#editor');
+        let descriptionData = [];
+        let descriptionDivs = document.getElementsByName("commentContent");
+
+        contentDiv.innerHTML = convertToHtml(quill, contentData);
+
+        @if (Model != null || Model.Count > 0)
+        {
+            @foreach (var notification in Model)
+            {
+                @if (notification.Status == NotificationStatus.Pending) {
+                    @:descriptionData.push(@Html.Raw(notification.CollaborationDescription));
+                }
+            }
+        }
+
+        for (let cnt = 0; cnt < descriptionData.length; cnt++) {
+            descriptionDivs[cnt].innerHTML = convertToHtml(quill, descriptionData[cnt]);
+        }
+    </script>
+}
+
+<input type="hidden" id="editor" />
+
 <h2 class="text-center">@Html.Translate("LB_NOTIFS")</h2>
 
 @if (Model != null || Model.Count > 0)
@@ -16,7 +52,7 @@
             <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-25 justify-content-center align-items-center">
                 <h3>@Html.Translate("LB_INVITECOLLAB")</h3>
                 <p><strong>@notification.CollaborationTitle</strong></p>
-                <p>@notification.CollaborationDescription</p>
+                <div name="collaborationDescription"></div>
 
                 @{
                     var username = Context.Users.Where(s => s.Id.ToString() == notification.SenderId).FirstOrDefault().UserName;
