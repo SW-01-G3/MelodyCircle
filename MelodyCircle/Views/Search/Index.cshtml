@@ -7,9 +7,40 @@
     ViewData["Title"] = @Html.Translate("LB_SEARCH");
 }
 
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
+        const quill = new Quill('#editor');
+
+        let tutorialData = [];
+        let tutorialDivs = document.getElementsByName("tutorialDescription");
+
+
+        @foreach (var tutorial in Model.Tutorials)
+        {
+            @:tutorialData.push(@Html.Raw(tutorial.Description));
+        }
+
+        for (let cnt = 0; cnt < tutorialData.length; cnt++) {
+            tutorialDivs[cnt].innerHTML = convertToHtml(quill, tutorialData[cnt]);
+        }
+    </script>
+}
+
 <div class="text-center">
     <h1>@ViewData["Title"]</h1>
 </div>
+
+<input type="hidden" id="editor" value="" />
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
@@ -26,7 +57,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h3>Usuários Recentes</h3>
+            <h3 class="text-center">Usuários Recentes</h3>
             @foreach (var user in Model.Users)
             {
                 <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50  justify-content-center align-items-center">
@@ -35,21 +66,21 @@
             }
         </div>
         <div class="col-md-4">
-            <h3>Tutoriais Recentes</h3>
+            <h3 class="text-center">Tutoriais Recentes</h3>
             @foreach (var tutorial in Model.Tutorials)
             {
-                <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
-                    <h4><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
+                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
+                    <h4 class="d-flex justify-content-center"><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
                     <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">Inscrever-se</a>
-                    <p>@tutorial.Description</p>
+                    <div name="tutorialDescription"></div>
                 </div>
             }
         </div>
         <div class="col-md-4">
-            <h3>Colaborações Recentes</h3>
+            <h3 class="text-center">Colaborações Recentes</h3>
             @foreach (var collab in Model.Collaborations)
             {
-                <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
+                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
                     <h4>@collab.Title</h4>
                     <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collab.Id })">
                         @Html.AntiForgeryToken()
