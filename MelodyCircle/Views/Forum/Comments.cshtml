@@ -16,6 +16,10 @@
 						<textarea asp-for="Content" class="form-control"></textarea>
 						<span asp-validation-for="Content" class="text-danger"></span>
 					</div>
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <span class="text-danger">@TempData["ErrorMessage"]</span>
+                    }
 					<div class="form-group">
 						<input type="submit" value="Add Comment" class="btn bg-purple text-white mt-3" />
 					</div>
