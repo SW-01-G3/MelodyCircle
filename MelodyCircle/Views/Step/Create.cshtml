@@ -55,11 +55,6 @@
                 </div>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="form-group text-center">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" type="number" min="0" max="100" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
             <div class="form-group text-center py-3">
                 <input type="submit" value="Adicionar" class="btn bg-purple text-white" />
             </div>
@@ -70,27 +65,3 @@
 <div>
     <a asp-action="Index" asp-controller="Step">Voltar à lista de Passos</a>
 </div>
-
-@if (ViewBag.StepsWithOrders != null)
-{
-    <div>
-        <h2>Ordens Ocupadas:</h2>
-        <ul>
-            @foreach (var item in ViewBag.StepsWithOrders)
-            {
-                <li>@item.Order - @item.Title</li>
-            }
-        </ul>
-    </div>
-}
-
-@if (ViewBag.AvailableOrders != null)
-{
-    <div>
-        <h2>Ordens Disponíveis:</h2>
-        @foreach (var order in ViewBag.AvailableOrders)
-        {
-            <span>@order </span>
-        }
-    </div>
-}
