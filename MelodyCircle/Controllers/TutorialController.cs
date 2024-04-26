@@ -118,8 +118,7 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png"};
-            var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
 
             bool hasValidationError = false;
 
@@ -135,14 +134,21 @@ namespace MelodyCircle.Controllers
                 hasValidationError = true;
             }
 
-            if (photo == null && !allowedExtensions.Contains(extension))
+            if (photo == null)
             {
-                if(photo == null)
-                    ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
-                if(!allowedExtensions.Contains(extension))
-                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
-
+                ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
                 hasValidationError = true;
+            }
+
+            else
+            {
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    hasValidationError = true;
+                }
             }
 
             if (hasValidationError)
@@ -154,6 +160,8 @@ namespace MelodyCircle.Controllers
 
             if (user != null)
                 tutorial.Creator = user.UserName;
+            else
+                return Unauthorized("Utilizador não encontrado");
 
             using (var memoryStream = new MemoryStream())
             {
@@ -161,8 +169,9 @@ namespace MelodyCircle.Controllers
                 tutorial.Photo = memoryStream.ToArray();
                 tutorial.PhotoContentType = photo.ContentType;
             }
-            
+
             tutorial.CreationDate = DateTime.Now;
+
             _context.Add(tutorial);
             await _context.SaveChangesAsync();
 
@@ -188,10 +197,12 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
         {
-            if (id != tutorial.Id)
-                return NotFound();
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
 
             bool hasValidationError = false;
+
+            if (id != tutorial.Id)
+                return NotFound();
 
             if (string.IsNullOrWhiteSpace(tutorial.Title))
             {
@@ -205,18 +216,26 @@ namespace MelodyCircle.Controllers
                 hasValidationError = true;
             }
 
-            if (photo == null)
-            {
-                ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
-                hasValidationError = true;
-            }
-
             if (hasValidationError)
                 return View(tutorial);
 
-            else 
+            var existingTutorial = await _context.Tutorials.FindAsync(id);
+
+            if (existingTutorial == null)
+                return NotFound();
+
+            existingTutorial.Title = tutorial.Title;
+            existingTutorial.Description = tutorial.Description;
+
+            if (photo != null)
             {
-                var existingTutorial = await _context.Tutorials.FindAsync(id);
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    return View(tutorial);
+                }
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -224,14 +243,12 @@ namespace MelodyCircle.Controllers
                     existingTutorial.Photo = memoryStream.ToArray();
                     existingTutorial.PhotoContentType = photo.ContentType;
                 }
-
-                existingTutorial.Title = existingTutorial.Title;
-                existingTutorial.Description = existingTutorial.Description;
-
-                _context.Update(existingTutorial);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
+
+            _context.Update(existingTutorial);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Tutorial/Delete/id
