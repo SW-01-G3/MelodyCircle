@@ -31,6 +31,7 @@
                 }
             </div>
             <div class="col-2 px-3 title-width">@collaboration.Title (@collaboration.AccessMode.ToString())</div>
+
             @{
                 double averageRating = Context.CollaborationRating
                 .Where(u => u.CollaborationId.Equals(collaboration.Id))
@@ -67,7 +68,10 @@
             <div class="col-2 px-3 ">
                 @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
-                    <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/edit.svg" /> </a>
+                    if (!collaboration.IsFinished)
+                    {
+                        <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/edit.svg" /> </a>
+                    }
                     <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/delete.svg" /> </a>
                 }
             </div>
@@ -78,10 +82,19 @@
                     {
                         <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Espera</a>
                     }
+
                     <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Ver Lista de Contribuidores</a>
-                    <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
+                    
+                    if (!collaboration.IsFinished)
+                    {
+                        <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Finalizar</a>
+                    }
                 }
-                <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Abrir Painel de Arranjo</a>
+
+                @if (!collaboration.IsFinished)
+                {
+                    <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Abrir Painel de Arranjo</a>
+                }
             </div>
         </div>
     }
@@ -92,4 +105,3 @@
 <div class="text-end">
     <a asp-action="ViewMode" class="btn bg-purple text-white rounded floating-button-center"><img src="~/img/view-eye-svgrepo-com.svg" /><img src="~/img/cycle-svgrepo-com.svg" /></a>
 </div>
-

@@ -215,7 +215,7 @@ namespace MelodyCircle.Controllers
                collaborationTitle: collaboration.Title,
                collaborationDescription: collaboration.Description);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("EditModeCollab");
         }
 
         public IActionResult Create()
@@ -235,15 +235,47 @@ namespace MelodyCircle.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(collaboration.Title))
             {
                 ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
-                ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
+                hasValidationError = true;
+            }
+
+            if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+            {
+                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                hasValidationError = true;
+            }
+
+            if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+            {
+                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                hasValidationError = true;
+            }
+
+            if (photo == null)
+            {
                 ModelState.AddModelError(nameof(collaboration.Photo), "A foto é obrigatória");
+                hasValidationError = true;
             }
 
             else
             {
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(nameof(collaboration.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    hasValidationError = true;
+                }
+
+                if (hasValidationError)
+                    return View(collaboration);
+
                 using (var memoryStream = new MemoryStream())
                 {
                     await photo.CopyToAsync(memoryStream);
@@ -258,7 +290,7 @@ namespace MelodyCircle.Controllers
                 _context.Add(collaboration);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return View(collaboration);
         }
@@ -288,6 +320,10 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Collaboration collaboration, IFormFile photo)
         {
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
             if (!collaboration.IsFinished)
             {
                 if (id != collaboration.Id)
@@ -306,16 +342,33 @@ namespace MelodyCircle.Controllers
                     return View(collaboration);
                 }
 
-                if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
+                if (string.IsNullOrEmpty(collaboration.Title))
                 {
                     ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
-                    ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
+                    hasValidationError = true;
                 }
+
+                if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+                {
+                    ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                    hasValidationError = true;
+                }
+
+                if(hasValidationError)
+                    return View(collaboration);
 
                 else
                 {
                     if (photo != null && photo.Length > 0)
                     {
+                        var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                        if (!allowedExtensions.Contains(extension))
+                        {
+                            ModelState.AddModelError(nameof(collaboration.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                            return View(collaboration);
+                        }
+
                         using (var memoryStream = new MemoryStream())
                         {
                             await photo.CopyToAsync(memoryStream);
@@ -332,7 +385,7 @@ namespace MelodyCircle.Controllers
 
                     _context.Update(existingCollaboration);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(EditMode));
                 }
             }
             else
@@ -340,7 +393,6 @@ namespace MelodyCircle.Controllers
 
             return View(collaboration);
         }
-
 
         // GET: /collaboration/delete/{id}
         public async Task<IActionResult> Delete(Guid? id)
@@ -379,7 +431,7 @@ namespace MelodyCircle.Controllers
             {
                 _context.Collaborations.Remove(collaboration);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return Forbid();
         }
@@ -427,7 +479,7 @@ namespace MelodyCircle.Controllers
                 _context.Update(collaboration);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return Forbid();
         }
@@ -499,49 +551,53 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
-
-            if (!isContributorOrCreator)
-                return Forbid();
-
-            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
-
-            if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
+            if (!collaboration.IsFinished)
             {
-                userTrack = new Track
+                var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
+
+                if (!isContributorOrCreator)
+                    return Forbid();
+
+                var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+
+                if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
                 {
-                    Id = Guid.NewGuid(),
-                    AssignedUserId = Guid.Parse(userId),
-                    CollaborationId = id,
-                    BPM = 102,
-                    Duration = TimeSpan.FromMinutes(4)
+                    userTrack = new Track
+                    {
+                        Id = Guid.NewGuid(),
+                        AssignedUserId = Guid.Parse(userId),
+                        CollaborationId = id,
+                        BPM = 102,
+                        Duration = TimeSpan.FromMinutes(4)
+                    };
+
+                    _context.Tracks.Add(userTrack);
+
+                    await _context.SaveChangesAsync();
+                }
+
+                var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
+
+                var arrangementViewModel = new ArrangementPanelViewModel
+                {
+                    Collaboration = collaboration,
+                    Tracks = collaboration.Tracks,
+                    IsContributorOrCreator = isContributorOrCreator,
+                    UserTrack = userTrack,
+                    AssignedTrackNumber = assignedTrackNumber,
+                    AvailableInstruments = InstrumentData.AvailableInstruments,
+                    UploadedInstruments = new List<UploadedInstrument>()
                 };
 
-                _context.Tracks.Add(userTrack);
+                var uploadedInstruments = await _context.UploadedInstruments
+                    .Where(ui => ui.CollaborationId == id)
+                    .ToListAsync();
 
-                await _context.SaveChangesAsync();
+                arrangementViewModel.UploadedInstruments = uploadedInstruments;
+
+                return View("Painel", arrangementViewModel);
             }
-
-            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
-
-            var arrangementViewModel = new ArrangementPanelViewModel
-            {
-                Collaboration = collaboration,
-                Tracks = collaboration.Tracks,
-                IsContributorOrCreator = isContributorOrCreator,
-                UserTrack = userTrack,
-                AssignedTrackNumber = assignedTrackNumber,
-                AvailableInstruments = InstrumentData.AvailableInstruments,
-                UploadedInstruments = new List<UploadedInstrument>()
-            };
-
-            var uploadedInstruments = await _context.UploadedInstruments
-                .Where(ui => ui.CollaborationId == id)
-                .ToListAsync();
-
-            arrangementViewModel.UploadedInstruments = uploadedInstruments;
-
-            return View("Painel", arrangementViewModel);
+            return Forbid();            
         }
 
         [HttpPost]
