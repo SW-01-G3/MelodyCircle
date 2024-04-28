@@ -153,7 +153,39 @@
 			</td>
 			<td>
                     <a asp-action="EditUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName"><img src="~/img/edit.svg" /></a>
-                    <a asp-action="DeleteUser" asp-area="" asp-controller="Admin" asp-route-id="@user.UserName"><img src="~/img/delete.svg" /></a>
+
+					<!-- Botão para acionar o modal -->
+					<button type="button" class="border-0 bg-white" data-bs-toggle="modal" data-bs-target="#removeUserModal">
+						<img src="~/img/delete.svg" />
+					</button>
+
+					<!-- Modal para remover utilizador -->
+					<div class="modal fade" id="removeUserModal" tabindex="-1" aria-labelledby="removeUserModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="removeUserModalLabel">Remover Utilizador</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<!-- Mensagem de confirmação -->
+									<p>Tem certeza que deseja remover @user.UserName ?</p>
+									<!-- Formulário para remover utilizador -->
+									<form asp-controller="Admin" asp-action="DeleteUserConfirmed" method="post">
+										<input type="hidden" id="userId" name="userId" value="@user.UserName">
+										<div class="mb-3">
+											<!-- Botão de confirmação -->
+											<button type="submit" class="btn bg-danger text-white rounded">Remover</button>
+										</div>
+										@Html.AntiForgeryToken()
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
 			</td>
 		</tr>
 	}
