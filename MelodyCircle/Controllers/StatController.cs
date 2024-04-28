@@ -107,8 +107,11 @@ namespace MelodyCircle.Controllers
 
         public IActionResult UserTutorialStats(string userName)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user == null)
+            //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            var user = _userManager.FindByNameAsync(userName);
+
+			if (user == null)
             {
                 return RedirectToAction("Index");
             }
@@ -165,8 +168,11 @@ namespace MelodyCircle.Controllers
 
         public IActionResult UserStepStats(string userName)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user == null)
+            //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            var user = _userManager.FindByNameAsync(userName);
+
+			if (user == null)
             {
                 return RedirectToAction("Index");
             }

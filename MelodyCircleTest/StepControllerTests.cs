@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace MelodyCircle.Tests.Controllers
+namespace MelodyCircleTest
 {
     public class StepControllerTests
     {

@@ -8,7 +8,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 
-namespace MelodyCircle.Tests.Controllers
+namespace MelodyCircleTest
 {
     public class TutorialControllerTests
     {
