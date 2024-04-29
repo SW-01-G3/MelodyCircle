@@ -1,9 +1,10 @@
-﻿<div class="chat" id="chatWindow">
+﻿@using MelodyCircle.ExtensionMethods
+<div class="chat" id="chatWindow">
     <!-- Messages will be displayed here -->
 </div>
 <div class="text-center">
     <input type="text" class="form-control my-2 mx-auto" id="messageInput" />
-    <button class="btn bg-purple text-white w-50 pt-2 d-block mx-auto" id="sendButton">Enviar</button>
+    <button class="btn bg-purple text-white w-50 pt-2 d-block mx-auto" id="sendButton">@Html.Translate("LB_SEND")</button>
 </div>
 
     <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>

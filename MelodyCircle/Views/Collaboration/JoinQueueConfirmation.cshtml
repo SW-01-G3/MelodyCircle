@@ -1,4 +1,9 @@
-﻿@model MelodyCircle.Models.Collaboration
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.Collaboration
+
+@{
+	ViewData["Title"] = @Html.Translate("LB_CONFIRMENTRYCOLLAB");
+}
 
 <div class="text-center">
     @if (ViewData["ErrorMessage"] != null)
@@ -9,7 +14,7 @@
     }
     else
     {
-        <h1>Foi colocado na lista de espera da colaboração "@Model.Title"</h1>
+        <h1>@Html.Translate("LB_PLACEDINWL") "@Model.Title"</h1>
     }
-    <a href="@Url.Action("Index", "Collaboration")" class="btn btn-primary">Voltar para a lista de colaborações</a>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">@Html.Translate("LB_GOBACKTOCOLLABLIST")</a>
 </div>

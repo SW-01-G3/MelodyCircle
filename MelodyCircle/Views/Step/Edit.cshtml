@@ -1,7 +1,8 @@
-﻿@model MelodyCircle.Models.Step
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.Step
 
 @{
-    ViewData["Title"] = "Editar Passo";
+    ViewData["Title"] = @Html.Translate("LB_EDITSTEP");
 }
 @section head {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
@@ -30,7 +31,7 @@
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <div class="text-end pt-3">
         <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle " data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                    title="<p>Pode editar passo através a inserção obrigatória de um título e uma ordem.</p>">
+                    title="<p>@Html.Translate("TT_EDITSTEP")</p>">
                 ?
         </button>
         </div>
@@ -50,17 +51,17 @@
                 <label asp-for="Content" class="control-label"></label>
                 <input type="hidden" asp-for="Content" id="contentInput" value="" />
                 <div id="editor">
-                    <h1>Texto texto</h1>
+                    <h1>Texto</h1>
                 </div>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group text-center py-3">
-                <input type="submit" value="Salvar" class="btn bg-purple text-white " />
+                <input type="submit" value="@Html.Translate("LB_SAVE")" class="btn bg-purple text-white " />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@Model.TutorialId">Voltar à lista de Passos</a>
+    <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@Model.TutorialId">@Html.Translate("LB_GOBACKTOSTEPLIST")</a>
 </div>

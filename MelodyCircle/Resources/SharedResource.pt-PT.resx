@@ -123,8 +123,14 @@
   <data name="LB_ACCEPT" xml:space="preserve">
     <value>Aceitar</value>
   </data>
+  <data name="LB_ACCESSMODE" xml:space="preserve">
+    <value>Mode de Acesso</value>
+  </data>
   <data name="LB_ACCOUNT" xml:space="preserve">
     <value />
+  </data>
+  <data name="LB_ACTIONS" xml:space="preserve">
+    <value>Ações</value>
   </data>
   <data name="LB_ADD" xml:space="preserve">
     <value>Adicionar</value>
@@ -135,11 +141,17 @@
   <data name="LB_ADDCOMMENTS" xml:space="preserve">
     <value>Adcionar comentário</value>
   </data>
+  <data name="LB_ADDSTEP" xml:space="preserve">
+    <value>Adicionar Passo</value>
+  </data>
   <data name="LB_ADDTUTO" xml:space="preserve">
     <value>Adicionar Tutorial</value>
   </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
+  </data>
+  <data name="LB_ALLOWENTRY" xml:space="preserve">
+    <value>Permitir Entrada</value>
   </data>
   <data name="LB_ARTIST" xml:space="preserve">
     <value>Artista</value>
@@ -180,6 +192,9 @@
   <data name="LB_COLLAB" xml:space="preserve">
     <value>Colaboração</value>
   </data>
+  <data name="LB_COLLABCHAT" xml:space="preserve">
+    <value>Chat da Colaboração</value>
+  </data>
   <data name="LB_COLLABCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Colaborações</value>
   </data>
@@ -204,6 +219,9 @@
   <data name="LB_CONFIRMEMAIL" xml:space="preserve">
     <value>Confirmar Email</value>
   </data>
+  <data name="LB_CONFIRMENTRYCOLLAB" xml:space="preserve">
+    <value>Confirmação de Entrada</value>
+  </data>
   <data name="LB_CONFIRMNEWPASSWORD" xml:space="preserve">
     <value>Confirmar a Palavra-passe Nova</value>
   </data>
@@ -215,6 +233,9 @@
   </data>
   <data name="LB_CONFIRMRESETPASSWORD" xml:space="preserve">
     <value>Confirmação do restabelecimento de palavra-passe</value>
+  </data>
+  <data name="LB_CONFIRMSTEPDELETE" xml:space="preserve">
+    <value>Tem a certeza que deseja apagar este passo?</value>
   </data>
   <data name="LB_CONFIRMSUBSCRIBE" xml:space="preserve">
     <value>Confirmar Inscrição</value>
@@ -228,8 +249,17 @@
   <data name="LB_CONTENT" xml:space="preserve">
     <value>Conteúdo</value>
   </data>
+  <data name="LB_CONTRIBUTINGLIST" xml:space="preserve">
+    <value>Lista de Colaboradores</value>
+  </data>
   <data name="LB_CREATE" xml:space="preserve">
     <value>Criar</value>
+  </data>
+  <data name="LB_CREATECOLLAB" xml:space="preserve">
+    <value>Criar Colaboração</value>
+  </data>
+  <data name="LB_CREATEDCOLLAB" xml:space="preserve">
+    <value>Colaborações Criadas</value>
   </data>
   <data name="LB_CREATEDTUTO" xml:space="preserve">
     <value>Tutoriais Criados</value>
@@ -243,11 +273,32 @@
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Definições</value>
   </data>
+  <data name="LB_DELETE" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="LB_DELETECOLLAB" xml:space="preserve">
+    <value>Eliminar Colaboração</value>
+  </data>
+  <data name="LB_DELETESTEP" xml:space="preserve">
+    <value>Eliminar Passo</value>
+  </data>
   <data name="LB_DELETETUTO" xml:space="preserve">
     <value>Eliminar Tutorial</value>
   </data>
+  <data name="LB_DESCRIPTION" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="LB_DETAILS" xml:space="preserve">
+    <value>Detalhes</value>
+  </data>
   <data name="LB_EDIT" xml:space="preserve">
     <value>Editar</value>
+  </data>
+  <data name="LB_EDITCOLLAB" xml:space="preserve">
+    <value>Editar Colaboração</value>
+  </data>
+  <data name="LB_EDITSTEP" xml:space="preserve">
+    <value>Editar Passo</value>
   </data>
   <data name="LB_EDITTUTO" xml:space="preserve">
     <value>Editar Tutorial</value>
@@ -267,6 +318,15 @@
   <data name="LB_FAVOURITE_MUSIC" xml:space="preserve">
     <value>Músicas Favoritas</value>
   </data>
+  <data name="LB_FINALIZE" xml:space="preserve">
+    <value>Finalizar </value>
+  </data>
+  <data name="LB_FINALIZECOLLAB" xml:space="preserve">
+    <value>Finalizar Colaboração</value>
+  </data>
+  <data name="LB_FINALIZED" xml:space="preserve">
+    <value>Finalizada</value>
+  </data>
   <data name="LB_FORGOTTENPASSWORD?" xml:space="preserve">
     <value>Esqueceu-se da palavra-passe?</value>
   </data>
@@ -275,6 +335,15 @@
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Avaliar</value>
+  </data>
+  <data name="LB_GOBACK" xml:space="preserve">
+    <value>Voltar</value>
+  </data>
+  <data name="LB_GOBACKTOCOLLABLIST" xml:space="preserve">
+    <value>Voltar à lista de colaborações</value>
+  </data>
+  <data name="LB_GOBACKTOSTEPLIST" xml:space="preserve">
+    <value>Voltar à lista de passos</value>
   </data>
   <data name="LB_GOBACKTOTUTOLIST" xml:space="preserve">
     <value>Voltar à lista de tutoriais</value>
@@ -290,6 +359,15 @@
   </data>
   <data name="LB_INSERT_URI" xml:space="preserve">
     <value>Insira URI da Música</value>
+  </data>
+  <data name="LB_INSTRUMENTFILE" xml:space="preserve">
+    <value>Ficheiro do Instrumento</value>
+  </data>
+  <data name="LB_INSTRUMENTNAME" xml:space="preserve">
+    <value>Nome do Instrumento</value>
+  </data>
+  <data name="LB_INSTRUMENTS" xml:space="preserve">
+    <value>Instrumentos</value>
   </data>
   <data name="LB_INVITECOLLAB" xml:space="preserve">
     <value>Convite para colaboração</value>
@@ -318,6 +396,9 @@
   <data name="LB_MANAGEEXTERNALS" xml:space="preserve">
     <value>Gerir os seus logins externos</value>
   </data>
+  <data name="LB_MAXUSERS" xml:space="preserve">
+    <value>Número Máximo de Utilizadores</value>
+  </data>
   <data name="LB_NAME" xml:space="preserve">
     <value>Nome Próprio</value>
   </data>
@@ -333,6 +414,9 @@
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>Sem Comentários</value>
   </data>
+  <data name="LB_NOCONTENT" xml:space="preserve">
+    <value>Ainda não foi adicionado conteúdo.</value>
+  </data>
   <data name="LB_NOFILTER" xml:space="preserve">
     <value>Nenhum filtro</value>
   </data>
@@ -344,6 +428,15 @@
   </data>
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notificações</value>
+  </data>
+  <data name="LB_NOTRACK" xml:space="preserve">
+    <value>Não tem faixa atribuída</value>
+  </data>
+  <data name="LB_NOUSERSCL" xml:space="preserve">
+    <value>Não há utilizadores a contribuir nesta colaboração</value>
+  </data>
+  <data name="LB_NOUSERSWL" xml:space="preserve">
+    <value>Não há utilizadores em lista de espera</value>
   </data>
   <data name="LB_NUMBEROFSTEPS" xml:space="preserve">
     <value>Nº de passos</value>
@@ -357,8 +450,17 @@
   <data name="LB_OPEN" xml:space="preserve">
     <value>Abrir</value>
   </data>
+  <data name="LB_OPENPANNEL" xml:space="preserve">
+    <value>Abrir Painel de Arranjo</value>
+  </data>
   <data name="LB_OTHER" xml:space="preserve">
     <value>Outro</value>
+  </data>
+  <data name="LB_PANNEL" xml:space="preserve">
+    <value>Painel de Arranjo</value>
+  </data>
+  <data name="LB_PARTICIPATINGCOLLAB" xml:space="preserve">
+    <value>Colaborações Participantes</value>
   </data>
   <data name="LB_PASSWORD" xml:space="preserve">
     <value>Palavra-Passe</value>
@@ -372,14 +474,23 @@
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
   </data>
+  <data name="LB_PLACEDINWL" xml:space="preserve">
+    <value>Foi colocado na lista de espera da colaboração</value>
+  </data>
   <data name="LB_PLEASECHECKEMAIL" xml:space="preserve">
     <value>Verifique o e-mail para confirmar a sua conta.</value>
+  </data>
+  <data name="LB_PRIVATE" xml:space="preserve">
+    <value>Privado</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
   </data>
   <data name="LB_PT" xml:space="preserve">
     <value>Português</value>
+  </data>
+  <data name="LB_PUBLIC" xml:space="preserve">
+    <value>Público</value>
   </data>
   <data name="LB_RECENTCOLLABS" xml:space="preserve">
     <value>Colaborações Recentes</value>
@@ -408,6 +519,9 @@
   <data name="LB_REMOVECONNECTION" xml:space="preserve">
     <value>Pretende remover esta conexão?</value>
   </data>
+  <data name="LB_REMOVEFROMCOLLAB" xml:space="preserve">
+    <value>Remover da Colaboração?</value>
+  </data>
   <data name="LB_RESETPASSWORD" xml:space="preserve">
     <value>Redefinir Palavra-Passe</value>
   </data>
@@ -426,11 +540,17 @@
   <data name="LB_SEEMORE" xml:space="preserve">
     <value>Ver Mais</value>
   </data>
+  <data name="LB_SEND" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
   <data name="LB_STATS" xml:space="preserve">
     <value>Estatísticas</value>
   </data>
   <data name="LB_STEPCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Passos</value>
+  </data>
+  <data name="LB_STEPS" xml:space="preserve">
+    <value>Passos</value>
   </data>
   <data name="LB_SUBSCRIBE" xml:space="preserve">
     <value>Inscrever</value>
@@ -443,6 +563,9 @@
   </data>
   <data name="LB_TITLE" xml:space="preserve">
     <value>Título</value>
+  </data>
+  <data name="LB_TRACK" xml:space="preserve">
+    <value>Faixa</value>
   </data>
   <data name="LB_TUTCREATIONSTATS" xml:space="preserve">
     <value>Ver Estatísticas de Criação de Tutoriais</value>
@@ -483,11 +606,23 @@
   <data name="LB_VERIFYRECOVERPASSWORD" xml:space="preserve">
     <value>Verifique o seu e-mail para recuperar a sua palavra-passe.</value>
   </data>
+  <data name="LB_WAITINGLIST" xml:space="preserve">
+    <value>Lista de Espera</value>
+  </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>
   </data>
   <data name="LB_WISHCLOSEPOST" xml:space="preserve">
     <value>Deseja fechar este post</value>
+  </data>
+  <data name="LB_WISHTODELETECOLLAB" xml:space="preserve">
+    <value>Tem certeza de que deseja eliminar esta colaboração?</value>
+  </data>
+  <data name="LB_WISHTOFINISH" xml:space="preserve">
+    <value>Deseja dar como finalizada esta colaboração?</value>
+  </data>
+  <data name="LB_WISHTOJOINCOLLAB" xml:space="preserve">
+    <value>Deseja entrar nesta colaboração?</value>
   </data>
   <data name="LB_WISHTOSUBSCRIBE" xml:space="preserve">
     <value>Deseja inscrever-se neste tutorial?</value>
@@ -495,11 +630,20 @@
   <data name="LB_YES" xml:space="preserve">
     <value>Sim</value>
   </data>
+  <data name="LB_YOURTRACK" xml:space="preserve">
+    <value>A tua faixa</value>
+  </data>
+  <data name="TT_ADDSTEP" xml:space="preserve">
+    <value>Pode adicionar passos através da inserção obrigatória de um título e uma ordem.</value>
+  </data>
   <data name="TT_ADDTUTO" xml:space="preserve">
     <value>Pode adicionar tutoriais através a inserção obrigatória de um título e uma descrição.</value>
   </data>
   <data name="TT_CREATEDTUTO" xml:space="preserve">
     <value>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'. Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</value>
+  </data>
+  <data name="TT_EDITSTEP" xml:space="preserve">
+    <value>Pode editar passo através da inserção obrigatória de um título e uma ordem.</value>
   </data>
   <data name="TT_EDITTUTO" xml:space="preserve">
     <value>Pode editar o título e a descrição do tutorial.</value>
@@ -512,6 +656,9 @@
   </data>
   <data name="TT_REGISTER" xml:space="preserve">
     <value>São necessários entre 6 a 20 caracteres com uma letra maiuscula (A-Z) e minuscula (a-z) para a palavra-passe.CoNfirmação tem de ser igual á palavra-passe.</value>
+  </data>
+  <data name="TT_STEP" xml:space="preserve">
+    <value>Nesta página pode visualizar todos os passos do tutorial. Caso seja instrutor, poderá adicionar passos, editar ou remover.</value>
   </data>
   <data name="TT_SUBSCRIBEDTUTO" xml:space="preserve">
     <value>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</value>
