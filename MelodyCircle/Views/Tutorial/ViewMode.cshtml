@@ -6,7 +6,7 @@
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Tutoriais Inscritos";
+    ViewData["Title"] = @Html.Translate("LB_SUBSCRIBEDTUTO");
 }
 
 <h2 class="text-center">@ViewData["Title"]</h2>
@@ -48,17 +48,17 @@
                         <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
 
                         <div>
-                            <span class="card-title">Nº de passos: </span>
+                            <span class="card-title">@Html.Translate("LB_NUMBEROFSTEPS"): </span>
                             <span>@item.StepCount</span>
                         </div>
                         
                         <div>
-                            <span class="card-title">Nº de inscritos: </span>
+                            <span class="card-title">@Html.Translate("LB_NUMBEROFSUBSCRIBED"): </span>
                             <span>@item.SubscribersCount</span>
                         </div>
-                        
 
-                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white mt-2">Abrir</a><br />
+
+                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white mt-2">@Html.Translate("LB_OPEN")</a><br />
 
                         @{
                             double averageRating = Context.TutorialRating
@@ -121,14 +121,14 @@
         else
         {
             <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
-	            <h1>Não existem tutoriais disponiveis.</h1>
+	            <h1>@Html.Translate("LB_NOAVAVAILABLETUTO")</h1>
 	            </div>
         }   
 </div>
-<button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button>
+<button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">@Html.Translate("LB_SEEMORE")</button>
 <div class="text-end">
 	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-	        title="<p>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</p>">
+	        title="<p>@Html.Translate("TT_SUBSCRIBEDTUTO")</p>">
 		?
 	</button>
 </div>

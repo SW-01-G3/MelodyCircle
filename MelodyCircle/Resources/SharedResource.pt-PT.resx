@@ -135,6 +135,9 @@
   <data name="LB_ADDCOMMENTS" xml:space="preserve">
     <value>Adcionar comentário</value>
   </data>
+  <data name="LB_ADDTUTO" xml:space="preserve">
+    <value>Adicionar Tutorial</value>
+  </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
   </data>
@@ -213,6 +216,12 @@
   <data name="LB_CONFIRMRESETPASSWORD" xml:space="preserve">
     <value>Confirmação do restabelecimento de palavra-passe</value>
   </data>
+  <data name="LB_CONFIRMSUBSCRIBE" xml:space="preserve">
+    <value>Confirmar Inscrição</value>
+  </data>
+  <data name="LB_CONFIRMTUTODELETE" xml:space="preserve">
+    <value>Tem certeza que deseja apagar este tutorial?</value>
+  </data>
   <data name="LB_CONNECTIONS" xml:space="preserve">
     <value>Conexões</value>
   </data>
@@ -221,6 +230,9 @@
   </data>
   <data name="LB_CREATE" xml:space="preserve">
     <value>Criar</value>
+  </data>
+  <data name="LB_CREATEDTUTO" xml:space="preserve">
+    <value>Tutoriais Criados</value>
   </data>
   <data name="LB_CREATEPOST" xml:space="preserve">
     <value>Criar Post</value>
@@ -231,8 +243,14 @@
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Definições</value>
   </data>
+  <data name="LB_DELETETUTO" xml:space="preserve">
+    <value>Eliminar Tutorial</value>
+  </data>
   <data name="LB_EDIT" xml:space="preserve">
     <value>Editar</value>
+  </data>
+  <data name="LB_EDITTUTO" xml:space="preserve">
+    <value>Editar Tutorial</value>
   </data>
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Alterar a Música</value>
@@ -257,6 +275,9 @@
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Avaliar</value>
+  </data>
+  <data name="LB_GOBACKTOTUTOLIST" xml:space="preserve">
+    <value>Voltar à lista de tutoriais</value>
   </data>
   <data name="LB_GOBACK_HP" xml:space="preserve">
     <value>Voltar para a Página Inicial</value>
@@ -303,6 +324,12 @@
   <data name="LB_NEWPASSWORD" xml:space="preserve">
     <value>Palavra-passe Nova</value>
   </data>
+  <data name="LB_NO" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="LB_NOAVAVAILABLETUTO" xml:space="preserve">
+    <value>Não existem tutoriais disponiveis.</value>
+  </data>
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>Sem Comentários</value>
   </data>
@@ -318,8 +345,17 @@
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notificações</value>
   </data>
+  <data name="LB_NUMBEROFSTEPS" xml:space="preserve">
+    <value>Nº de passos</value>
+  </data>
+  <data name="LB_NUMBEROFSUBSCRIBED" xml:space="preserve">
+    <value>Nº de inscritos</value>
+  </data>
   <data name="LB_OLDPASSWORD" xml:space="preserve">
     <value>Palavra-passe Antiga</value>
+  </data>
+  <data name="LB_OPEN" xml:space="preserve">
+    <value>Abrir</value>
   </data>
   <data name="LB_OTHER" xml:space="preserve">
     <value>Outro</value>
@@ -329,6 +365,9 @@
   </data>
   <data name="LB_PASSWORDWASRESET" xml:space="preserve">
     <value>A sua palavra-passe foi restabelecida.</value>
+  </data>
+  <data name="LB_PHOTO" xml:space="preserve">
+    <value>Foto</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
@@ -341,6 +380,15 @@
   </data>
   <data name="LB_PT" xml:space="preserve">
     <value>Português</value>
+  </data>
+  <data name="LB_RECENTCOLLABS" xml:space="preserve">
+    <value>Colaborações Recentes</value>
+  </data>
+  <data name="LB_RECENTTUTOS" xml:space="preserve">
+    <value>Tutoriais Recentes</value>
+  </data>
+  <data name="LB_RECENTUSERS" xml:space="preserve">
+    <value>Utilizadores Recentes</value>
   </data>
   <data name="LB_RECOVERPASSWORD" xml:space="preserve">
     <value>Recuperação de palavra-passe</value>
@@ -387,6 +435,9 @@
   <data name="LB_SUBSCRIBE" xml:space="preserve">
     <value>Inscrever</value>
   </data>
+  <data name="LB_SUBSCRIBEDTUTO" xml:space="preserve">
+    <value>Tutoriais Inscritos</value>
+  </data>
   <data name="LB_THEUSER" xml:space="preserve">
     <value>O utilizador</value>
   </data>
@@ -404,6 +455,18 @@
   </data>
   <data name="LB_TUTOSEARCHRESULTS" xml:space="preserve">
     <value>Resultados da Pesquisa dos Tutoriais</value>
+  </data>
+  <data name="LB_USERCREATIONCOLLABSTATS" xml:space="preserve">
+    <value>Estatísticas de criação de colaboração</value>
+  </data>
+  <data name="LB_USERCREATIONSTATS" xml:space="preserve">
+    <value>Estatísticas de criação de utilizador</value>
+  </data>
+  <data name="LB_USERCREATIONSTEPSTATS" xml:space="preserve">
+    <value>Estatísticas de criação de passos</value>
+  </data>
+  <data name="LB_USERCREATIONTUTOSTATS" xml:space="preserve">
+    <value>Estatísticas de criação de tutorial</value>
   </data>
   <data name="LB_USERNAME" xml:space="preserve">
     <value>Nome de Utilizador</value>
@@ -426,6 +489,21 @@
   <data name="LB_WISHCLOSEPOST" xml:space="preserve">
     <value>Deseja fechar este post</value>
   </data>
+  <data name="LB_WISHTOSUBSCRIBE" xml:space="preserve">
+    <value>Deseja inscrever-se neste tutorial?</value>
+  </data>
+  <data name="LB_YES" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="TT_ADDTUTO" xml:space="preserve">
+    <value>Pode adicionar tutoriais através a inserção obrigatória de um título e uma descrição.</value>
+  </data>
+  <data name="TT_CREATEDTUTO" xml:space="preserve">
+    <value>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'. Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</value>
+  </data>
+  <data name="TT_EDITTUTO" xml:space="preserve">
+    <value>Pode editar o título e a descrição do tutorial.</value>
+  </data>
   <data name="TT_LOGIN" xml:space="preserve">
     <value>Se ainda não se registou pode faze-lo na opção registar, com email e password, ou com a sua conta Google.</value>
   </data>
@@ -434,5 +512,8 @@
   </data>
   <data name="TT_REGISTER" xml:space="preserve">
     <value>São necessários entre 6 a 20 caracteres com uma letra maiuscula (A-Z) e minuscula (a-z) para a palavra-passe.CoNfirmação tem de ser igual á palavra-passe.</value>
+  </data>
+  <data name="TT_SUBSCRIBEDTUTO" xml:space="preserve">
+    <value>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</value>
   </data>
 </root>

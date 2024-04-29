@@ -1,9 +1,10 @@
-﻿@{
+﻿@using MelodyCircle.ExtensionMethods
+@{
     var monthsAndYears = ViewBag.MonthsAndYears as IEnumerable<string>;
     var tutorialCounts = ViewBag.TutorialCounts as IEnumerable<int>;
 }
 
-<h1>@ViewBag.UserName Tutorial Creation Stats</h1>
+<h1> @Html.Translate("LB_USERCREATIONTUTOSTATS") - @ViewBag.UserName</h1>
 
 <canvas id="tutorialCreationChart" width="800" height="400"></canvas>
 

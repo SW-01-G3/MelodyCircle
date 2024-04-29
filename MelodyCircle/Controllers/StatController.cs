@@ -159,7 +159,7 @@ namespace MelodyCircle.Controllers
 
             var monthsAndYears = collaborationStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
 
-            ViewBag.UserName = userName;
+            ViewBag.UserName = user.Result.UserName;
             ViewBag.MonthsAndYears = monthsAndYears;
             ViewBag.CollaborationCounts = collaborationStats.Select(d => d.Count);
 
