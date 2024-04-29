@@ -3,11 +3,12 @@
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
 @model IEnumerable<ForumPost>
+
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = @Html.Translate("LB_HOMEPAGE");
+    ViewData["Title"] = "Home Page";
 }
 
 @section scripts {
@@ -72,17 +73,53 @@
                 <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
                 <hr>
                 <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
-                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">@Html.Translate("LB_SEECOMMENTS")</a>
+                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">Ver comentários</a>
                 @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
                 {
-                    <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
-                        <button type="submit" class="btn btn-danger mt-2 mb-1">@Html.Translate("LB_CLOSEPOST")</button>
-                    </form>
+                        <!-- Botão de remover -->
+                        <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
+                        Fechar Post
+                        </button>
+
+                    <!-- Botão para acionar o modal -->
+                    <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
+                        Fechar Post
+                    </button>
+
+                    <!-- Modal para fechar post -->
+                    <div class="modal fade" id="fecharPostModal" tabindex="-1" aria-labelledby="fecharPostModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="fecharPostModalLabel">Fechar Post</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Mensagem de confirmação -->
+                                    <p>Tem certeza que deseja remover este post?</p>
+                                    <!-- Formulário para remover post -->
+                                    <form asp-controller="Forum" asp-action="ClosePost" method="post">
+                                        <input type="hidden" id="postId" name="id" value="@item.Id">
+                                        <div class="mb-3">
+                                            <!-- Botão de confirmação -->
+                                            <button type="submit" class="btn bg-danger text-white rounded">Remover</button>
+                                        </div>
+                                        <!-- Para proteção CSRF -->
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
                 }
+
+               
             </div>
         }
     </div>
-    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">@Html.Translate("LB_SEEMORE")</button>
+    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button>
 }
 
 @if (User.Identity.IsAuthenticated)

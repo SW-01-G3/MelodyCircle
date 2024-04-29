@@ -7,58 +7,77 @@
 
 <h2 class="mt-4 text-center">@Html.Translate("LB_FAVOURITE_MUSIC")</h2>
 <ul>
-    @foreach (var music in Model.MusicUri)
-    {
-        var embeddedMusicUrl = "https://open.spotify.com/embed" + music;
+	@foreach (var music in Model.MusicUri)
+	{
+		var embeddedMusicUrl = "https://open.spotify.com/embed" + music;
 
-        <div style="display: flex; align-items: center; margin-bottom: 10px; position: relative;" class="text-center mt-3 mx-auto w-50 justify-content-center align-items-center">
-            <!-- Iframe da música -->
-            <div style="flex-grow: 1;">
-                <iframe style="border-radius: 12px;"
-                        src=@embeddedMusicUrl
-                        width="100%" height="152"
-                        frameborder="0" allowfullscreen=""
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
-                </iframe>
-            </div>
-            @if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
-            {
-	            <!-- Botões de ação -->
-	            <div style="margin-left: 10px;">
+		<div style="display: flex; align-items: center; margin-bottom: 10px; position: relative;" class="text-center mt-3 mx-auto w-50 justify-content-center align-items-center">
+			<!-- Iframe da música -->
+			<div style="flex-grow: 1;">
+				<iframe style="border-radius: 12px;"
+						src=@embeddedMusicUrl
+						width="100%" height="152"
+						frameborder="0" allowfullscreen=""
+						allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy">
+				</iframe>
+			</div>
+			@if (User.Identity.IsAuthenticated && Model.User.UserName == User.Identity.Name)
+			{
+				<!-- Botões de ação -->
+				<div class="d-flex flex-column ms-3">
+					<!-- Botão de editar -->
+					<button type="button" class="mt-2 btn bg-purple text-white p-auto" data-bs-toggle="modal" data-bs-target="#editMusicModal">
+						@Html.Translate("LB_EDIT")
+					</button>
 
-		            <!-- Botão de editar -->
-					<button type="button" class="mt-2 btn bg-purple text-white  p-auto" data-bs-toggle="modal" data-bs-target="#editMusicModal">@Html.Translate("LB_EDIT")</button>
+					<!-- Botão de remover -->
+					<button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#removeMusicModal">
+						@Html.Translate("LB_REMOVE")
+					</button>
+				</div>
+			}
+		</div>
 
-		            <!-- Botão de remover -->
-		            <form asp-action="RemoveMusicCard" asp-route-uri="@music" method="post">
-						<button type="submit" class="mt-2 btn bg-danger text-white p-auto">@Html.Translate("LB_REMOVE")</button>
 
-		            </form>
-	            </div>
-            }
-        </div>
 
-	        <!-- Modal de edição de música -->
-	        <div class="modal fade" id="editMusicModal" tabindex="-1" aria-labelledby="editMusicModalLabel" aria-hidden="true">
-		        <div class="modal-dialog">
-			        <div class="modal-content">
-				        <div class="modal-header">
+		<!-- Modal de remoção de música -->
+		<div class="modal fade" id="removeMusicModal" tabindex="-1" aria-labelledby="removeMusicModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="removeMusicModalLabel">@Html.Translate("LB_REMOVE")</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body text-center bg-white justify-content-center align-items-center">
+						<h4>Tem a certeza que quer remover?</h4>
+						<form asp-action="RemoveMusicCard" asp-route-uri="@music" method="post">
+							<button type="submit" class="mt-2 btn bg-danger text-white p-auto">@Html.Translate("LB_REMOVE")</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal de edição de música -->
+		<div class="modal fade" id="editMusicModal" tabindex="-1" aria-labelledby="editMusicModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
 						<h5 class="modal-title" id="editMusicModalLabel">@Html.Translate("LB_EDIT_MUSIC")</h5>
-					        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				        </div>
-				        <div class="modal-body text-center bg-white justify-content-center align-items-center">
-					        <form asp-action="EditMusicCard" asp-route-uri="@music" method="post">
-						        <div class="mb-3">
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body text-center bg-white justify-content-center align-items-center">
+						<form asp-action="EditMusicCard" asp-route-uri="@music" method="post">
+							<div class="mb-3">
 								<label for="newMusicUri" class="form-label">@Html.Translate("LB_INSERT_NEWURI")</label>
-							        <input type="text" class="form-control" id="newMusicUri" name="newMusicUri" placeholder="https://open.spotify.com/track/">
-						        </div>
-						        <button type="submit" class="mt-2 btn bg-purple text-white border-darkPurple p-auto">@Html.Translate("LB_SAVE")</button>
-					        </form>
-				        </div>
-			        </div>
-		        </div>
-	        </div>
-        
-    }
-</ul>
+								<input type="text" class="form-control" id="newMusicUri" name="newMusicUri" placeholder="https://open.spotify.com/track/">
+							</div>
+							<button type="submit" class="mt-2 btn bg-purple text-white border-darkPurple p-auto">@Html.Translate("LB_SAVE")</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
+	}
+</ul>

@@ -1,31 +1,30 @@
-﻿@using MelodyCircle.ExtensionMethods
-@model MelodyCircle.Models.Collaboration
+﻿@model MelodyCircle.Models.Collaboration
 
 @{
-    ViewData["Title"] = @Html.Translate("LB_DELETECOLLAB");
+    ViewData["Title"] = "Eliminar Colaboração";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="border border-purple bg-white text-center p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 mx-auto w-50">
+    <div class="d-flex flex-column align-items-center">
+        <h1>Tem certeza de que deseja eliminar esta colaboração?</h1>
 
-<hr />
+        <h4>Detalhes da Colaboração:</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+        </dl>
 
-<h3>@Html.Translate("LB_WISHTODELETECOLLAB")</h3>
-<div>
-    <h4>@Html.Translate("LB_DETAILS"):</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
-    <form asp-action="DeleteConfirmed" method="post">
-        <input type="hidden" asp-for="Id" />
-        <div class="form-group">
-            <input type="submit" value="@Html.Translate("LB_DELETE")" class="btn btn-danger" />
-            <a asp-action="Index" class="btn btn-default">@Html.Translate("LB_CANCEL")</a>
-        </div>
-    </form>
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Eliminar" class="btn btn-danger" />
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
 </div>
