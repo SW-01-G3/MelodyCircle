@@ -424,7 +424,7 @@
     <value>No notifications!</value>
   </data>
   <data name="LB_NORESULT" xml:space="preserve">
-    <value>No results found.</value>
+    <value>No results found</value>
   </data>
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notifications</value>
@@ -604,7 +604,7 @@
     <value>User's Stats</value>
   </data>
   <data name="LB_VERIFYRECOVERPASSWORD" xml:space="preserve">
-    <value>Check your email to recover your password.</value>
+    <value>Check your email to recover your password</value>
   </data>
   <data name="LB_WAITINGLIST" xml:space="preserve">
     <value>Waiting List</value>

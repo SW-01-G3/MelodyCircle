@@ -19,10 +19,12 @@
     var assignedTrackNumber = assignedTrack != null ? Model.Tracks.IndexOf(assignedTrack) + 1 : 0;
     var userHasTrack = assignedTrackNumber > 0;
     var antiforgeryTokenSet = Antiforgery.GetAndStoreTokens(Context);
+    var hasUploadError = !string.IsNullOrEmpty(TempData["UploadError"] as string);
 }
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+
     <script>
         let isPlaying = false;
         let currentPlaybackPosition = 0;
@@ -110,6 +112,7 @@
             .then(data => {
                 if (data.success) {
                     console.log('Instrument added successfully:', data.instrumentId);
+                    window.location.href = '@Url.Action("ArrangementPanel", "Collaboration", new { id = Model.Collaboration.Id })';
                     addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration, data.instrumentId);
                 } else
                     console.error('Error adding instrument:', data.message);
@@ -426,7 +429,14 @@
             $('#chatModal').modal('show');
         });
 
+        $(document).ready(function () {
+            var error = "@TempData["UploadError"]";
+            if (error.length > 0) {
+                $('#uploadModal').modal('show');
+            }
+        });
     </script>
+
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
 }
 
@@ -557,6 +567,7 @@
         </div>
     </div>
 </div>
+
 <!-- Upload Modal -->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -574,6 +585,12 @@
                     <div class="form-group mb-3">
                         <label for="soundFile">@Html.Translate("LB_INSTRUMENTFILE")</label>
                         <input type="file" class="form-control-file" id="soundFile" name="soundFile" accept=".mp3" required>
+                        @if (hasUploadError)
+                        {
+                            <div class="text-danger">
+                                @TempData["UploadError"]
+                            </div>
+                        }
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
                 </form>

@@ -538,7 +538,7 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: /Collaboration/ArrangementPanel/{id}
-        public async Task<IActionResult> ArrangementPanel(Guid id)
+        public async Task<IActionResult> ArrangementPanel(Guid id, string error = "")
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
@@ -551,53 +551,49 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            if (!collaboration.IsFinished)
+            if (collaboration.IsFinished)
+                return Forbid();
+
+            var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
+
+            if (!isContributorOrCreator)
+                return Forbid();
+
+            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+
+            if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
             {
-                var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
-
-                if (!isContributorOrCreator)
-                    return Forbid();
-
-                var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
-
-                if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
+                userTrack = new Track
                 {
-                    userTrack = new Track
-                    {
-                        Id = Guid.NewGuid(),
-                        AssignedUserId = Guid.Parse(userId),
-                        CollaborationId = id,
-                        BPM = 102,
-                        Duration = TimeSpan.FromMinutes(4)
-                    };
-
-                    _context.Tracks.Add(userTrack);
-
-                    await _context.SaveChangesAsync();
-                }
-
-                var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
-
-                var arrangementViewModel = new ArrangementPanelViewModel
-                {
-                    Collaboration = collaboration,
-                    Tracks = collaboration.Tracks,
-                    IsContributorOrCreator = isContributorOrCreator,
-                    UserTrack = userTrack,
-                    AssignedTrackNumber = assignedTrackNumber,
-                    AvailableInstruments = InstrumentData.AvailableInstruments,
-                    UploadedInstruments = new List<UploadedInstrument>()
+                    Id = Guid.NewGuid(),
+                    AssignedUserId = Guid.Parse(userId),
+                    CollaborationId = id,
+                    BPM = 102,
+                    Duration = TimeSpan.FromMinutes(4)
                 };
 
-                var uploadedInstruments = await _context.UploadedInstruments
-                    .Where(ui => ui.CollaborationId == id)
-                    .ToListAsync();
-
-                arrangementViewModel.UploadedInstruments = uploadedInstruments;
-
-                return View("Painel", arrangementViewModel);
+                _context.Tracks.Add(userTrack);
+                await _context.SaveChangesAsync();
             }
-            return Forbid();            
+
+            var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
+            var uploadedInstruments = await _context.UploadedInstruments.Where(ui => ui.CollaborationId == id).ToListAsync();
+
+            var arrangementViewModel = new ArrangementPanelViewModel
+            {
+                Collaboration = collaboration,
+                Tracks = collaboration.Tracks,
+                IsContributorOrCreator = isContributorOrCreator,
+                UserTrack = userTrack,
+                AssignedTrackNumber = assignedTrackNumber,
+                AvailableInstruments = InstrumentData.AvailableInstruments,
+                UploadedInstruments = uploadedInstruments
+            };
+
+            if (!string.IsNullOrEmpty(error))
+                TempData["UploadError"] = error;
+
+            return View("Painel", arrangementViewModel);
         }
 
         [HttpPost]
@@ -619,12 +615,12 @@ namespace MelodyCircle.Controllers
             if (dto.IsUploaded)
             {
                 if (!dto.InstrumentId.HasValue)
-                    return BadRequest("Uploaded instrument ID is required.");
+                    return BadRequest("Uploaded instrument ID is required");
 
                 var uploadedInstrument = await _context.UploadedInstruments.FirstOrDefaultAsync(ui => ui.Id == dto.InstrumentId.Value);
 
                 if (uploadedInstrument == null)
-                    return NotFound("Uploaded instrument not found.");
+                    return NotFound("Uploaded instrument not found");
 
                 using (var stream = new MemoryStream(uploadedInstrument.SoundContent))
                 using (var reader = new Mp3FileReader(stream))
@@ -687,11 +683,52 @@ namespace MelodyCircle.Controllers
             return Json(new { success = true, message = "Instrumento removido com sucesso" });
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
+        //{
+        //    var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".mp3" };
+
+        //    if (soundFile != null && soundFile.Length > 0)
+        //    {
+        //        var extension = Path.GetExtension(soundFile.FileName);
+
+        //        if (!allowedExtensions.Contains(extension))
+        //            TempData["UploadError"] = "Only .mp3 files are allowed";
+
+        //        using var memoryStream = new MemoryStream();
+        //        await soundFile.CopyToAsync(memoryStream);
+
+        //        var uploadedInstrument = new UploadedInstrument
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Name = instrumentName,
+        //            SoundContent = memoryStream.ToArray(),
+        //            CollaborationId = collaborationId
+        //        };
+
+        //        _context.UploadedInstruments.Add(uploadedInstrument);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    else
+        //        TempData["UploadError"] = "Please insert a .mp3 file";
+
+        //    return RedirectToAction("ArrangementPanel", new { id = collaborationId });
+        //}
+
         [HttpPost]
         public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
         {
+            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".mp3" };
+
             if (soundFile != null && soundFile.Length > 0)
             {
+                var extension = Path.GetExtension(soundFile.FileName);
+                if (!allowedExtensions.Contains(extension))
+                {
+                    TempData["UploadError"] = "Only .mp3 files are allowed";
+                    return RedirectToAction("ArrangementPanel", new { id = collaborationId, error = "Only .mp3 files are allowed" });
+                }
+
                 using var memoryStream = new MemoryStream();
                 await soundFile.CopyToAsync(memoryStream);
 
@@ -706,11 +743,11 @@ namespace MelodyCircle.Controllers
                 _context.UploadedInstruments.Add(uploadedInstrument);
                 await _context.SaveChangesAsync();
 
-                //return Json(new { success = true , message = "Uploaded instrument!" } );
+                return RedirectToAction("ArrangementPanel", new { id = collaborationId });
             }
 
-            return RedirectToAction("ArrangementPanel", new { id = collaborationId });
-
+            TempData["UploadError"] = "Please insert a .mp3 file";
+            return RedirectToAction("ArrangementPanel", new { id = collaborationId, error = "Please insert a .mp3 file" });
         }
 
         [HttpGet]
