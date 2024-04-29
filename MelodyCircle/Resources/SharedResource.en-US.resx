@@ -135,6 +135,9 @@
   <data name="LB_ADDCOMMENTS" xml:space="preserve">
     <value>Add comment</value>
   </data>
+  <data name="LB_ADDTUTO" xml:space="preserve">
+    <value>Add Tutorial</value>
+  </data>
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Add Music</value>
   </data>
@@ -213,6 +216,12 @@
   <data name="LB_CONFIRMRESETPASSWORD" xml:space="preserve">
     <value>Confirmation of password reset</value>
   </data>
+  <data name="LB_CONFIRMSUBSCRIBE" xml:space="preserve">
+    <value>Confirm Subscription</value>
+  </data>
+  <data name="LB_CONFIRMTUTODELETE" xml:space="preserve">
+    <value>Are you sure you want to delete this tutorial?</value>
+  </data>
   <data name="LB_CONNECTIONS" xml:space="preserve">
     <value>Connections</value>
   </data>
@@ -221,6 +230,9 @@
   </data>
   <data name="LB_CREATE" xml:space="preserve">
     <value>Create</value>
+  </data>
+  <data name="LB_CREATEDTUTO" xml:space="preserve">
+    <value>Created Tutorials</value>
   </data>
   <data name="LB_CREATEPOST" xml:space="preserve">
     <value>Create Post</value>
@@ -231,8 +243,14 @@
   <data name="LB_DEFINITIONS" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="LB_DELETETUTO" xml:space="preserve">
+    <value>Delete Tutorial</value>
+  </data>
   <data name="LB_EDIT" xml:space="preserve">
     <value>Edit</value>
+  </data>
+  <data name="LB_EDITTUTO" xml:space="preserve">
+    <value>Edit Tutorial</value>
   </data>
   <data name="LB_EDIT_MUSIC" xml:space="preserve">
     <value>Edit Music</value>
@@ -257,6 +275,9 @@
   </data>
   <data name="LB_GIVESTARS" xml:space="preserve">
     <value>Rate</value>
+  </data>
+  <data name="LB_GOBACKTOTUTOLIST" xml:space="preserve">
+    <value>Return to tutorial list</value>
   </data>
   <data name="LB_GOBACK_HP" xml:space="preserve">
     <value>Return to Home Page</value>
@@ -303,6 +324,12 @@
   <data name="LB_NEWPASSWORD" xml:space="preserve">
     <value>New password</value>
   </data>
+  <data name="LB_NO" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="LB_NOAVAVAILABLETUTO" xml:space="preserve">
+    <value>There are no tutorials available.</value>
+  </data>
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>No Comments</value>
   </data>
@@ -318,8 +345,17 @@
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notifications</value>
   </data>
+  <data name="LB_NUMBEROFSTEPS" xml:space="preserve">
+    <value>Number of steps</value>
+  </data>
+  <data name="LB_NUMBEROFSUBSCRIBED" xml:space="preserve">
+    <value>Number of subscribers</value>
+  </data>
   <data name="LB_OLDPASSWORD" xml:space="preserve">
     <value>Old password</value>
+  </data>
+  <data name="LB_OPEN" xml:space="preserve">
+    <value>Open</value>
   </data>
   <data name="LB_OTHER" xml:space="preserve">
     <value>Other</value>
@@ -329,6 +365,9 @@
   </data>
   <data name="LB_PASSWORDWASRESET" xml:space="preserve">
     <value>Your password has been reset.</value>
+  </data>
+  <data name="LB_PHOTO" xml:space="preserve">
+    <value>Photo</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Changing Profile Photo</value>
@@ -341,6 +380,15 @@
   </data>
   <data name="LB_PT" xml:space="preserve">
     <value>Portuguese</value>
+  </data>
+  <data name="LB_RECENTCOLLABS" xml:space="preserve">
+    <value>Recent Collabs</value>
+  </data>
+  <data name="LB_RECENTTUTOS" xml:space="preserve">
+    <value>Recent Tutorials</value>
+  </data>
+  <data name="LB_RECENTUSERS" xml:space="preserve">
+    <value>Recent Users</value>
   </data>
   <data name="LB_RECOVERPASSWORD" xml:space="preserve">
     <value>Password recovery</value>
@@ -387,6 +435,9 @@
   <data name="LB_SUBSCRIBE" xml:space="preserve">
     <value>Subscribe</value>
   </data>
+  <data name="LB_SUBSCRIBEDTUTO" xml:space="preserve">
+    <value>Subscribed Tutorials</value>
+  </data>
   <data name="LB_THEUSER" xml:space="preserve">
     <value>The user</value>
   </data>
@@ -404,6 +455,18 @@
   </data>
   <data name="LB_TUTOSEARCHRESULTS" xml:space="preserve">
     <value>Tutorial Search Results</value>
+  </data>
+  <data name="LB_USERCREATIONCOLLABSTATS" xml:space="preserve">
+    <value>Collaboration Creation Stats</value>
+  </data>
+  <data name="LB_USERCREATIONSTATS" xml:space="preserve">
+    <value>User Creation Stats</value>
+  </data>
+  <data name="LB_USERCREATIONSTEPSTATS" xml:space="preserve">
+    <value>Steps Creation Stats</value>
+  </data>
+  <data name="LB_USERCREATIONTUTOSTATS" xml:space="preserve">
+    <value>Tutorial Creation Stats</value>
   </data>
   <data name="LB_USERNAME" xml:space="preserve">
     <value>Username</value>
@@ -426,6 +489,21 @@
   <data name="LB_WISHCLOSEPOST" xml:space="preserve">
     <value>Do you want to close this post</value>
   </data>
+  <data name="LB_WISHTOSUBSCRIBE" xml:space="preserve">
+    <value>Do you want to subscribe to this tutorial?</value>
+  </data>
+  <data name="LB_YES" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="TT_ADDTUTO" xml:space="preserve">
+    <value>You can add tutorials by mandatory inserting a title and description.</value>
+  </data>
+  <data name="TT_CREATEDTUTO" xml:space="preserve">
+    <value>On this page you can view all of your tutorials. If you are an instructor, you can add tutorials using the '+' button. If you still want, you can even edit or delete created tutorials.</value>
+  </data>
+  <data name="TT_EDITTUTO" xml:space="preserve">
+    <value>You can edit the tutorial title and description.</value>
+  </data>
   <data name="TT_LOGIN" xml:space="preserve">
     <value>If you haven't registered yet, you can do so in the register option, with your email and password, or with your Google account.</value>
   </data>
@@ -434,5 +512,8 @@
   </data>
   <data name="TT_REGISTER" xml:space="preserve">
     <value>Between 6 and 20 characters with an uppercase letter (A-Z) and a lowercase letter (a-z) are required for the password. Confirmation must be the same as the password.</value>
+  </data>
+  <data name="TT_SUBSCRIBEDTUTO" xml:space="preserve">
+    <value>On this page you can view all the tutorials you are subscribed to.</value>
   </data>
 </root>

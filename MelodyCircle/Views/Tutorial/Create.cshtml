@@ -1,7 +1,8 @@
-﻿@model MelodyCircle.Models.Tutorial
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.Tutorial
 
 @{
-    ViewData["Title"] = "Adicionar tutorial";
+    ViewData["Title"] = @Html.Translate("LB_ADDTUTO");
 }
 
 @section head {
@@ -31,7 +32,7 @@
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <div class="text-end">
             <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                    title="<p>Pode adicionar tutoriais através a inserção obrigatória de um título e uma descrição.</p>">
+                    title="<p>@Html.Translate("TT_ADDTUTO")</p>">
                 ?
             </button>
         </div>
@@ -55,16 +56,16 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
-                <label asp-for="Photo" class="control-label">Foto</label>
+                <label asp-for="Photo" class="control-label">@Html.Translate("LB_PHOTO")</label>
                 <input type="file" class="form-control border-purple" id="Photo" name="photo" accept="image/png, image/jpeg" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
             <div class="form-group text-center my-3">
-                <input type="submit" value="Adicionar" class="btn bg-purple text-white" />
+                <input type="submit" value="@Html.Translate("LB_ADD")" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>
 </div>
 <div  class="text-center mt-2">
-    <a asp-action="Index" asp-controller="Tutorial" >Voltar à lista de Tutoriais</a>
+    <a asp-action="Index" asp-controller="Tutorial">@Html.Translate("LB_GOBACKTOTUTOLIST")</a>
 </div>

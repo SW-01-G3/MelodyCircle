@@ -57,7 +57,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h3 class="text-center">Usuários Recentes</h3>
+            <h3 class="text-center">@Html.Translate("LB_RECENTUSERS")</h3>
             @foreach (var user in Model.Users)
             {
                 <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50  justify-content-center align-items-center">
@@ -66,7 +66,7 @@
             }
         </div>
         <div class="col-md-4">
-            <h3 class="text-center">Tutoriais Recentes</h3>
+            <h3 class="text-center">@Html.Translate("LB_RECENTTUTOS")</h3>
             @foreach (var tutorial in Model.Tutorials)
             {
                 <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
@@ -77,7 +77,7 @@
             }
         </div>
         <div class="col-md-4">
-            <h3 class="text-center">Colaborações Recentes</h3>
+            <h3 class="text-center">@Html.Translate("LB_RECENTCOLLABS")</h3>
             @foreach (var collab in Model.Collaborations)
             {
                 <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
