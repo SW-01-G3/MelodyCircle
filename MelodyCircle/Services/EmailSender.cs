@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using PostmarkDotNet.Model;
+using PostmarkDotNet;
 
 namespace MelodyCircle.Services
 {
@@ -63,33 +65,53 @@ namespace MelodyCircle.Services
             this.logger = logger;
         }
 
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    string sendGridApiKey = configuration["EmailSender:SendGridAPIKey"];
+        //    if (string.IsNullOrEmpty(sendGridApiKey))
+        //    {
+        //        throw new Exception("The 'SendGridApiKey' is not configured");
+        //    }
+
+        //    var client = new SendGridClient(sendGridApiKey);
+        //    var msg = new SendGridMessage()
+        //    {
+        //        From = new EmailAddress("melodycirclemail@gmail.com", "MelodyCircle"),
+        //        Subject = subject,
+        //        PlainTextContent = message,
+        //        HtmlContent = message
+        //    };
+        //    msg.AddTo(new EmailAddress(toEmail));
+
+        //    var response = await client.SendEmailAsync(msg);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        logger.LogInformation("Email queued successfully");
+        //    }
+        //    else
+        //    {
+        //        logger.LogError("Failed to send email");
+        //    }
+        //}
+
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            string sendGridApiKey = configuration["EmailSender:SendGridAPIKey"];
-            if (string.IsNullOrEmpty(sendGridApiKey))
+            var msg = new PostmarkMessage()
             {
-                throw new Exception("The 'SendGridApiKey' is not configured");
-            }
-
-            var client = new SendGridClient(sendGridApiKey);
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress("melodycirclemail@gmail.com", "MelodyCircle"),
+                To = toEmail,
+                From = "202000906@estudantes.ips.pt",
+                TrackOpens = true,
                 Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
+                TextBody = message,
+                //HtmlBody = "HTML goes here",
+                //Tag = "New Year's Email Campaign",
             };
-            msg.AddTo(new EmailAddress(toEmail));
 
-            var response = await client.SendEmailAsync(msg);
-            if (response.IsSuccessStatusCode)
-            {
-                logger.LogInformation("Email queued successfully");
-            }
-            else
-            {
-                logger.LogError("Failed to send email");
-            }
+            var client = new PostmarkClient("5a9fa9a6-5ce1-4ac0-8cf3-7d40f6faf649");
+            var sendResult = await client.SendMessageAsync(msg);
+
+            if (sendResult.Status == PostmarkStatus.Success) { logger.LogInformation("Email queued successfully"); }
+            else { logger.LogError("Failed to send email"); }
         }
     }
 }
