@@ -157,7 +157,7 @@
     <value>Mudar Email</value>
   </data>
   <data name="LB_CHANGELANGUAGE" xml:space="preserve">
-    <value>Pode alterar a linguagem na plataforma aqui.</value>
+    <value>Pode alterar a linguagem na plataforma aqui</value>
   </data>
   <data name="LB_CHANGEPASS" xml:space="preserve">
     <value>Mudar a palavra-passe</value>
@@ -313,7 +313,7 @@
     <value>Sem notificações!</value>
   </data>
   <data name="LB_NORESULT" xml:space="preserve">
-    <value>Nenhum resultado encontrado.</value>
+    <value>Nenhum resultado encontrado</value>
   </data>
   <data name="LB_NOTIFS" xml:space="preserve">
     <value>Notificações</value>
@@ -328,13 +328,13 @@
     <value>Palavra-Passe</value>
   </data>
   <data name="LB_PASSWORDWASRESET" xml:space="preserve">
-    <value>A sua palavra-passe foi restabelecida.</value>
+    <value>A sua palavra-passe foi restabelecida</value>
   </data>
   <data name="LB_PICTURECHANGE" xml:space="preserve">
     <value>Alteração da Foto de Perfil</value>
   </data>
   <data name="LB_PLEASECHECKEMAIL" xml:space="preserve">
-    <value>Verifique o e-mail para confirmar a sua conta.</value>
+    <value>Verifique o e-mail para confirmar a sua conta</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
@@ -418,7 +418,7 @@
     <value>Estatísticas de Utilizador</value>
   </data>
   <data name="LB_VERIFYRECOVERPASSWORD" xml:space="preserve">
-    <value>Verifique o seu e-mail para recuperar a sua palavra-passe.</value>
+    <value>Verifique o seu e-mail para recuperar a sua palavra-passe</value>
   </data>
   <data name="LB_WELCOME" xml:space="preserve">
     <value>Bem-Vindo</value>
