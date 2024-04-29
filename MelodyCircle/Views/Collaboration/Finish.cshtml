@@ -1,15 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Finalizar Colaboração";
+﻿@using MelodyCircle.ExtensionMethods
+@{
+    ViewData["Title"] = @Html.Translate("LB_FINALIZECOLLAB");
 }
 
 <div class="text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
     <h1>@ViewData["Title"]</h1>
     
     <form method="post" action="@Url.Action("FinishConfirmed", "Collaboration", new { id = ViewBag.CollaborationId })">
-        <h4 class="mt-3">Deseja dar como finalizada esta colaboração?</h4>
+        <h4 class="mt-3">@Html.Translate("LB_WISHTOFINISH")</h4>
         @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger px-4 mx-2">Sim</button>
-        <a asp-action="Index" asp-controller="Collaboration" class="btn px-4 btn-primary mx-2">Não</a>
+        <button type="submit" class="btn btn-danger px-4 mx-2">@Html.Translate("LB_YES")</button>
+        <a asp-action="Index" asp-controller="Collaboration" class="btn px-4 btn-primary mx-2">@Html.Translate("LB_NO")</a>
     </form>
     
  </div>

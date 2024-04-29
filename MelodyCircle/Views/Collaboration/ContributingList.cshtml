@@ -1,7 +1,8 @@
-﻿@model MelodyCircle.Models.Collaboration
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.Collaboration
 
 @{
-    ViewData["Title"] = "Lista de Contribuintes";
+    ViewData["Title"] = @Html.Translate("LB_CONTRIBUTINGLIST");
 }
 
 <div class="text-center">
@@ -12,8 +13,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Nome de Utilizador</th>
-                    <th>Ações</th>
+                    <th>@Html.Translate("LB_USERNAME")</th>
+                    <th>@Html.Translate("LB_ACTIONS")</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,18 +26,18 @@
                             <form method="post" action="@Url.Action("RemoveUser", "Collaboration", new { collaborationId = Model.Id, userId = user.Id })">
                                 @Html.AntiForgeryToken()
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                    Remover
+	                                @Html.Translate("LB_REMOVE")
                                 </button>
                                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Remover da Colaboração?</h5>
+                                                <h5 class="modal-title" id="staticBackdropLabel">@Html.Translate("LB_REMOVEFROMCOLLAB")</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-danger">Remover</button>
+                                               @*  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Html.Translate("Close")</button> *@
+                                                <button type="submit" class="btn btn-danger">@Html.Translate("LB_REMOVE")</button>
                                             </div>
                                         </div>
                                     </div>
@@ -48,14 +49,14 @@
                 @if (!Model.ContributingUsers.Any())
                 {
                     <tr>
-                        <td colspan="2">Não há utilizadores a contribuir nesta colaboração</td>
+                        <td colspan="2">@Html.Translate("LB_NOUSERSCL")</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">Voltar</a>
+    <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">@Html.Translate("LB_GOBACK")</a>
 </div>
 
 

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
 @using System.Globalization;
+@using MelodyCircle.ExtensionMethods
 @using MelodyCircle.ViewModels;
 
 @inject UserManager<User> UserManager
@@ -10,7 +11,7 @@
 @model ArrangementPanelViewModel
 
 @{
-    ViewBag.Title = "Painel de Arranjo";
+    ViewBag.Title = @Html.Translate("LB_PANNEL");
 
     var user = await UserManager.GetUserAsync(User);
     var userId = user?.Id;
@@ -434,7 +435,7 @@
         <div class="col-md-2">
             <!-- Menu Lateral de Instrumentos -->
             <div id="instrument-menu">
-                <h5>INSTRUMENTOS</h5>
+                <h5>@Html.Translate("LB_INSTRUMENTS")</h5>
                 @foreach (var instrument in Model.AvailableInstruments)
                 {
                     <div id="@instrument.Name" class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name">
@@ -451,10 +452,10 @@
                     </div>
                 }
                 <!-- Botão de Upload de Instrumento -->
-                <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">UPLOAD</button>
+                <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
 
                 <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
-                    Ver Descrição
+	                @Html.Translate("LB_DESCRIPTION")
                 </button>
 
                 <div class="modal fade" id="collabDescriptionModal-@Model.Collaboration.Id" tabindex="-1" aria-labelledby="collabDescriptionLabel-@Model.Collaboration.Id" aria-hidden="true">
@@ -495,11 +496,11 @@
 
                     @if (userHasTrack)
                     {
-                        <span>A tua faixa: @assignedTrackNumber</span>
+                        <span>@Html.Translate("LB_YOURTRACK"): @assignedTrackNumber</span>
                     }
                     else
                     {
-                        <span>Não tem faixa atribuída</span>
+                        <span>@Html.Translate("LB_NOTRACK")</span>
                     }
                 </div>
 
@@ -513,7 +514,7 @@
                                 <!-- Régua Temporal inserida aqui -->
                             </div>
 
-                            <div class="track-number">Faixa @(Model.Tracks.IndexOf(track) + 1)</div>
+                            <div class="track-number">@Html.Translate("LB_TRACK") @(Model.Tracks.IndexOf(track) + 1)</div>
 
                             <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
 
@@ -561,17 +562,17 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">Upload Instrument</h5>
+                <h5 class="modal-title" id="uploadModalLabel">Upload</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
             </div>
             <div class="modal-body">
                 <form id="upload-instrument-form" asp-action="UploadInstrument" asp-route-collaborationId="@Model.Collaboration.Id" method="post" enctype="multipart/form-data">
                     <div class="form-group mb-3">
-                        <label for="instrumentName">Instrument Name</label>
+                        <label for="instrumentName">@Html.Translate("LB_INSTRUMENTNAME")</label>
                         <input type="text" class="form-control" id="instrumentName" name="instrumentName" placeholder="Enter instrument name" required>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="soundFile">Instrument File (.mp3)</label>
+                        <label for="soundFile">@Html.Translate("LB_INSTRUMENTFILE")</label>
                         <input type="file" class="form-control-file" id="soundFile" name="soundFile" accept=".mp3" required>
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
@@ -585,7 +586,7 @@
     <div class="modal-dialog modal-dialog-bottom-right" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Chat da Colaboração</h5>
+                <h5 class="modal-title">@Html.Translate("LB_COLLABCHAT")</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

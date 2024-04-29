@@ -7,7 +7,7 @@
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Colaborações Participantes";
+    ViewData["Title"] = @Html.Translate("LB_PARTICIPATINGCOLLAB");
 }
 
 <div class="text-center">
@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
-            <div class="col-2 px-3">Finalizada: @(collaboration.IsFinished ? "Sim" : "Não")</div>
+            <div class="col-2 px-3">@Html.Translate("LB_FINALIZED"): @(collaboration.IsFinished ? @Html.Translate("LB_YES") : @Html.Translate("LB_NO"))</div>
             <br />
 
             <div class="modal fade" id="addStarRatingModal" tabindex="-1" aria-labelledby="addStarRatingModalLabel" aria-hidden="true">
@@ -91,7 +91,7 @@
             </div>
             <div class="col-2 px-3">tag</div>
             <div class="col-2 px-3">
-                <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">Abrir Painel de Arranjo</a>
+                <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_OPENPANNEL")</a>
             </div>
         </div>
     }
