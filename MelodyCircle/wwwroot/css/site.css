@@ -289,7 +289,7 @@ body {
     width: 100%;
     position: relative;
     margin-top: 0px;
-    top: 50px;
+    top: 25px;
     left: 0px;
 }
 
@@ -327,9 +327,8 @@ body {
 
 .track-number {
     position: absolute;
-    top: 50px;
-    left: -2.5%;
-    font-weight: bold;
+    top: 35px;
+    left: -2%;
     background-color: #fff;
     padding: 2px 5px;
 }
@@ -434,6 +433,26 @@ body {
     bottom: 20px; /* Adjust this value to change the distance from the bottom */
     right: 20px; /* Adjust this value to change the distance from the right */
     z-index: 1051; /* Ensure the button stays above the modal backdrop */
+}
+
+.control-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.control-button img {
+    width: 30px;
+    height: auto;
+}
+
+.bpm-style-text {
+    margin-left: 35%;
+}
+
+.assignedTrackNumber {
+    margin-left: 32%;
 }
 
 /* FINAL DO PAINEL DE ARRANJO */
