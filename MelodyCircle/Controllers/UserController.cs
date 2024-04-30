@@ -388,7 +388,7 @@ namespace MelodyCircle.Controllers
             var regex = new Regex(@"\/track\/(\w+)");
             var match = regex.Match(newMusicUri);
 
-            if (!user.MusicURI.Contains(match.Value))
+            if (user.MusicURI.Contains(match.Value))
             {
                 TempData["UriError"] = "This song is already on your favorites list.";
                 return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
