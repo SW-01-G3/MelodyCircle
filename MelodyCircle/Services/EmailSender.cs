@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MimeKit;
 using MimeKit.Text;
-using MailKit.Net.Smtp;
+//using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using PostmarkDotNet.Model;
 using PostmarkDotNet;
+using System.Net.Mail;
+using System.Net;
 
 namespace MelodyCircle.Services
 {
@@ -94,24 +96,75 @@ namespace MelodyCircle.Services
         //    }
         //}
 
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    var msg = new PostmarkMessage()
+        //    {
+        //        To = toEmail,
+        //        From = "202000906@estudantes.ips.pt",
+        //        TrackOpens = true,
+        //        Subject = subject,
+        //        TextBody = message,
+        //        //HtmlBody = "HTML goes here",
+        //        //Tag = "New Year's Email Campaign",
+        //    };
+
+        //    var client = new PostmarkClient("");
+        //    var sendResult = await client.SendMessageAsync(msg);
+
+        //    if (sendResult.Status == PostmarkStatus.Success) { logger.LogInformation("Email queued successfully"); }
+        //    else { logger.LogError("Failed to send email"); }
+        //}
+
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    var email = new MimeMessage();
+
+        //    email.From.Add(new MailboxAddress("Support MelodyCircle", "melodycirclehelp@gmail.com"));
+        //    email.To.Add(new MailboxAddress("Receiver Name", toEmail));
+
+        //    email.Subject = subject;
+        //    email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+        //    {
+        //        Text = message
+        //    };
+
+        //    using (var smtp = new SmtpClient())
+        //    {
+        //        smtp.Connect("smtp.gmail.com", 587, false);
+
+        //        // Note: only needed if the SMTP server requires authentication
+        //        smtp.Authenticate("melodycirclehelp@gmail.com", "#helpsupport");
+
+        //        smtp.Send(email);
+        //        smtp.Disconnect(true);
+        //    }
+        //}
+
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            var msg = new PostmarkMessage()
+            using (var client = new SmtpClient())
             {
-                To = toEmail,
-                From = "202000906@estudantes.ips.pt",
-                TrackOpens = true,
-                Subject = subject,
-                TextBody = message,
-                //HtmlBody = "HTML goes here",
-                //Tag = "New Year's Email Campaign",
-            };
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.UseDefaultCredentials = false;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("melodycirclehelp@gmail.com", "rbrb cyic lzgw spfg");
+                using (var mail = new MailMessage(
+                    from: new MailAddress("melodycirclehelp@gmail.com", "Support Melodycircle"),
+                    to: new MailAddress(toEmail, "THEIR NAME")
+                ))
+                {
 
-            var client = new PostmarkClient("5a9fa9a6-5ce1-4ac0-8cf3-7d40f6faf649");
-            var sendResult = await client.SendMessageAsync(msg);
+                    mail.Subject = subject;
+                    mail.IsBodyHtml = true;
+                    mail.Body = message;
 
-            if (sendResult.Status == PostmarkStatus.Success) { logger.LogInformation("Email queued successfully"); }
-            else { logger.LogError("Failed to send email"); }
+
+                    await client.SendMailAsync(mail);
+                }
+            }
         }
     }
 }
