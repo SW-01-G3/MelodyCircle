@@ -20,15 +20,14 @@ namespace MelodyCircleTest
 
 		public CollaborationControllerTests(ApplicationDbContextFixture applicationDbContextFixture)
 		{
-			_context = applicationDbContextFixture.DbContext;
+            _context = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unique DB per test
+                .Options);
 
-			var store = new Mock<IUserStore<User>>();
+            var store = new Mock<IUserStore<User>>();
 			_mockUserManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
 
 			_controller = new CollaborationController(_context, _mockUserManager.Object, null, null);
-
-
-
 
 		}
 
@@ -164,9 +163,10 @@ namespace MelodyCircleTest
 		[Fact]
 		public async Task RemoveUser_RemovesUserFromContributingUsers()
 		{
-			// Arrange
-			var user = new User { Id = "1", UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
-			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, ContributingUsers = new List<User> { user } };
+            // Arrange
+            var userId1 = Guid.NewGuid().ToString();
+            var user = new User { Id = userId1, UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
+			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = userId1, Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, ContributingUsers = new List<User> { user } };
 			//_mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
 
 			_context.Collaborations.Add(collaboration);
