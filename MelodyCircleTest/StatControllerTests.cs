@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Security.Claims;
 using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
@@ -117,20 +118,21 @@ namespace MelodyCircleTest
 		[Fact]
 		public void UserCollaborationStats_RedirectsToIndex()
 		{
-			var user = new User {Id = "1",UserName = "testUser", NormalizedUserName = "TESTUSER" };
+            var user = new User { Id = "1", UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
 
-			var tutorialData = new List<Collaboration>
+            var tutorialData = new List<Collaboration>
 			{
-				new Collaboration { CreatedDate = DateTime.Now.AddDays(-10), CreatorId = user.Id},
-				new Collaboration { CreatedDate = DateTime.Now.AddDays(-20), CreatorId = user.Id},
+                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private},
+                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private},
 			};
 
-			_context.Users.Add(user);
 
 			_context.Collaborations.AddRange(tutorialData);
 			_context.SaveChangesAsync();
 
-			var result = _controller.UserCollaborationStats(user.Id);
+            _mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
+
+            var result = _controller.UserCollaborationStats(user.Id);
 			Assert.IsType<ViewResult>(result);
 		}
 
