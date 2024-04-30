@@ -1,7 +1,8 @@
-﻿@model MelodyCircle.Models.Collaboration
+﻿@using MelodyCircle.ExtensionMethods
+@model MelodyCircle.Models.Collaboration
 
 @{
-    ViewData["Title"] = "Criar Colaboração";
+    ViewData["Title"] = @Html.Translate("LB_CREATECOLLAB");
 }
 
 @section head {
@@ -39,12 +40,12 @@
                 <h1>@ViewData["Title"]</h1>
             </div>
             <div class="form-group text-center mt-3">
-                <label for="Title">Título:</label>
+                <label for="Title">@Html.Translate("LB_TITLE"):</label>
                 <input type="text" class="form-control border-purple" id="Title" name="Title" value="@Model.Title">
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
-                <label for="Description">Descrição:</label>
+                <label for="Description">@Html.Translate("LB_DESCRIPTION"):</label>
                 <input type="hidden" id="Description" name="Description" value="" />
                 <div id="editor">
                     <p>Hello, <strong>World</strong></p>
@@ -52,32 +53,31 @@
                 @* <textarea class="form-control border-purple" id="Description" name="Description">@Model.Description</textarea> *@
             </div>
             <div class="form-group text-center">
-                <label for="MaxUsers">Número Máximo de Utilizadores:</label>
-                <input type="number" class="form-control border-purple" id="MaxUsers" name="MaxUsers" min="0" max="100">
+                <label for="MaxUsers">@Html.Translate("LB_MAXUSERS"):</label>
+                <input type="number" class="form-control border-purple" id="MaxUsers" name="MaxUsers" min="1" max="10">
                 <span asp-validation-for="MaxUsers" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
-                <label for="AccessMode">Modo de Acesso:</label>
+                <label for="AccessMode">@Html.Translate("LB_ACCESSMODE"):</label>
                 <div class="position-relative">
                     <select class="form-select border-purple" id="AccessMode" name="AccessMode">
-                        <option value="Public">Público</option>
-                        <option value="Private">Privado</option>
+	                    <option value="Public">@Html.Translate("LB_PUBLIC")</option>
+	                    <option value="Private">@Html.Translate("LB_PRIVATE")</option>
                     </select>
-
                 </div>
                 <span asp-validation-for="AccessMode" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
-                <label for="AccessPassword">Senha de Acesso:</label>
+                <label for="AccessPassword">@Html.Translate("LB_PASSWORD"):</label>
                 <input type="password" class="form-control border-purple" id="AccessPassword" name="AccessPassword" value="@Model.AccessPassword">
             </div>
             <div class="form-group text-center">
-                <label asp-for="Photo" class="control-label">Foto</label>
+                <label asp-for="Photo" class="control-label">@Html.Translate("LB_PHOTO")</label>
                 <input type="file" class="form-control border-purple " id="Photo" name="photo" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
             <div class="form-group text-center my-3">
-                <input type="submit" value="Adicionar" class="btn bg-purple text-white" />
+                <input type="submit" value="@Html.Translate("LB_ADD")" class="btn bg-purple text-white" />
             </div>
         </form>
 

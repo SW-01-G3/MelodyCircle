@@ -107,8 +107,11 @@ namespace MelodyCircle.Controllers
 
         public IActionResult UserTutorialStats(string userName)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user == null)
+            //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            var user = _userManager.FindByNameAsync(userName);
+
+			if (user == null)
             {
                 return RedirectToAction("Index");
             }
@@ -156,7 +159,7 @@ namespace MelodyCircle.Controllers
 
             var monthsAndYears = collaborationStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
 
-            ViewBag.UserName = userName;
+            ViewBag.UserName = user.Result.UserName;
             ViewBag.MonthsAndYears = monthsAndYears;
             ViewBag.CollaborationCounts = collaborationStats.Select(d => d.Count);
 
@@ -165,8 +168,11 @@ namespace MelodyCircle.Controllers
 
         public IActionResult UserStepStats(string userName)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user == null)
+            //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+
+            var user = _userManager.FindByNameAsync(userName);
+
+			if (user == null)
             {
                 return RedirectToAction("Index");
             }

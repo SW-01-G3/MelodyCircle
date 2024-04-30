@@ -1,22 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
+@using MelodyCircle.ExtensionMethods
+@using MelodyCircle.ViewModels;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model SearchResultViewModel
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
-    <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
-        <option value="None">Nenhum filtro</option>
-        <option value="User">Artista</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Collaboration">Colaboração</option>
-    </select>
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
+	<select name="searchType" class="border-purple rounded bg-white p-1 text-center">
+		<option value="None">@Html.Translate("LB_NOFILTER")</option>
+		<option value="User">@Html.Translate("LB_ARTIST")</option>
+		<option value="Tutorial">@Html.Translate("LB_TUTORIAL")</option>
+		<option value="Collaboration">@Html.Translate("LB_COLLAB")</option>
+	</select>
+    <input type="text" name="searchTerm" placeholder="@Html.Translate("LB_SEARCH")" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
 
-<h2 class="text-center mb-4">Resultados da Pesquisa</h2>
+<h2 class="text-center mb-4">@Html.Translate("LB_SEARCHRESULTS")</h2>
 
 @if (Model.Users.Any() || Model.Tutorials.Any() || Model.Collaborations.Any())
 {
@@ -25,7 +28,7 @@
             @if (Model.Users.Any())
             {
                 <div class="col-md-4">
-                    <h3>Utilizadores</h3>
+                    <h3>@Html.Translate("LB_USERS")</h3>
                     <div class="row">
                         @foreach (var user in Model.Users)
                         {
@@ -42,14 +45,14 @@
             @if (Model.Tutorials.Any())
             {
                 <div class="col-md-4">
-                    <h3>Tutoriais</h3>
+                    <h3>@Html.Translate("LB_TUTORIALS")</h3>
                     <div class="row">
                         @foreach (var tutorial in Model.Tutorials)
                         {
                             <div class="col-md-12">
                                 <div class="text-center border-purple bg-white p-4 mx-auto mb-4 justify-content-center align-items-center">
                                     <h4><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
-                                    <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">Inscrever-se</a>
+                                    <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">@Html.Translate("LB_SUBSCRIBE")</a>
                                     <p>@tutorial.Description</p>
                                 </div>
                             </div>
@@ -61,7 +64,7 @@
             @if (Model.Collaborations.Any())
             {
                 <div class="col-md-4">
-                    <h3>Colaborações</h3>
+                    <h3>@Html.Translate("LB_COLLABS")</h3>
                     <div class="row">
                         @foreach (var collaboration in Model.Collaborations)
                         {
@@ -70,7 +73,7 @@
                                     <h4>@collaboration.Title</h4>
                                         <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collaboration.Id })">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                                        <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_JOIN")</button>
                                         </form>
                                 </div>
                             </div>
@@ -83,5 +86,5 @@
 }
 else
 {
-    <p>Nenhum resultado encontrado.</p>
+    <p>@Html.Translate("LB_NORESULT")</p>
 }

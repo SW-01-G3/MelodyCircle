@@ -129,6 +129,12 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
                     return Page();
                 }
 
+                if (user.Password != Input.Password)
+                {
+                    ModelState.AddModelError(string.Empty, "Username/Email doens't correspond to password.");
+                    return Page();
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)

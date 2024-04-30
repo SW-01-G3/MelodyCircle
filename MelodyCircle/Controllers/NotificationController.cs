@@ -1,6 +1,5 @@
 ﻿using MelodyCircle.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace MelodyCircle.Controllers
 {

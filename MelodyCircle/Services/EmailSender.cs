@@ -89,8 +89,6 @@ namespace MelodyCircle.Services
             else
             {
                 logger.LogError("Failed to send email");
-                // Adding more information related to the failed email could be helpful in debugging failure,
-                // but be careful about logging PII, as it increases the chance of leaking PII
             }
         }
     }

@@ -44,6 +44,12 @@ body {
 
 /* -------------------------------------------- */
 
+#editor {
+    min-height: 8rem;
+}
+
+/* -------------------------------------------- */
+
 .bg-darkPurple {
   background-color: var(--darkPurple) !important;
 }
@@ -350,10 +356,9 @@ body {
     border-radius: 6px;
     padding: 5px;
     z-index: 255;
-    bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .instrument-on-track {
@@ -411,6 +416,23 @@ body {
     left: 50%;
     transform: translateX(-50%);
     bottom: 20px;
+}
+
+/* Custom CSS for modal positioning */
+.modal-dialog-bottom-right {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    margin: 0;
+    width: 400px; /* Adjust the width as needed */
+}
+
+/* Style for the chat component trigger button */
+#chatComponentButton {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    z-index: 1051; /* Ensure the button stays above the modal backdrop */
 }
 
 /* FINAL DO PAINEL DE ARRANJO */

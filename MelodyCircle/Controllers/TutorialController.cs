@@ -54,9 +54,8 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> EditModePartials(Guid lastId)
         {
-            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+            var userId = _userManager.GetUserId(User); 
 
-            // Modifying the query to take the next 10 tutorials after the last received ID
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name && (lastId == null || t.Id > lastId))
                 .OrderBy(t => t.Id)
@@ -65,15 +64,13 @@ namespace MelodyCircle.Controllers
                 {
                     Tutorial = tutorial,
                     StepCount = _context.Steps.Count(step => step.TutorialId == tutorial.Id)
-                })
-                .ToListAsync();
+                }).ToListAsync();
 
             var tutoriaisCriadosComContagem = tutoriaisCriados
                 .Select(t => {
                     t.Tutorial.StepCount = t.StepCount;
                     return t.Tutorial;
-                })
-                .ToList();
+                }).ToList();
 
             return PartialView("_EditModePartial", tutoriaisCriadosComContagem);
         }
@@ -97,7 +94,7 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> ViewModePartials(Guid lastId)
         {
-            var userId = _userManager.GetUserId(User);  // Retrieves the user's ID
+            var userId = _userManager.GetUserId(User); 
 
             var tutoriaisInscritos = await _context.SubscribeTutorials
                 .Where(elem => elem.User.Id.ToString() == userId && (elem.Tutorial.Id > lastId))
@@ -121,41 +118,64 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
         {
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
+            if (string.IsNullOrWhiteSpace(tutorial.Title))
             {
-                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Title), "O título é obrigatório");
+                hasValidationError = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(tutorial.Description))
+            {
+                ModelState.AddModelError(nameof(tutorial.Description), "A descrição é obrigatória");
+                hasValidationError = true;
+            }
+
+            if (photo == null)
+            {
+                ModelState.AddModelError(nameof(tutorial.Photo), "A fotografia é obrigatória");
+                hasValidationError = true;
             }
 
             else
             {
-                tutorial.Id = Guid.NewGuid();
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
 
-                var user = await _userManager.GetUserAsync(User);
-
-                if (user != null)
-                    tutorial.Creator = user.UserName;
-
-
-                if (photo != null || photo.Length > 0)
+                if (!allowedExtensions.Contains(extension))
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        tutorial.Photo = memoryStream.ToArray();
-                        tutorial.PhotoContentType = photo.ContentType;
-                    }
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    hasValidationError = true;
                 }
-
-                tutorial.CreationDate = DateTime.Now;
-
-                _context.Add(tutorial);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
             }
 
-            return View(tutorial);
+            if (hasValidationError)
+                return View(tutorial);
+
+            tutorial.Id = Guid.NewGuid();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+                tutorial.Creator = user.UserName;
+            else
+                return Unauthorized("Utilizador não encontrado");
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await photo.CopyToAsync(memoryStream);
+                tutorial.Photo = memoryStream.ToArray();
+                tutorial.PhotoContentType = photo.ContentType;
+            }
+
+            tutorial.CreationDate = DateTime.Now;
+
+            _context.Add(tutorial);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Tutorial/Edit/id
@@ -177,37 +197,58 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Creator")] Tutorial tutorial, IFormFile photo)
         {
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
             if (id != tutorial.Id)
                 return NotFound();
 
-            if (string.IsNullOrWhiteSpace(tutorial.Title) || string.IsNullOrWhiteSpace(tutorial.Description))
+            if (string.IsNullOrWhiteSpace(tutorial.Title))
             {
-                ModelState.AddModelError(nameof(tutorial.Title), "Campo obrigatório");
-                ModelState.AddModelError(nameof(tutorial.Description), "Campo obrigatório");
+                ModelState.AddModelError(nameof(tutorial.Title), "O título é obrigatório");
+                hasValidationError = true;
             }
 
-            else 
+            if (string.IsNullOrWhiteSpace(tutorial.Description))
             {
-                var existingTutorial = await _context.Tutorials.FindAsync(id);
+                ModelState.AddModelError(nameof(tutorial.Description), "A descrição é obrigatória");
+                hasValidationError = true;
+            }
 
-                if (photo != null && photo.Length > 0)
+            if (hasValidationError)
+                return View(tutorial);
+
+            var existingTutorial = await _context.Tutorials.FindAsync(id);
+
+            if (existingTutorial == null)
+                return NotFound();
+
+            existingTutorial.Title = tutorial.Title;
+            existingTutorial.Description = tutorial.Description;
+
+            if (photo != null)
+            {
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await photo.CopyToAsync(memoryStream);
-                        existingTutorial.Photo = memoryStream.ToArray();
-                        existingTutorial.PhotoContentType = photo.ContentType;
-                    }
+                    ModelState.AddModelError(nameof(tutorial.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    return View(tutorial);
                 }
 
-                existingTutorial.Title = existingTutorial.Title;
-                existingTutorial.Description = existingTutorial.Description;
-
-                _context.Update(existingTutorial);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                using (var memoryStream = new MemoryStream())
+                {
+                    await photo.CopyToAsync(memoryStream);
+                    existingTutorial.Photo = memoryStream.ToArray();
+                    existingTutorial.PhotoContentType = photo.ContentType;
+                }
             }
-            return View(tutorial);
+
+            _context.Update(existingTutorial);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Tutorial/Delete/id
@@ -273,7 +314,6 @@ namespace MelodyCircle.Controllers
             else
                 tutorialToRate.Ratings.Add(new TutorialRating { UserName = currentUser.UserName, TutorialId = id, Value = rating });
 
-            // Update the user in the database
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

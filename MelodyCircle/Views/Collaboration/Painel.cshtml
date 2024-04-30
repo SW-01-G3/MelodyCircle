@@ -1,13 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Antiforgery
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
+@using System.Globalization;
+@using MelodyCircle.ExtensionMethods
+@using MelodyCircle.ViewModels;
+
 @inject UserManager<User> UserManager
 @inject IAntiforgery Antiforgery
 
 @model ArrangementPanelViewModel
 
 @{
-    ViewBag.Title = "Painel de Arranjo";
+    ViewBag.Title = @Html.Translate("LB_PANNEL");
 
     var user = await UserManager.GetUserAsync(User);
     var userId = user?.Id;
@@ -15,16 +19,23 @@
     var assignedTrackNumber = assignedTrack != null ? Model.Tracks.IndexOf(assignedTrack) + 1 : 0;
     var userHasTrack = assignedTrackNumber > 0;
     var antiforgeryTokenSet = Antiforgery.GetAndStoreTokens(Context);
+    var hasUploadError = !string.IsNullOrEmpty(TempData["UploadError"] as string);
 }
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+
     <script>
         let isPlaying = false;
         let currentPlaybackPosition = 0;
         let trackTimers = [];
         let masterTimer;
         let playbackLineInterval;
+
+        let quill = new Quill("#editor");
+        let collabDecription = @Html.Raw(Model.Collaboration.Description);
+        let descriptionDiv = document.getElementById("description-text");
+
         let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
         function allowDrop(event) {
@@ -33,47 +44,50 @@
         }
 
         function drag(event) {
-            console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
-            event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
+            // console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
+            // event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
 
-            // const instrumentElement = event.target;
-            // const isUploaded = instrumentElement.classList.contains('uploaded');
-            // const instrumentData = {
-            //     name: instrumentElement.getAttribute('data-instrument'),
-            //     isUploaded: isUploaded,
-            //     id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
-            // };
+            const instrumentElement = event.target;
+            const isUploaded = instrumentElement.classList.contains('uploaded');
+            const instrumentData = {
+                name: instrumentElement.getAttribute('data-instrument'),
+                isUploaded: isUploaded,
+                id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
+            };
 
-            // event.dataTransfer.setData("text", JSON.stringify(instrumentData));
+            console.log('Dragging instrument:', instrumentData); 
+            event.dataTransfer.setData("text/plain", JSON.stringify(instrumentData));
         }
 
         function drop(event) {
             event.preventDefault();
 
-            var instrumentName = event.dataTransfer.getData("text/plain");
-            console.log("Instrumento: ", instrumentName)
+            const data = event.dataTransfer.getData("text/plain");
+            console.log('Dropped data:', data); 
+            const instrumentData = JSON.parse(data);
 
-            var trackContainer = event.target.closest('.track');
-            var trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
-            console.log("TrackId: ", trackId)
+            console.log('Parsed instrument data:', instrumentData);
 
-            var mouseX = event.clientX;
-            var trackRect = trackContainer.getBoundingClientRect();
-            var trackStartX = trackRect.left;
-            var trackWidth = trackRect.width;
-            var relativePosition = (mouseX - trackStartX) / trackWidth;
+            const trackContainer = event.target.closest('.track');
+            const trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+            const mouseX = event.clientX;
+            const trackRect = trackContainer.getBoundingClientRect();
+            const trackStartX = trackRect.left;
+            const trackWidth = trackRect.width;
+            const relativePosition = (mouseX - trackStartX) / trackWidth;
+            const startTimeSeconds = relativePosition * 4 * 60;
 
-            var startTimeSeconds = relativePosition * 4 * 60;
-            console.log("StartTime Seconds: ", startTimeSeconds)
-
-            if (trackId && instrumentName)
-                updateTrack(trackId, instrumentName, startTimeSeconds);
-            else
-                console.error("Drop target is not a track container or trackId/instrumentName is missing.");
+            if (trackId && instrumentData) {
+                updateTrack(trackId, instrumentData, startTimeSeconds);
+            } else {
+                console.error("Drop target is not a track container or instrumentData is missing.");
+            }
         }
 
-        function updateTrack(trackId, instrumentName, startTimeSeconds) {
+        function updateTrack(trackId, instrumentData, startTimeSeconds) {
             var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
+
+            console.log('Updating track with:', { trackId, instrumentData, startTimeSeconds });
 
             fetch(url, {
                 method: 'POST',
@@ -83,8 +97,10 @@
                 },
                 body: JSON.stringify({
                     TrackId: trackId,
-                    InstrumentName: instrumentName,
-                    StartTime: startTimeSeconds
+                    InstrumentName: instrumentData.name,
+                    StartTime: startTimeSeconds,
+                    IsUploaded: instrumentData.isUploaded,
+                    InstrumentId: instrumentData.id
                 })
             })
             .then(response => {
@@ -96,6 +112,7 @@
             .then(data => {
                 if (data.success) {
                     console.log('Instrument added successfully:', data.instrumentId);
+                    window.location.href = '@Url.Action("ArrangementPanel", "Collaboration", new { id = Model.Collaboration.Id })';
                     addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration, data.instrumentId);
                 } else
                     console.error('Error adding instrument:', data.message);
@@ -305,6 +322,7 @@
                 let currentTime = Date.now();
                 let elapsed = currentTime - startTime;
                 let percentage = elapsed / (duration * 1000);
+
                 line.style.left = startPosition + (panelWidth * percentage) + 'px';
 
                 if (percentage >= 1) {
@@ -331,20 +349,12 @@
             const playbackRate = bpm / defaultBpm;
 
             const audios = document.querySelectorAll('.track audio');
+
             audios.forEach(audio => {
                 audio.playbackRate = playbackRate;
             });
         }
 
-        // document.querySelectorAll('.instrument').forEach(item => {
-        //     item.addEventListener('click', event => {
-        //         let instrumentName = item.getAttribute('data-instrument').toLowerCase();
-        //         let soundId = `sound-${instrumentName}`;
-        //         let sound = document.getElementById(soundId);
-        //         if (sound) sound.play();
-        //         else console.error('Sound element not found:', soundId);
-        //     });
-        // });
         function playSound(instrumentElement) {
             const instrumentName = instrumentElement.getAttribute('data-instrument').toLowerCase();
             const isUploaded = instrumentElement.classList.contains('uploaded');
@@ -353,20 +363,25 @@
             if (isUploaded) {
                 const instrumentId = instrumentElement.getAttribute('data-instrument-id');
                 soundId = `sound-uploaded-${instrumentId}`;
-            } else {
+            } else
                 soundId = `sound-${instrumentName}`;
-            }
 
             const sound = document.getElementById(soundId);
+
             if (sound) {
-                if (isUploaded && !sound.src) {
+                if (isUploaded && !sound.src)
                     sound.src = `/Collaboration/GetInstrumentAudio/${instrumentElement.getAttribute('data-instrument-id')}`;
-                }
+                
                 sound.play();
-            } else {
+            } else
                 console.error('Sound element not found:', soundId);
-            }
         }
+
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.instrument').forEach(item => {
                 item.addEventListener('click', event => {
@@ -375,43 +390,54 @@
             });
         });
 
-
         document.addEventListener('DOMContentLoaded', function () {
             createTimeline();
             attachClickEventToRemoveInstrument();
             adjustPlaybackSpeed(document.getElementById('bpm').value);
+
+            document.getElementById('bpm').addEventListener('change', function () {
+                let bpmValue = parseFloat(this.value);
+                if (!this.disabled && bpmValue >= 60 && bpmValue <= 150) {
+                    fetch('@Url.Action("UpdateCollaborationBpm", "Collaboration")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
+                        },
+                        body: JSON.stringify({ collaborationId: '@Model.Collaboration.Id', bpm: bpmValue })
+                    })
+                        .then(response => {
+                            if (response.ok)
+                                console.log('BPMs da colaboração atualizados com sucesso.');
+                            else
+                                response.text().then(text => alert('Erro ao atualizar BPMs da colaboração: ' + text));
+                        })
+                        .catch(error => {
+                            console.error('Falha na requisição: ', error);
+                        });
+                }
+            });
         });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            let quill = new Quill("#editor");
-            let collabDecription = @Html.Raw(Model.Collaboration.Description);
-            let descriptionDiv = document.getElementById("description-text");
-            function convertToHtml(editor, contents) {
-                editor.setContents(contents);
-                return editor.root.innerHTML;
-            }
-            descriptionDiv.innerHTML = convertToHtml(quill, collabDecription);
-
-        })
 
         document.getElementById('play-button').addEventListener('click', playTracks);
         document.getElementById('pause-button').addEventListener('click', pauseTracks);
         document.getElementById('restart-button').addEventListener('click', restartTracks);
+
+        descriptionDiv.innerHTML = convertToHtml(quill, collabDecription);
+
+        $('#chatComponentButton').click(function () {
+            $('#chatModal').modal('show');
+        });
+
+        $(document).ready(function () {
+            var error = "@TempData["UploadError"]";
+            if (error.length > 0) {
+                $('#uploadModal').modal('show');
+            }
+        });
     </script>
-}
 
-@functions {
-    public string CalculateLeftPosition(TimeSpan startTime, TimeSpan totalDuration)
-    {
-        double positionPercentage = (startTime.TotalSeconds / totalDuration.TotalSeconds) * 100;
-        return $"{positionPercentage}%";
-    }
-
-    public string CalculateWidth(TimeSpan duration, TimeSpan totalDuration)
-    {
-        double widthPercentage = (duration.TotalSeconds / totalDuration.TotalSeconds) * 100;
-        return $"{widthPercentage}%";
-    }
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
 }
 
 <div class="container-fluid">
@@ -419,7 +445,7 @@
         <div class="col-md-2">
             <!-- Menu Lateral de Instrumentos -->
             <div id="instrument-menu">
-                <h5>INSTRUMENTOS</h5>
+                <h5>@Html.Translate("LB_INSTRUMENTS")</h5>
                 @foreach (var instrument in Model.AvailableInstruments)
                 {
                     <div id="@instrument.Name" class="instrument" draggable="true" ondragstart="drag(event)" data-instrument="@instrument.Name">
@@ -436,12 +462,10 @@
                     </div>
                 }
                 <!-- Botão de Upload de Instrumento -->
-                <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">UPLOAD</button>
-
-
+                <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
 
                 <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
-                    Ver Descrição
+	                @Html.Translate("LB_DESCRIPTION")
                 </button>
 
                 <div class="modal fade" id="collabDescriptionModal-@Model.Collaboration.Id" tabindex="-1" aria-labelledby="collabDescriptionLabel-@Model.Collaboration.Id" aria-hidden="true">
@@ -458,8 +482,6 @@
                         </div>
                     </div>
                 </div>
-                
-
             </div>
         </div>
         <div class="col-md-10">
@@ -470,17 +492,25 @@
                     <button id="pause-button">Pause</button>
                     <button id="restart-button">Restart</button>
 
-                   <span>BPM: 
-                       <input type="number" id="bpm" value="102" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
-                   </span>
-
-                    @if (userHasTrack)
+                    @if (user.Id == Model.Collaboration.CreatorId)
                     {
-                        <span>A tua faixa: @assignedTrackNumber</span>
+                        <span>
+                            BPM:
+                            <input type="number" id="bpm" value="@(Model.UserTrack?.BPM ?? 102)" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
+                        </span>
                     }
                     else
                     {
-                        <span>Não tem faixa atribuída</span>
+                        <span>BPM: @(Model.UserTrack?.BPM ?? 102)</span>
+                    }
+
+                    @if (userHasTrack)
+                    {
+                        <span>@Html.Translate("LB_YOURTRACK"): @assignedTrackNumber</span>
+                    }
+                    else
+                    {
+                        <span>@Html.Translate("LB_NOTRACK")</span>
                     }
                 </div>
 
@@ -494,7 +524,7 @@
                                 <!-- Régua Temporal inserida aqui -->
                             </div>
 
-                            <div class="track-number">Faixa @(Model.Tracks.IndexOf(track) + 1)</div>
+                            <div class="track-number">@Html.Translate("LB_TRACK") @(Model.Tracks.IndexOf(track) + 1)</div>
 
                             <div class="track" data-track-id="@track.Id" style="height: 100px; margin-bottom: 5px;">
 
@@ -509,15 +539,23 @@
                                     @foreach (var instrument in track.InstrumentsOnTrack)
                                     {
                                         <div class="instrument-on-track removable-instrument" data-instrument-id="@instrument.Id"
-                                             style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration);
-                                                    width: @CalculateWidth(instrument.Duration, track.Duration);">
-
+                                             style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
                                             <span>@instrument.InstrumentType</span>
-
-                                            <audio preload="auto" id="audio-@instrument.Id"
-                                                   data-start-time="@instrument.StartTime.TotalSeconds"
-                                                   src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
-                                            </audio>
+                                            @* Check if the instrument has an InstrumentId which implies it is uploaded *@
+                                            @if (instrument.InstrumentId != null)
+                                            {
+                                                <audio preload="auto" id="audio-@instrument.Id"
+                                                       data-start-time="@instrument.StartTime.TotalSeconds"
+                                                       src="@Url.Action("GetInstrumentAudio", "Collaboration", new { id = instrument.InstrumentId })">
+                                                </audio>
+                                            }
+                                            else
+                                            {
+                                                <audio preload="auto" id="audio-@instrument.Id"
+                                                       data-start-time="@instrument.StartTime.TotalSeconds"
+                                                       src="@Url.Content("~/sounds/" + instrument.InstrumentType.ToLower() + ".mp3")">
+                                                </audio>
+                                            }
                                         </div>
                                     }
                                 </div>
@@ -529,23 +567,30 @@
         </div>
     </div>
 </div>
+
 <!-- Upload Modal -->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">Upload Instrument</h5>
+                <h5 class="modal-title" id="uploadModalLabel">Upload</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
             </div>
             <div class="modal-body">
                 <form id="upload-instrument-form" asp-action="UploadInstrument" asp-route-collaborationId="@Model.Collaboration.Id" method="post" enctype="multipart/form-data">
                     <div class="form-group mb-3">
-                        <label for="instrumentName">Instrument Name</label>
+                        <label for="instrumentName">@Html.Translate("LB_INSTRUMENTNAME")</label>
                         <input type="text" class="form-control" id="instrumentName" name="instrumentName" placeholder="Enter instrument name" required>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="soundFile">Instrument File (.mp3)</label>
+                        <label for="soundFile">@Html.Translate("LB_INSTRUMENTFILE")</label>
                         <input type="file" class="form-control-file" id="soundFile" name="soundFile" accept=".mp3" required>
+                        @if (hasUploadError)
+                        {
+                            <div class="text-danger">
+                                @TempData["UploadError"]
+                            </div>
+                        }
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
                 </form>
@@ -554,6 +599,36 @@
     </div>
 </div>
 
+<div id="chatModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-bottom-right" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Html.Translate("LB_COLLABCHAT")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @await Html.PartialAsync("_ChatPartial", Model.Collaboration)
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="chatComponentButton" class="btn bg-purple text-white rounded floating-button-center">Chat</button>
+
 <form id="antiforgery-form" method="post" style="display:none;">
     <input type="hidden" name="__RequestVerificationToken" value="@antiforgeryTokenSet.RequestToken" />
 </form>
+
+@functions {
+    public string CalculateLeftPosition(TimeSpan startTime, TimeSpan totalDuration)
+    {
+        double positionPercentage = (startTime.TotalSeconds / totalDuration.TotalSeconds) * 100;
+        return positionPercentage.ToString("0.######", CultureInfo.InvariantCulture) + "%";
+    }
+
+    public string CalculateWidth(TimeSpan duration, TimeSpan totalDuration)
+    {
+        double widthPercentage = (duration.TotalSeconds / totalDuration.TotalSeconds) * 100;
+        return widthPercentage.ToString("0.######", CultureInfo.InvariantCulture) + "%";
+    }
+}

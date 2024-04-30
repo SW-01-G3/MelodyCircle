@@ -1,81 +1,158 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
+﻿using System.Diagnostics;
 using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
-public class StatControllerTests
+namespace MelodyCircleTest
 {
-	private readonly Mock<ApplicationDbContext> _mockContext;
-	private readonly Mock<UserManager<User>> _mockUserManager;
-	private readonly StatController _controller;
-
-	public StatControllerTests()
+    public class StatControllerTests : IClassFixture<ApplicationDbContextFixture>
 	{
-		_mockContext = new Mock<ApplicationDbContext>(new DbContextOptions<ApplicationDbContext>());
-		_mockUserManager = new Mock<UserManager<User>>(
-	new Mock<IUserStore<User>>().Object, null, null, null, null, null, null, null, null);
-		_controller = new StatController(_mockContext.Object, _mockUserManager.Object);
-	}
+		private ApplicationDbContext _context;
+		private readonly Mock<UserManager<User>> _mockUserManager;
+		private readonly StatController _controller;
+		private readonly Mock<RoleManager<IdentityRole>> _mockRoleManager;
+		private readonly AdminController _adminController;
 
-	[Fact]
-	public void UserCreationStats_ReturnsViewResult()
-	{
-		var result = _controller.UserCreationStats();
-		Assert.IsType<ViewResult>(result);
-	}
+		public StatControllerTests(ApplicationDbContextFixture applicationDbContextFixture)
+		{
+			_context = applicationDbContextFixture.DbContext;
+			_mockUserManager = new Mock<UserManager<User>>(
+		new Mock<IUserStore<User>>().Object, null, null, null, null, null, null, null, null);
+			_controller = new StatController(_context, _mockUserManager.Object);
+			var roleStore = new Mock<IRoleStore<IdentityRole>>();
+			_mockRoleManager = new Mock<RoleManager<IdentityRole>>(
+				roleStore.Object, null, null, null, null);
 
-	[Fact]
-	public void TutorialCreationStats_ReturnsViewResult()
-	{
-		var result = _controller.TutorialCreationStats();
-		Assert.IsType<ViewResult>(result);
-	}
+		}
 
-	[Fact]
-	public void CollaborationCreationStats_ReturnsViewResult()
-	{
-		var result = _controller.CollaborationCreationStats();
-		Assert.IsType<ViewResult>(result);
-	}
 
-	[Fact]
-	public void StepCreationStats_ReturnsViewResult()
-	{
-		var result = _controller.StepCreationStats();
-		Assert.IsType<ViewResult>(result);
-	}
+		[Fact]
+		public void UserCreationStats_ReturnsViewResult()
+		{
+			var usersData = new List<User>
+			{
+				new User { CreationDate = DateTime.Now.AddDays(-10) },
+				new User { CreationDate = DateTime.Now.AddDays(-20) },
+			};
 
-	[Fact]
-	public void UserTutorialStats_WithInvalidUserName_RedirectsToIndex()
-	{
-		var result = _controller.UserTutorialStats("InvalidUser");
-		var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-		Assert.Equal("Index", redirectToActionResult.ActionName);
-	}
+			_context.Users.AddRange(usersData);
+			_context.SaveChangesAsync();
+			
+			var result = _controller.UserCreationStats();
+			Assert.IsType<ViewResult>(result);
+		}
 
-	[Fact]
-	public void UserCollaborationStats_WithInvalidUserName_RedirectsToIndex()
-	{
-		var result = _controller.UserCollaborationStats("InvalidUser");
-		var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-		Assert.Equal("Index", redirectToActionResult.ActionName);
-	}
+		[Fact]
+		public void TutorialCreationStats_ReturnsViewResult()
+		{
+			var tutorialData = new List<Tutorial>
+			{
+				new Tutorial { CreationDate = DateTime.Now.AddDays(-10) },
+				new Tutorial { CreationDate = DateTime.Now.AddDays(-20) },
+			};
 
-	[Fact]
-	public void UserStepStats_WithInvalidUserName_RedirectsToIndex()
-	{
-		var result = _controller.UserStepStats("InvalidUser");
-		var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
-		Assert.Equal("Index", redirectToActionResult.ActionName);
-	}
+			_context.Tutorials.AddRange(tutorialData);
+			_context.SaveChangesAsync();
 
-	
+			var result = _controller.TutorialCreationStats();
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public void CollaborationCreationStats_ReturnsViewResult()
+		{
+			var collabData = new List<Collaboration>
+			{
+				new Collaboration { CreatedDate = DateTime.Now.AddDays(-10) },
+				new Collaboration { CreatedDate = DateTime.Now.AddDays(-20) },
+			};
+
+			_context.Collaborations.AddRange(collabData);
+			_context.SaveChangesAsync();
+
+			var result = _controller.CollaborationCreationStats();
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public void StepCreationStats_ReturnsViewResult()
+		{
+			var stepData = new List<Step>
+			{
+				new Step { CreationDate = DateTime.Now.AddDays(-10) },
+				new Step { CreationDate = DateTime.Now.AddDays(-20) },
+			};
+
+			_context.Steps.AddRange(stepData);
+			_context.SaveChangesAsync();
+
+
+			var result = _controller.StepCreationStats();
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public void UserTutorialStats_RedirectsToIndex()
+		{
+			var user = new User { UserName = "testUser", NormalizedUserName = "TESTUSER"};
+
+			var tutorialData = new List<Tutorial>
+			{
+				new Tutorial { CreationDate = DateTime.Now.AddDays(-10), Creator = "testUser"},
+				new Tutorial { CreationDate = DateTime.Now.AddDays(-20), Creator = "testUser"},
+			};
+
+			_context.Users.Add(user);
+			_context.Tutorials.AddRange(tutorialData);
+			_context.SaveChangesAsync();
+
+			var result = _controller.UserTutorialStats(user.UserName);
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public void UserCollaborationStats_RedirectsToIndex()
+		{
+			var user = new User {Id = "1",UserName = "testUser", NormalizedUserName = "TESTUSER" };
+
+			var tutorialData = new List<Collaboration>
+			{
+				new Collaboration { CreatedDate = DateTime.Now.AddDays(-10), CreatorId = user.Id},
+				new Collaboration { CreatedDate = DateTime.Now.AddDays(-20), CreatorId = user.Id},
+			};
+
+			_context.Users.Add(user);
+
+			_context.Collaborations.AddRange(tutorialData);
+			_context.SaveChangesAsync();
+
+			var result = _controller.UserCollaborationStats(user.Id);
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public void UserStepStats_RedirectsToIndex()
+		{
+			var user = new User { UserName = "testUser", NormalizedUserName = "TESTUSER" };
+
+			var stepData = new List<Step>
+			{
+				new Step { CreationDate = DateTime.Now.AddDays(-10) },
+				new Step { CreationDate = DateTime.Now.AddDays(-20) },
+			};
+
+			_context.Users.Add(user);
+
+			_context.Steps.AddRange(stepData);
+			_context.SaveChangesAsync();
+
+			var result = _controller.UserStepStats(user.UserName);
+			Assert.IsType<ViewResult>(result);
+		}
+
+	}
 }

@@ -1,4 +1,6 @@
-﻿namespace MelodyCircle.Models
+﻿using MelodyCircle.Models;
+
+namespace MelodyCircle.ViewModels
 {
     public class ArrangementPanelViewModel
     {

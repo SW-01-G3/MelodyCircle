@@ -1,22 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model List<Collaboration>
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
-    <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
-        <option value="None">Nenhum filtro</option>
-        <option value="User">Artista</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Collaboration">Colaboração</option>
-    </select>
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
+	<select name="searchType" class="border-purple rounded bg-white p-1 text-center">
+		<option value="None">@Html.Translate("LB_NOFILTER")</option>
+		<option value="User">@Html.Translate("LB_ARTIST")</option>
+		<option value="Tutorial">@Html.Translate("LB_TUTORIAL")</option>
+		<option value="Collaboration">@Html.Translate("LB_COLLAB")</option>
+	</select>
+    <input type="text" name="searchTerm" placeholder="@Html.Translate("LB_SEARCH")" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
 
-<h2 class="text-center mb-4">Collaboration Search Results</h2>
+<h2 class="text-center mb-4">@Html.Translate("LB_COLLABSEARCHRESULTS")</h2>
 
 @if (Model != null && Model.Any())
 {
@@ -26,13 +28,12 @@
             <h4>@collab.Title</h4>
                 <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collab.Id })">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_JOIN")</button>
                 </form>
         </div>
-
     }
 }
 else
 {
-    <p>Nenhuma colaboração encontrada</p>
+    <p>@Html.Translate("LB_NORESULT")</p>
 }

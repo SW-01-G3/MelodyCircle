@@ -2,6 +2,7 @@
 using MelodyCircle.Data;
 using Microsoft.EntityFrameworkCore;
 using MelodyCircle.Models;
+using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using MelodyCircle.Services;
 using NAudio.Wave;
@@ -22,30 +23,6 @@ namespace MelodyCircle.Controllers
             _hostingEnvironment = hostingEnvironment;
             _notificationService = notificationService;
         }
-
-        // GET: Collaboration
-        //public async Task<IActionResult> Index()
-        //{
-        //    var publicCollaborations = await _context.Collaborations
-        //        .Include(c => c.WaitingUsers)
-        //        //.Where(c => c.AccessMode == AccessMode.Public)
-        //        .ToListAsync();
-
-        //    var userId = _userManager.GetUserId(User);
-
-        //    var userInWaitingList = new Dictionary<Guid, bool>();
-
-        //    foreach (var collaboration in publicCollaborations)
-        //    {
-        //        var isInWaitingList = collaboration.WaitingUsers != null && collaboration.WaitingUsers.Any(u => u.Id.ToString() == userId);
-
-        //        userInWaitingList.Add(collaboration.Id, isInWaitingList);
-        //    }
-
-        //    ViewBag.UserInWaitingList = userInWaitingList;
-
-        //    return View(publicCollaborations);
-        //}
 
         //GET: Collaboration
         public async Task<IActionResult> Index()
@@ -207,7 +184,6 @@ namespace MelodyCircle.Controllers
             if (userToRemove != null)
             {
                 collaboration.ContributingUsers.Remove(userToRemove);   
-
                 await _context.SaveChangesAsync();
             }
 
@@ -216,10 +192,6 @@ namespace MelodyCircle.Controllers
 
         public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
         {
-            //var collaboration = await _context.Collaborations
-            //    .Include(c => c.WaitingUsers)
-            //    .FirstOrDefaultAsync(c => c.Id == id);
-
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
                 .FirstOrDefaultAsync(c => c.Id == collaborationId);
@@ -237,24 +209,14 @@ namespace MelodyCircle.Controllers
             await _context.SaveChangesAsync();
 
             await _notificationService.SendCollaborationInviteAsync(
-               senderId: collaboration.CreatorId, // Assuming creator sends the invite
+               senderId: collaboration.CreatorId, 
                recipientId: userId,
                collaborationId: collaboration.Id,
                collaborationTitle: collaboration.Title,
                collaborationDescription: collaboration.Description);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("EditModeCollab");
         }
-
-        //public async Task<IActionResult> PrivateCollaborations()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var collaborations = await _context.Collaborations
-        //        .Where(c => c.CreatorId == userId && c.AccessMode == AccessMode.Private)
-        //        .ToListAsync();
-
-        //    return PartialView("_PrivateCollaborationsPartial", collaborations);
-        //}
 
         public IActionResult Create()
         {
@@ -273,15 +235,47 @@ namespace MelodyCircle.Controllers
             if (user == null)
                 return NotFound("User not found");
 
-            if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0 || photo == null || photo.Length == 0)
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(collaboration.Title))
             {
                 ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
-                ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
+                hasValidationError = true;
+            }
+
+            if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+            {
+                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                hasValidationError = true;
+            }
+
+            if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+            {
+                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                hasValidationError = true;
+            }
+
+            if (photo == null)
+            {
                 ModelState.AddModelError(nameof(collaboration.Photo), "A foto é obrigatória");
+                hasValidationError = true;
             }
 
             else
             {
+                var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(nameof(collaboration.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                    hasValidationError = true;
+                }
+
+                if (hasValidationError)
+                    return View(collaboration);
+
                 using (var memoryStream = new MemoryStream())
                 {
                     await photo.CopyToAsync(memoryStream);
@@ -296,7 +290,7 @@ namespace MelodyCircle.Controllers
                 _context.Add(collaboration);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return View(collaboration);
         }
@@ -326,26 +320,55 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Collaboration collaboration, IFormFile photo)
         {
+            var allowedExtensions = new List<string> { ".jpeg", ".jpg", ".png" };
+
+            bool hasValidationError = false;
+
             if (!collaboration.IsFinished)
             {
                 if (id != collaboration.Id)
                     return NotFound();
 
-                //if (collaboration.CreatorId != _userManager.GetUserId(User))
-                //    return Forbid();
+                var existingCollaboration = await _context.Collaborations
+                    .Include(c => c.ContributingUsers)
+                    .FirstOrDefaultAsync(c => c.Id == id);
 
-                if (string.IsNullOrEmpty(collaboration.Title) || collaboration.MaxUsers <= 0)
+                if (existingCollaboration == null)
+                    return NotFound();
+
+                if (collaboration.MaxUsers < existingCollaboration.ContributingUsers.Count)
+                {
+                    ModelState.AddModelError(nameof(collaboration.MaxUsers), "O número máximo de utilizadores não pode ser menor que o número de utilizadores contribuintes");
+                    return View(collaboration);
+                }
+
+                if (string.IsNullOrEmpty(collaboration.Title))
                 {
                     ModelState.AddModelError(nameof(collaboration.Title), "O título é obrigatório");
-                    ModelState.AddModelError(nameof(collaboration.MaxUsers), "É necessário pelo menos 1 utilizador como máximo");
+                    hasValidationError = true;
                 }
+
+                if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+                {
+                    ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                    hasValidationError = true;
+                }
+
+                if(hasValidationError)
+                    return View(collaboration);
 
                 else
                 {
-                    var existingCollaboration = await _context.Collaborations.FindAsync(id);
-
                     if (photo != null && photo.Length > 0)
                     {
+                        var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
+
+                        if (!allowedExtensions.Contains(extension))
+                        {
+                            ModelState.AddModelError(nameof(collaboration.Photo), "Só são suportados ficheiros .jpeg, .jpg, .png");
+                            return View(collaboration);
+                        }
+
                         using (var memoryStream = new MemoryStream())
                         {
                             await photo.CopyToAsync(memoryStream);
@@ -362,11 +385,13 @@ namespace MelodyCircle.Controllers
 
                     _context.Update(existingCollaboration);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(EditMode));
                 }
-                return View(collaboration);
             }
-            return Forbid();
+            else
+                return Forbid();
+
+            return View(collaboration);
         }
 
         // GET: /collaboration/delete/{id}
@@ -406,7 +431,7 @@ namespace MelodyCircle.Controllers
             {
                 _context.Collaborations.Remove(collaboration);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return Forbid();
         }
@@ -454,7 +479,7 @@ namespace MelodyCircle.Controllers
                 _context.Update(collaboration);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(EditMode));
             }
             return Forbid();
         }
@@ -513,7 +538,7 @@ namespace MelodyCircle.Controllers
         }
 
         // GET: /Collaboration/ArrangementPanel/{id}
-        public async Task<IActionResult> ArrangementPanel(Guid id)
+        public async Task<IActionResult> ArrangementPanel(Guid id, string error = "")
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.ContributingUsers)
@@ -526,12 +551,15 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
+            if (collaboration.IsFinished)
+                return Forbid();
+
             var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
 
             if (!isContributorOrCreator)
                 return Forbid();
 
-            Track userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
+            var userTrack = collaboration.Tracks.FirstOrDefault(t => t.AssignedUserId.ToString() == userId);
 
             if (userTrack == null && collaboration.ContributingUsers.Any(u => u.Id == userId))
             {
@@ -545,11 +573,11 @@ namespace MelodyCircle.Controllers
                 };
 
                 _context.Tracks.Add(userTrack);
-
                 await _context.SaveChangesAsync();
             }
 
             var assignedTrackNumber = userTrack != null ? collaboration.Tracks.IndexOf(userTrack) + 1 : 1;
+            var uploadedInstruments = await _context.UploadedInstruments.Where(ui => ui.CollaborationId == id).ToListAsync();
 
             var arrangementViewModel = new ArrangementPanelViewModel
             {
@@ -559,14 +587,11 @@ namespace MelodyCircle.Controllers
                 UserTrack = userTrack,
                 AssignedTrackNumber = assignedTrackNumber,
                 AvailableInstruments = InstrumentData.AvailableInstruments,
-                UploadedInstruments = new List<UploadedInstrument>()
+                UploadedInstruments = uploadedInstruments
             };
 
-            var uploadedInstruments = await _context.UploadedInstruments
-                .Where(ui => ui.CollaborationId == id)
-                .ToListAsync();
-
-            arrangementViewModel.UploadedInstruments = uploadedInstruments;
+            if (!string.IsNullOrEmpty(error))
+                TempData["UploadError"] = error;
 
             return View("Painel", arrangementViewModel);
         }
@@ -586,14 +611,16 @@ namespace MelodyCircle.Controllers
                 return Forbid();
 
             TimeSpan duration;
+
             if (dto.IsUploaded)
             {
                 if (!dto.InstrumentId.HasValue)
-                    return BadRequest("Uploaded instrument ID is required.");
+                    return BadRequest("Uploaded instrument ID is required");
 
                 var uploadedInstrument = await _context.UploadedInstruments.FirstOrDefaultAsync(ui => ui.Id == dto.InstrumentId.Value);
+
                 if (uploadedInstrument == null)
-                    return NotFound("Uploaded instrument not found.");
+                    return NotFound("Uploaded instrument not found");
 
                 using (var stream = new MemoryStream(uploadedInstrument.SoundContent))
                 using (var reader = new Mp3FileReader(stream))
@@ -601,6 +628,7 @@ namespace MelodyCircle.Controllers
                     duration = reader.TotalTime;
                 }
             }
+
             else
             {
                 var instrumentFilePath = Path.Combine(_hostingEnvironment.WebRootPath, "sounds", dto.InstrumentName.ToLower() + ".mp3");
@@ -655,11 +683,52 @@ namespace MelodyCircle.Controllers
             return Json(new { success = true, message = "Instrumento removido com sucesso" });
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
+        //{
+        //    var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".mp3" };
+
+        //    if (soundFile != null && soundFile.Length > 0)
+        //    {
+        //        var extension = Path.GetExtension(soundFile.FileName);
+
+        //        if (!allowedExtensions.Contains(extension))
+        //            TempData["UploadError"] = "Only .mp3 files are allowed";
+
+        //        using var memoryStream = new MemoryStream();
+        //        await soundFile.CopyToAsync(memoryStream);
+
+        //        var uploadedInstrument = new UploadedInstrument
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Name = instrumentName,
+        //            SoundContent = memoryStream.ToArray(),
+        //            CollaborationId = collaborationId
+        //        };
+
+        //        _context.UploadedInstruments.Add(uploadedInstrument);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    else
+        //        TempData["UploadError"] = "Please insert a .mp3 file";
+
+        //    return RedirectToAction("ArrangementPanel", new { id = collaborationId });
+        //}
+
         [HttpPost]
         public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
         {
+            var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".mp3" };
+
             if (soundFile != null && soundFile.Length > 0)
             {
+                var extension = Path.GetExtension(soundFile.FileName);
+                if (!allowedExtensions.Contains(extension))
+                {
+                    TempData["UploadError"] = "Only .mp3 files are allowed";
+                    return RedirectToAction("ArrangementPanel", new { id = collaborationId, error = "Only .mp3 files are allowed" });
+                }
+
                 using var memoryStream = new MemoryStream();
                 await soundFile.CopyToAsync(memoryStream);
 
@@ -674,13 +743,11 @@ namespace MelodyCircle.Controllers
                 _context.UploadedInstruments.Add(uploadedInstrument);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true });
+                return RedirectToAction("ArrangementPanel", new { id = collaborationId });
             }
 
-            //return Json(new { success = false, message = "Invalid file." });
-
-            return RedirectToAction("ArrangementPanel", new { id = collaborationId });
-
+            TempData["UploadError"] = "Please insert a .mp3 file";
+            return RedirectToAction("ArrangementPanel", new { id = collaborationId, error = "Please insert a .mp3 file" });
         }
 
         [HttpGet]
@@ -695,6 +762,36 @@ namespace MelodyCircle.Controllers
             }
 
             return File(uploadedInstrument.SoundContent, "audio/mp3");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateCollaborationBpm([FromBody] TrackBpmDto bpmDto)
+        {
+            if (bpmDto.BPM < 60 || bpmDto.BPM > 150)
+                return BadRequest("O BPM deve estar entre 60 e 150");
+
+            var userId = _userManager.GetUserId(User);
+
+            var collaboration = await _context.Collaborations
+                                              .Include(c => c.Tracks)
+                                              .FirstOrDefaultAsync(c => c.Id == bpmDto.CollaborationId);
+
+            if (collaboration == null)
+                return NotFound();
+
+            if (userId != collaboration.CreatorId)
+                return Forbid("Apenas o criador pode alterar os BPMs do painel");
+
+            foreach (var track in collaboration.Tracks)
+            {
+                track.BPM = bpmDto.BPM;
+                _context.Update(track);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private TimeSpan GetAudioDuration(string filePath)
