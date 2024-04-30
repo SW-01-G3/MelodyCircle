@@ -28,25 +28,25 @@
 }   
 <body>
     <header>
-        <nav class="unselectable navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-purple border-bottom box-shadow mb-3">
+        <nav class="unselectable navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-purple border-bottom box-shadow mb-3 ">
             <div class="container-fluid">
-                <a class="navbar-brand text-white me-auto">MelodyCircle</a>
+                <a class="navbar-brand text-white me-auto ">MelodyCircle</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 justify-content-center">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center ">
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (currentController != null && currentController.Equals("Notification"))
                             {
-                                <li class="nav-item rounded-pill bg-white text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-white text-center " style="width: 50px; margin-right: 5px; margin-left: 5px;">
                                     <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif2.svg" alt="Notif." class="icon" /></a>
                                 </li>
                             }
                             else{
-                                <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-lightBlue text-center mb-2" style="width: 50px; margin-right: 5px; margin-left: 5px; ">
                                     <a class="nav-link text-center" asp-controller="Notification" asp-action="Index"><img src="~/img/IconNotif.svg" alt="Notif." class="icon" /></a>
                                 </li>
                             }
@@ -54,20 +54,20 @@
 
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item rounded-pill bg-lightBlue text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                            <li class="nav-item rounded-pill bg-lightBlue text-center mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" asp-area="" asp-controller="Admin" asp-action="Index"><img src="~/img/adminIcon.svg" alt="Admin." class="icon" /></a>
 	                        </li>
                         } 
 
                         @if (currentController != null && currentController.Equals("Home"))
                         {
-                            <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                            <li class="nav-item rounded-pill bg-white mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome2.svg" alt="Home." class="icon fill-lightBlue" /></a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                            <li class="nav-item rounded-pill bg-lightBlue mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/IconHome.svg" alt="Home." class="icon fill-white" /></a>
                             </li>
                         }
@@ -75,13 +75,13 @@
                         
                         @if (currentController != null && currentController.Equals("Search"))
                         {
-                            <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                            <li class="nav-item rounded-pill bg-white mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
 		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar2.svg" alt="Procurar." class="icon fill-white" /></a>
 	                        </li>                            
                         }
                         else
                         {
-	                        <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                            <li class="nav-item rounded-pill bg-lightBlue mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
 		                        <a class="nav-link text-center" asp-action="Index" asp-controller="Search"><img src="~/img/IconProcurar.svg" alt="Procurar." class="icon fill-white" /></a>
 	                        </li>
                         }
@@ -91,25 +91,25 @@
                         {
                             @if (currentController != null && (currentController.Equals("Tutorial") || currentController.Equals("Step")))
                             {
-                                <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-white mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                     <a class="nav-link text-center" asp-area="" asp-controller="Tutorial" asp-action="Index"><img src="~/img/IconProjetos2.svg" alt="Tuto." class="icon" /></a>
                                 </li>
                             }
                             else
                             {
-                                <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-lightBlue mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                     <a class="nav-link text-center" asp-area="" asp-controller="Tutorial" asp-action="Index"><img src="~/img/IconProjetos.svg" alt="Tuto." class="icon" /></a>
                                 </li>
                             }
                             @if (currentController != null && currentController.Equals("Collaboration"))
                             {
-                                <li class="nav-item rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-white mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                     <a class="nav-link text-center" asp-area="" asp-controller="Collaboration" asp-action="Index"><img src="~/img/IconColabs2.svg" alt="Colab." class="icon" /></a>
                                 </li>
                             }
                             else
                             {
-                                <li class="nav-item rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item rounded-pill bg-lightBlue mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                     <a class="nav-link text-center" asp-area="" asp-controller="Collaboration" asp-action="Index"><img src="~/img/IconColabs.svg" alt="Colab." class="icon" /></a>
                                 </li>
                             }
@@ -118,7 +118,7 @@
                         {
                             @if ((currentAction != null && currentAction.Equals("Profile")) || (currentPage != null && currentPage.StartsWith("/Account/Manage/")))
                             {
-                                <li class="nav-item dropdown rounded-pill bg-white" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item dropdown rounded-pill bg-white mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;">
                                     <img src="~/img/IconPerfil2.svg" alt="Home." class="icon fill-lightBlue" style="margin-right: 5px;" />
                                     <img src="~/img/IconDropdown2.svg" alt="Drop." class="icon dropdown-icon fill-purple" />
@@ -138,7 +138,7 @@
                             </li>
                            }
                            else{
-                                <li class="nav-item dropdown rounded-pill bg-lightBlue" style="width: 100px; margin-right: 5px; margin-left: 5px;">
+                                <li class="nav-item dropdown rounded-pill bg-lightBlue mb-2" style="width: 100px; margin-right: 5px; margin-left: 5px;">
                                 <a class="nav-link text-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="position: relative;">
                                     <img src="~/img/IconPerfil.svg" alt="Home." class="icon fill-white" style="margin-right: 5px;" />
                                     <img src="~/img/IconDropdown.svg" alt="Drop." class="icon dropdown-icon" />
@@ -159,7 +159,7 @@
                             }
                             @if (currentController != null && currentController.Equals("User") && currentAction.Equals("ListConnections"))
                             {
-	                            <li id="connectionBtn" class="nav-item rounded-pill bg-white text-center" style="width: 50px; margin-right: 5px; margin-left: 5px;">
+                                <li id="connectionBtn" class="nav-item rounded-pill bg-white text-center mb-2" style="width: 50px; margin-right: 5px; margin-left: 5px;">
 		                            <a class="nav-link text-center" asp-controller="User" asp-action="ListConnections" asp-route-id="@User.Identity.Name"><img src="~/img/IconMensagem2.svg" alt="Conn." class="icon" /></a>
 	                            </li>
                             }
@@ -214,3 +214,4 @@
     });
 
 </script>
+

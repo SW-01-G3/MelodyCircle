@@ -7,6 +7,7 @@
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
 
+
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -73,18 +74,14 @@
                 <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
                 <hr>
                 <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
-                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">Ver comentários</a>
+                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4 text-wrap">Ver comentários</a>
                 @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
                 {
-                        <!-- Botão de remover -->
+                        <!-- Botão de fechar Post -->
                         <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
                         Fechar Post
                         </button>
 
-                    <!-- Botão para acionar o modal -->
-                    <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
-                        Fechar Post
-                    </button>
 
                     <!-- Modal para fechar post -->
                     <div class="modal fade" id="fecharPostModal" tabindex="-1" aria-labelledby="fecharPostModalLabel" aria-hidden="true">
