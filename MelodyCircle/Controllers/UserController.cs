@@ -4,6 +4,7 @@ using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MelodyCircle.Controllers
@@ -308,7 +309,10 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Profile", new { id , error = "The song URI is in an invalid format." });
             }
 
-            if (user.MusicURI.Any(s => s.ToString().Equals(musicUri)))
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(musicUri);
+
+            if (user.MusicURI.Contains(match.Value))
             {
                 //ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
                 TempData["UriError"] = "This song is already on your favorites list.";
@@ -320,8 +324,8 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Profile", new { id ,error = "The song URI is in an invalid format." });
             }
 
-            var regex = new Regex(@"\/track\/(\w+)");
-            var match = regex.Match(musicUri);
+            //var regex = new Regex(@"\/track\/(\w+)");
+            //var match = regex.Match(musicUri);
 
             user.MusicURI.Add(match.Value.ToString());
             await _userManager.UpdateAsync(user);
@@ -381,15 +385,17 @@ namespace MelodyCircle.Controllers
                 return RedirectToAction("Profile", new { id, error = "The song URI is in an invalid format." });
             }
 
-            if (!user.MusicURI.Contains(uri))
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(newMusicUri);
+
+            if (!user.MusicURI.Contains(match.Value))
             {
                 TempData["UriError"] = "This song is already on your favorites list.";
                 return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
             }
 
             user.MusicURI.Remove(uri);
-            var regex = new Regex(@"\/track\/(\w+)");
-            var match = regex.Match(newMusicUri);
+
 
             user.MusicURI.Add(match.Value.ToString());
             await _userManager.UpdateAsync(user);
