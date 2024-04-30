@@ -300,20 +300,24 @@ namespace MelodyCircle.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+
             if (musicUri == null || !IsValidSpotifyUri(musicUri))
             {
-                ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
+                //ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
+                TempData["UriError"] = "The song URI is in an invalid format.";
+                return RedirectToAction("Profile", new { id , error = "The song URI is in an invalid format." });
             }
 
-            if (user.MusicURI.Contains(musicUri))
+            if (user.MusicURI.Any(s => s.ToString().Equals(musicUri)))
             {
-                ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
+                //ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
+                TempData["UriError"] = "This song is already on your favorites list.";
+                return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
             }
 
             if (!ModelState.IsValid)
             {
-     
-                return RedirectToAction("Profile", new { id });
+                return RedirectToAction("Profile", new { id ,error = "The song URI is in an invalid format." });
             }
 
             var regex = new Regex(@"\/track\/(\w+)");
@@ -344,8 +348,8 @@ namespace MelodyCircle.Controllers
 
             if (!user.MusicURI.Contains(uri))
             {
-                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
-                return RedirectToAction("Profile", new { id });
+                TempData["UriError"] = "The song was not found in the favorites list.";
+                return RedirectToAction("Profile", new { id, error = "The song was not found in the favorites list." });
             }
 
             user.MusicURI.Remove(uri);
@@ -373,14 +377,14 @@ namespace MelodyCircle.Controllers
 
             if (newMusicUri == null || !IsValidSpotifyUri(newMusicUri))
             {
-                ModelState.AddModelError("musicUri", "O URI da música está num formato inválido.");
-                return RedirectToAction("Profile", new { id }); 
+                TempData["UriError"] = "The song URI is in an invalid format.";
+                return RedirectToAction("Profile", new { id, error = "The song URI is in an invalid format." });
             }
 
             if (!user.MusicURI.Contains(uri))
             {
-                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
-                return RedirectToAction("Profile", new { id });
+                TempData["UriError"] = "This song is already on your favorites list.";
+                return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
             }
 
             user.MusicURI.Remove(uri);

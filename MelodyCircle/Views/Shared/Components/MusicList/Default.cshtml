@@ -5,6 +5,10 @@
 @using MelodyCircle.ExtensionMethods
 @model MelodyCircle.ViewModels.UserMusicsViewModel
 
+@{
+	var hasUriError = !string.IsNullOrEmpty(TempData["UriError"] as string);
+}
+
 <h2 class="mt-4 text-center">@Html.Translate("LB_FAVOURITE_MUSIC")</h2>
 <ul>
 	@foreach (var music in Model.MusicUri)
@@ -71,6 +75,12 @@
 							<div class="mb-3">
 								<label for="newMusicUri" class="form-label">@Html.Translate("LB_INSERT_NEWURI")</label>
 								<input type="text" class="form-control" id="newMusicUri" name="newMusicUri" placeholder="https://open.spotify.com/track/">
+								@if (hasUriError)
+								{
+									<div class="text-danger">
+										@TempData["UriError"]
+									</div>
+								}
 							</div>
 							<button type="submit" class="mt-2 btn bg-purple text-white border-darkPurple p-auto">@Html.Translate("LB_SAVE")</button>
 						</form>
