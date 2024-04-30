@@ -5,6 +5,7 @@ using MelodyCircle.Models;
 using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using MelodyCircle.Services;
+using Microsoft.AspNetCore.Authorization;
 using NAudio.Wave;
 
 namespace MelodyCircle.Controllers
@@ -88,7 +89,8 @@ namespace MelodyCircle.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> JoinQueueConfirm(Guid id)
+        [Authorize]
+		public async Task<IActionResult> JoinQueueConfirm(Guid id)
         {
             var collaboration = await _context.Collaborations
                 .Include(c => c.WaitingUsers)
