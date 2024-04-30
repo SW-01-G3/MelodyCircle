@@ -216,6 +216,9 @@
   <data name="LB_CONFIRMCLOSEPOST" xml:space="preserve">
     <value>Confirmação de Encerramento de Post</value>
   </data>
+  <data name="LB_CONFIRMCOLLABDELETE" xml:space="preserve">
+    <value>Tem certeza de que deseja eliminar esta colaboração?</value>
+  </data>
   <data name="LB_CONFIRMEMAIL" xml:space="preserve">
     <value>Confirmar Email</value>
   </data>
@@ -623,6 +626,12 @@
   </data>
   <data name="LB_WISHTOJOINCOLLAB" xml:space="preserve">
     <value>Deseja entrar nesta colaboração?</value>
+  </data>
+  <data name="LB_WISHTOREMOVE" xml:space="preserve">
+    <value>Tem a certeza que quer remover?</value>
+  </data>
+  <data name="LB_WISHTOREMOVEPOST" xml:space="preserve">
+    <value>Tem certeza que deseja remover este post?</value>
   </data>
   <data name="LB_WISHTOSUBSCRIBE" xml:space="preserve">
     <value>Deseja inscrever-se neste tutorial?</value>

@@ -216,6 +216,9 @@
   <data name="LB_CONFIRMCLOSEPOST" xml:space="preserve">
     <value>Post Closing Confirmation</value>
   </data>
+  <data name="LB_CONFIRMCOLLABDELETE" xml:space="preserve">
+    <value>Are you sure you want to delete this collaboration?</value>
+  </data>
   <data name="LB_CONFIRMEMAIL" xml:space="preserve">
     <value>Confirm Email</value>
   </data>
@@ -623,6 +626,12 @@
   </data>
   <data name="LB_WISHTOJOINCOLLAB" xml:space="preserve">
     <value>Do you want to join this collaboration?</value>
+  </data>
+  <data name="LB_WISHTOREMOVE" xml:space="preserve">
+    <value>Are you sure you want to remove it?</value>
+  </data>
+  <data name="LB_WISHTOREMOVEPOST" xml:space="preserve">
+    <value>Are you sure you want to remove this post?</value>
   </data>
   <data name="LB_WISHTOSUBSCRIBE" xml:space="preserve">
     <value>Do you want to subscribe to this tutorial?</value>

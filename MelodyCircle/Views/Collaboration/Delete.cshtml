@@ -1,14 +1,16 @@
-﻿@model MelodyCircle.Models.Collaboration
+﻿@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MelodyCircle.Models.Collaboration
 
 @{
-    ViewData["Title"] = "Eliminar Colaboração";
+    ViewData["Title"] = @Html.Translate("LB_DELETECOLLAB");
 }
 
 <div class="border border-purple bg-white text-center p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 mx-auto w-50">
     <div class="d-flex flex-column align-items-center">
-        <h1>Tem certeza de que deseja eliminar esta colaboração?</h1>
+        <h1> @Html.Translate("LB_CONFIRMCOLLABDELETE")</h1>
 
-        <h4>Detalhes da Colaboração:</h4>
+        <h4>@Html.Translate("LB_DETAILS"):</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-2">
@@ -23,7 +25,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <input type="submit" value="Eliminar" class="btn btn-danger" />
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                <a asp-action="Index" class="btn btn-secondary">@Html.Translate("LB_CANCEL")</a>
             </div>
         </form>
     </div>

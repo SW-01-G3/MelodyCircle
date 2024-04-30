@@ -8,7 +8,7 @@
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = @Html.Translate("LB_HOMEPAGE");
 }
 
 @section scripts {
@@ -73,17 +73,12 @@
                 <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
                 <hr>
                 <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
-                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">Ver comentários</a>
+                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">@Html.Translate("LB_SEECOMMENTS")</a>
                 @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
                 {
-                        <!-- Botão de remover -->
-                        <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
-                        Fechar Post
-                        </button>
-
                     <!-- Botão para acionar o modal -->
                     <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
-                        Fechar Post
+	                    @Html.Translate("LB_CLOSEPOST")
                     </button>
 
                     <!-- Modal para fechar post -->
@@ -91,18 +86,18 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="fecharPostModalLabel">Fechar Post</h5>
+                                    <h5 class="modal-title" id="fecharPostModalLabel">@Html.Translate("LB_CLOSEPOST")</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <!-- Mensagem de confirmação -->
-                                    <p>Tem certeza que deseja remover este post?</p>
+                                    <p>@Html.Translate("LB_WISHTOREMOVEPOST")</p>
                                     <!-- Formulário para remover post -->
                                     <form asp-controller="Forum" asp-action="ClosePost" method="post">
                                         <input type="hidden" id="postId" name="id" value="@item.Id">
                                         <div class="mb-3">
                                             <!-- Botão de confirmação -->
-                                            <button type="submit" class="btn bg-danger text-white rounded">Remover</button>
+                                            <button type="submit" class="btn bg-danger text-white rounded">@Html.Translate("LB_REMOVE")</button>
                                         </div>
                                         <!-- Para proteção CSRF -->
                                         @Html.AntiForgeryToken()
@@ -119,7 +114,7 @@
             </div>
         }
     </div>
-    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button>
+    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">@Html.Translate("LB_SEEMORE")</button>
 }
 
 @if (User.Identity.IsAuthenticated)

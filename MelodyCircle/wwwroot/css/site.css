@@ -356,10 +356,9 @@ body {
     border-radius: 6px;
     padding: 5px;
     z-index: 255;
-    bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .instrument-on-track {
