@@ -24,9 +24,9 @@
 
 	<div class="col-8 mt-4">
 @* 		<h6>Tutoriais:  </h6> *@
-        <a class="btn btn-primary" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_TUTCREATIONSTATS")</a>
-        <a class="btn btn-primary" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_STEPCREATIONSTATS")</a>
-        <a class="btn btn-primary" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">@Html.Translate("LB_COLLABCREATIONSTATS")</a>
+        <a class="btn bg-purple text-white my-2" href="@Url.Action("UserTutorialStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_TUTCREATIONSTATS")</a>
+        <a class="btn bg-purple text-white my-2" href="@Url.Action("UserStepStats", "Stat", new { userName = User.Identity.Name})">@Html.Translate("LB_STEPCREATIONSTATS")</a>
+        <a class="btn bg-purple text-white my-2" href="@Url.Action("UserCollaborationStats", "Stat", new { userName = UserManager.GetUserId(User)})">@Html.Translate("LB_COLLABCREATIONSTATS")</a>
 	</div>
 </div>
 
