@@ -57,7 +57,6 @@
                 <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
 				<form asp-action="Comment" asp-route-id="@Model.Id" method="post">
 					<div class="form-group">
-						@* <textarea asp-for="Content" class="form-control"></textarea> *@
                         <input type="hidden" asp-for="Content" id="editContent" />
                         <div id="editor">
                             <p>Hello, <strong>World</strong></p>
