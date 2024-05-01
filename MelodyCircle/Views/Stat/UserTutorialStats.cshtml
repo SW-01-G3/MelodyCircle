@@ -4,9 +4,15 @@
     var tutorialCounts = ViewBag.TutorialCounts as IEnumerable<int>;
 }
 
-<h1> @Html.Translate("LB_USERCREATIONTUTOSTATS") - @ViewBag.UserName</h1>
 
-<canvas id="tutorialCreationChart" width="800" height="400"></canvas>
+<div class="container text-center border-purple bg-white p-5 mx-auto w-50 row d-flex justify-content-center align-items-center">
+    <h1> @Html.Translate("LB_USERCREATIONTUTOSTATS") - @ViewBag.UserName</h1>
+
+    <div class="w-100">
+        <canvas id="tutorialCreationChart" width="800" height="400"></canvas>
+    </div>
+</div>
+
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

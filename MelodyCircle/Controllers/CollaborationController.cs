@@ -217,7 +217,7 @@ namespace MelodyCircle.Controllers
                collaborationTitle: collaboration.Title,
                collaborationDescription: collaboration.Description);
 
-            return RedirectToAction("EditModeCollab");
+            return RedirectToAction("EditMode");
         }
 
         public IActionResult Create()

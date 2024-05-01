@@ -150,6 +150,9 @@
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Adicionar Música</value>
   </data>
+  <data name="LB_ADMIN" xml:space="preserve">
+    <value>Administrador</value>
+  </data>
   <data name="LB_ALLOWENTRY" xml:space="preserve">
     <value>Permitir Entrada</value>
   </data>

@@ -8,10 +8,15 @@
 	ViewData["Title"] = @Html.Translate("LB_USERCREATIONCOLLABSTATS");
 }
 
+<div class="container text-center border-purple bg-white p-5 mx-auto w-50 row d-flex justify-content-center align-items-center">
+    <h1>@Html.Translate("LB_USERCREATIONCOLLABSTATS") - @ViewBag.UserName</h1>
 
-<h1>@Html.Translate("LB_USERCREATIONCOLLABSTATS") - @ViewBag.UserName</h1>
+    <div class="w-100">
+        <canvas id="collaborationCreationChart" width="800" height="400"></canvas>
+    </div>
+</div>
 
-<canvas id="collaborationCreationChart" width="800" height="400"></canvas>
+
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

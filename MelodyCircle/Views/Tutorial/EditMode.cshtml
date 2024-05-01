@@ -27,7 +27,7 @@
     </script>
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -87,9 +87,10 @@
         else
         {
 	        <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
-            <h1>@Html.Translate("LB_NOAVAVAILABLETUTO")</h1>
+            <h3>@Html.Translate("LB_NOAVAVAILABLETUTO")</h3>
 	        </div>
         }
+
 
 </div>
 <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">@Html.Translate("LB_SEEMORE")</button>
@@ -99,6 +100,8 @@
 		?
 	</button>
 </div>
+
+
 
 <div class="text-end">
 	@if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
