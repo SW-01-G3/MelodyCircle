@@ -26,9 +26,9 @@ namespace MelodyCircle.Controllers
         }
 
         //GET: Collaboration
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index()
         {
-            return RedirectToAction("EditMode");
+            return Task.FromResult<IActionResult>(RedirectToAction("EditMode"));
         }
 
         // GET: Collaboration/EditModeCollab
@@ -486,16 +486,6 @@ namespace MelodyCircle.Controllers
             return Forbid();
         }
 
-        private async Task<ActionResult<Collaboration>> GetCollaboration(Guid id)
-        {
-            var collaboration = await _context.Collaborations.FindAsync(id);
-
-            if (collaboration == null)
-                return NotFound();
-
-            return collaboration;
-        }
-
         public async Task<IActionResult> RateCollaboration(Guid id, int rating)
         {
             if (rating < 0 || rating > 10)
@@ -685,38 +675,6 @@ namespace MelodyCircle.Controllers
             return Json(new { success = true, message = "Instrumento removido com sucesso" });
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
-        //{
-        //    var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".mp3" };
-
-        //    if (soundFile != null && soundFile.Length > 0)
-        //    {
-        //        var extension = Path.GetExtension(soundFile.FileName);
-
-        //        if (!allowedExtensions.Contains(extension))
-        //            TempData["UploadError"] = "Only .mp3 files are allowed";
-
-        //        using var memoryStream = new MemoryStream();
-        //        await soundFile.CopyToAsync(memoryStream);
-
-        //        var uploadedInstrument = new UploadedInstrument
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Name = instrumentName,
-        //            SoundContent = memoryStream.ToArray(),
-        //            CollaborationId = collaborationId
-        //        };
-
-        //        _context.UploadedInstruments.Add(uploadedInstrument);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    else
-        //        TempData["UploadError"] = "Please insert a .mp3 file";
-
-        //    return RedirectToAction("ArrangementPanel", new { id = collaborationId });
-        //}
-
         [HttpPost]
         public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
         {
@@ -805,6 +763,16 @@ namespace MelodyCircle.Controllers
         private bool CollaborationExists(Guid id)
         {
             return _context.Collaborations.Any(e => e.Id == id);
+        }
+
+        private async Task<ActionResult<Collaboration>> GetCollaboration(Guid id)
+        {
+            var collaboration = await _context.Collaborations.FindAsync(id);
+
+            if (collaboration == null)
+                return NotFound();
+
+            return collaboration;
         }
     }
 }

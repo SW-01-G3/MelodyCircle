@@ -202,30 +202,39 @@
 
         function createTimeline() {
             const tracks = document.querySelectorAll('.track');
-            const trackLength = 240;
+            const trackLengthInSeconds = 240;
             const interval = 30;
 
             tracks.forEach(track => {
                 const timeline = document.createElement('div');
+
                 timeline.className = 'timeline';
 
-                for (let time = 0; time <= trackLength; time += interval) {
+                for (let time = 0; time <= trackLengthInSeconds; time += interval) {
                     const timeMarker = document.createElement('div');
+
                     timeMarker.className = 'time-marker';
-                    timeMarker.style.width = `${(interval / trackLength) * 100}%`;
+                    timeMarker.style.width = `${(interval / trackLengthInSeconds) * 100}%`;
                     timeMarker.style.position = 'absolute';
-                    timeMarker.style.left = `${(time / trackLength) * 100}%`;
+                    timeMarker.style.left = `${(time / trackLengthInSeconds) * 100}%`;
+
+                    const minutes = Math.floor(time / 60);
+                    const seconds = time % 60;
+                    let label = minutes > 0 ? `${minutes}m` : '';
+
+                    label += seconds > 0 ? `${seconds}s` : '';
+
+                    if (label === '') label = '0min';
 
                     const markerLabel = document.createElement('span');
-                    markerLabel.textContent = `${time / 60}min`;
+
+                    markerLabel.textContent = label;
                     markerLabel.classList.add("marker-label");
 
                     timeMarker.appendChild(markerLabel);
                     timeline.appendChild(timeMarker);
                 }
-
                 const trackContainer = track.parentNode;
-
                 trackContainer.insertBefore(timeline, track);
             });
         }
@@ -488,29 +497,36 @@
             <!-- Painel de Arranjo -->
             <div id="arrangement-panel">
                 <div class="header">
-                    <button id="play-button">Play</button>
-                    <button id="pause-button">Pause</button>
-                    <button id="restart-button">Restart</button>
+                    <button id="play-button" class="control-button">
+                        <img src="@Url.Content("~/img/painel-play.svg")" alt="Play" />
+                    </button>
+                    <button id="pause-button" class="control-button">
+                        <img src="@Url.Content("~/img/painel-pause.svg")" alt="Pause" />
+                    </button>
+                    <button id="restart-button" class="control-button">
+                        <img src="@Url.Content("~/img/painel-restart.svg")" alt="Restart" />
+                    </button>
 
                     @if (user.Id == Model.Collaboration.CreatorId)
                     {
-                        <span>
+                        <span class="bpm-style-text">
                             BPM:
                             <input type="number" id="bpm" value="@(Model.UserTrack?.BPM ?? 102)" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
                         </span>
                     }
                     else
                     {
-                        <span>BPM: @(Model.UserTrack?.BPM ?? 102)</span>
+                        <span class="bpm-style-text">BPM:</span>
+                        <span>@(Model.UserTrack?.BPM ?? 102)</span>
                     }
 
                     @if (userHasTrack)
                     {
-                        <span>@Html.Translate("LB_YOURTRACK"): @assignedTrackNumber</span>
+                        <span class="assignedTrackNumber">@Html.Translate("LB_YOURTRACK"): @assignedTrackNumber</span>
                     }
                     else
                     {
-                        <span>@Html.Translate("LB_NOTRACK")</span>
+                        <span class="assignedTrackNumber">@Html.Translate("LB_NOTRACK")</span>
                     }
                 </div>
 
@@ -541,7 +557,7 @@
                                         <div class="instrument-on-track removable-instrument" data-instrument-id="@instrument.Id"
                                              style="left: @CalculateLeftPosition(instrument.StartTime, track.Duration); width: @CalculateWidth(instrument.Duration, track.Duration);">
                                             <span>@instrument.InstrumentType</span>
-                                            @* Check if the instrument has an InstrumentId which implies it is uploaded *@
+
                                             @if (instrument.InstrumentId != null)
                                             {
                                                 <audio preload="auto" id="audio-@instrument.Id"
