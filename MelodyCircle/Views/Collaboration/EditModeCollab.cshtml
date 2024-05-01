@@ -16,88 +16,97 @@
 
 <div class="container">
     
+@if (Model != null && Model.Any())
+{
+	@foreach (var collaboration in Model)
+	{
+		<div class="row rounded border border-purple bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
+			<div class="col-2">
+				@if (collaboration.Photo != null && collaboration.Photo.Length > 0)
+				{
+					<img src="data:@collaboration.PhotoContentType;base64,@Convert.ToBase64String(collaboration.Photo)" alt="Foto da Colaboração" class="img-fluid rounded" style="max-height: 50px; max-width: 50px;"/>
+				}
+				else
+				{
+					<div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
+				}
+			</div>
+			<div class="col-2 px-3 title-width">@collaboration.Title (@collaboration.AccessMode.ToString())</div>
 
-    @foreach (var collaboration in Model)
-    {
-        <div class="row rounded border border-purple bg-white my-3 py-3 px-3 d-flex align-items-center justify-content-between w-100">
-            <div class="col-2">
-                @if (collaboration.Photo != null && collaboration.Photo.Length > 0)
-                {
-                    <img src="data:@collaboration.PhotoContentType;base64,@Convert.ToBase64String(collaboration.Photo)" alt="Foto da Colaboração" class="img-fluid rounded" style="max-height: 50px; max-width: 50px;" />
-                }
-                else
-                {
-                    <div class="bg-darkPurple rounded" style="height: 50px; width: 50px;"></div>
-                }
-            </div>
-            <div class="col-2 px-3 title-width">@collaboration.Title (@collaboration.AccessMode.ToString())</div>
+			@{
+				double averageRating = Context.CollaborationRating
+					.Where(u => u.CollaborationId.Equals(collaboration.Id))
+					.ToList()
+					.CalculateAverageRating();
 
-            @{
-                double averageRating = Context.CollaborationRating
-                .Where(u => u.CollaborationId.Equals(collaboration.Id))
-                .ToList()
-                .CalculateAverageRating();
+				int roundedRating = (int)Math.Round(averageRating, MidpointRounding.AwayFromZero);
+				int fullStars = roundedRating / 2;
+				int halfStar = roundedRating % 2;
+				int emptyStars = 5 - fullStars - halfStar;
+			}
 
-                int roundedRating = (int)Math.Round(averageRating, MidpointRounding.AwayFromZero);
-                int fullStars = roundedRating / 2;
-                int halfStar = roundedRating % 2;
-                int emptyStars = 5 - fullStars - halfStar;
-            }
+			<div class="col-2 ">
+				<div class="star-rating ">
+					@for (int i = 0; i < fullStars; i++)
+					{
+						<img src="~/img/star-filled-svgrepo-com.svg"/>
+					}
+					@if (halfStar > 0)
+					{
+						<img src="~/img/star-half-svgrepo-com.svg"/>
+						fullStars++;
+					}
+					@for (int i = fullStars; i < 5; i++)
+					{
+						<img src="~/img/estrelaEmpty.svg"/>
+					}
+				</div>
+			</div>
+			<div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
+			<div class="col-2 px-3">@Html.Translate("LB_FINALIZED"): @(collaboration.IsFinished ? @Html.Translate("LB_YES") : @Html.Translate("LB_NO"))</div>
+			<br/>
 
-            <div class="col-2 ">
-                <div class="star-rating ">
-                    @for (int i = 0; i < fullStars; i++)
-                    {
-                        <img src="~/img/star-filled-svgrepo-com.svg" />
-                    }
-                    @if (halfStar > 0)
-                    {
-                        <img src="~/img/star-half-svgrepo-com.svg" />
-                        fullStars++;
-                    }
-                    @for (int i = fullStars; i < 5; i++)
-                    {
-                        <img src="~/img/estrelaEmpty.svg" />
-                    }
-                </div>
-            </div>
-            <div class="col-2 px-3">@collaboration.CreatedDate.ToString("dd-MM-yyyy")</div>
-            <div class="col-2 px-3">@Html.Translate("LB_FINALIZED"): @(collaboration.IsFinished ? @Html.Translate("LB_YES") : @Html.Translate("LB_NO"))</div>
-            <br />
+			<div class="col-2 px-3 ">
+				@if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+				{
+					if (!collaboration.IsFinished)
+					{
+						<a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/edit.svg"/> </a>
+					}
 
-            <div class="col-2 px-3 ">
-                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    if (!collaboration.IsFinished)
-                    {
-                        <a href="@Url.Action("Edit", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/edit.svg" /> </a>
-                    }
-                    <a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/delete.svg" /> </a>
-                }
-            </div>
-            <div class="col-2 px-3 w-100 align-items-center pt-2 ">
-                @if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    if (collaboration.AccessMode == AccessMode.Public)
-                    {
-                        <a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_WAITINGLIST")</a>
-                    }
+					<a href="@Url.Action("Delete", "Collaboration", new { id = collaboration.Id })" class="btn text-white"><img src="~/img/delete.svg"/> </a>
+				}
+			</div>
+			<div class="col-2 px-3 w-100 align-items-center pt-2 ">
+				@if (User.Identity.IsAuthenticated && collaboration.CreatorId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+				{
+					if (collaboration.AccessMode == AccessMode.Public)
+					{
+						<a href="@Url.Action("WaitingList", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_WAITINGLIST")</a>
+					}
 
-                    <a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_CONTRIBUTINGLIST")</a>
-                    
-                    if (!collaboration.IsFinished)
-                    {
-                        <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_FINALIZE")</a>
-                    }
-                }
+					<a href="@Url.Action("ContributingUsers", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_CONTRIBUTINGLIST")</a>
 
-                @* @if (!collaboration.IsFinished)
+					if (!collaboration.IsFinished)
+					{
+						<a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_FINALIZE")</a>
+					}
+				}
+
+				@* @if (!collaboration.IsFinished)
                 { *@
-                    <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_OPENPANNEL")</a>
-                @* } *@
-            </div>
-        </div>
-    }
+				<a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_OPENPANNEL")</a>
+				@* } *@
+			</div>
+		</div>
+	}
+}
+	else
+	{
+		<div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+			<h3>@Html.Translate("LB_NOAVAVAILABLECOLLABS")</h3>
+		</div>
+	}
 </div>
 
 <a class="btn bg-purple text-white rounded-circle floating-button z-3" href="/Collaboration/Create">+</a>
@@ -110,7 +119,7 @@
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Nesta página aparecerá as colaborações disponiveis, bem como as suas informações e o utilizador poderá aceder à edição e remoção da colaboração, à lista de espera, à lista de colaboradores, finalizar e abrir o painel de arranjo  </p>">
+            title="<p>@Html.Translate("TT_EDITCOLLABMODE") </p>">
         ?
     </button>
 </div>

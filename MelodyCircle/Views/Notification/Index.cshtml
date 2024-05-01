@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
 @using MelodyCircle.ExtensionMethods
+@using Microsoft.IdentityModel.Tokens
 
 @model List<Notification>
 @inject ApplicationDbContext Context
@@ -45,7 +46,7 @@
 
 <div class="container d-flex justify-content-center">
 
-        @if (Model != null || Model.Count > 0)
+        @if (!Model.IsNullOrEmpty() || Model.Count > 0)
         {
             @foreach (var notification in Model)
             {
@@ -76,14 +77,16 @@
         }
         else
         {
-            <h3>Não existem Notificações</h3>
+	        <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+				<h3>@Html.Translate("LB_NONOTIFS")</h3>
+	        </div>
         }
 </div>
 
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Nesta página pode visualizar as notificações do sistema </p>">
+            title="<p>@Html.Translate("TT_NOTIFS")</p>">
         ?
     </button>
 </div>
