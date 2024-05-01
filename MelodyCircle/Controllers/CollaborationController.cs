@@ -543,8 +543,8 @@ namespace MelodyCircle.Controllers
 
             var userId = _userManager.GetUserId(User);
 
-            if (collaboration.IsFinished)
-                return Forbid();
+            //if (collaboration.IsFinished)
+            //    return Forbid();
 
             var isContributorOrCreator = collaboration.ContributingUsers.Any(u => u.Id == userId) || collaboration.CreatorId == userId;
 
