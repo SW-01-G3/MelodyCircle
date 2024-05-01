@@ -480,15 +480,21 @@
                 <!-- Botão de Upload de Instrumento -->
                 @if (Model.Collaboration.IsFinished)
                 {
-                    <button type="button" id="upload-button" class="upload-button opacity-50" data-bs-toggle="modal" data-bs-target="#uploadModal" disabled>Upload</button>
+                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4 opacity-50" data-bs-toggle="modal" data-bs-target="#uploadModal" disabled>Upload</button>
                 } else
                 {
-                    <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
                 }
 
                 <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
 	                @Html.Translate("LB_DESCRIPTION")
                 </button>
+
+                <div class="d-flex justify-content-center align-items-center m-3">
+                    <button type="button" onclick="history.back();" class="btn bg-purple text-white">
+                        Voltar Atrás
+                    </button>
+                </div>
 
                 <div class="modal fade" id="collabDescriptionModal-@Model.Collaboration.Id" tabindex="-1" aria-labelledby="collabDescriptionLabel-@Model.Collaboration.Id" aria-hidden="true">
                     <div class="modal-dialog">
@@ -629,10 +635,14 @@
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
                 </form>
+
+
             </div>
         </div>
     </div>
 </div>
+
+
 
 <div id="chatModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-bottom-right" role="document">

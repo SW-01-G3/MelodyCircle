@@ -1,20 +1,26 @@
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
+@using MelodyCircle.ExtensionMethods
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
+
+
 
 @{
     ViewData["Title"] = "Admin Panel";
 }
 
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 <div class="d-flex justify-content-center align-items-center">
 	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasStatistics" aria-controls="offcanvasStatistics">
-		<img src="~/img/statistic.svg" width="32" height="32" class="mt-5 w-100" />
+		<img src="~/img/statistic.svg" width="32" height="32" class=" w-100" />
 	</button>
 	<button type="button" class="border-0 bg-lightBlue unselectable align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
-		<img src="~/img/add.svg" width="32" height="32" class="mt-5 w-100" />
+		<img src="~/img/add.svg" width="32" height="32" class=" w-100" />
 	</button>
 </div>
 

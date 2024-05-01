@@ -56,7 +56,7 @@
     </script>
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -80,10 +80,9 @@
         else
         {
 	        <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
-            <h1>@Html.Translate("LB_NOAVAVAILABLETUTO")</h1>
+            <h3>@Html.Translate("LB_NOAVAVAILABLETUTO")</h3>
 	        </div>
         }
-    
 </div>
 <div class="text-end">
 	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
@@ -91,6 +90,8 @@
 		?
 	</button>
 </div>
+
+
 
 <div class="text-end">
 	@if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))

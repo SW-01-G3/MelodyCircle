@@ -180,6 +180,8 @@
             {
                 <p class="mt-3">@Html.Translate("LB_NOCONTENT")</p>
             }
+
+
         </div>
         @* END OF LATERAL MENU *@
 
@@ -192,6 +194,7 @@
                 </div>
             }
         }
+
     </aside>
 
     @* CENTRAL MENU *@
@@ -216,12 +219,15 @@
 
                     <section id="stepDiv" name="stepDiv" class="border-purple bg-white rounded-3 py-2 px-1"></section>
                 </div>
+
             }
         </div>
     </div>
     @* END OF CENTRAL MENU *@
 
     <input type="hidden" id="editor" name="editor" value="" />
+
+
 </div>
 
 <div class="text-end">
@@ -229,6 +235,12 @@
             title="<p>@Html.Translate("TT_STEP")</p>">
         ?
     </button>
+</div>
 
-    <a asp-action="Index" asp-controller="Tutorial">@Html.Translate("LB_GOBACKTOTUTOLIST")</a>
+
+
+<div class="d-flex justify-content-center align-items-center">
+    <button type="button" onclick="history.back();" class="btn bg-purple text-white">
+        Voltar Atrás
+    </button>
 </div>

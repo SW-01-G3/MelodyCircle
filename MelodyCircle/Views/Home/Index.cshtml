@@ -71,11 +71,8 @@
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">@Html.Translate("LB_WELCOME").</h1>
-    <hr />
-    <br />
-</div>
+
+    <h1 class="text-center">@Html.Translate("LB_WELCOME")</h1>
 
 @if (Model != null && Model.Any())
 {
@@ -85,6 +82,7 @@
     @* <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button> *@
     <div id="getPartial"></div>
 }
+
 
 @if (User.Identity.IsAuthenticated)
 {

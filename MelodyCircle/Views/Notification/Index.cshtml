@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data;
 @using MelodyCircle.ExtensionMethods
+
 @model List<Notification>
 @inject ApplicationDbContext Context
 
@@ -40,41 +41,45 @@
 
 <input type="hidden" id="editor" />
 
-<h2 class="text-center">@Html.Translate("LB_NOTIFS")</h2>
+<h1 class="text-center">@Html.Translate("LB_NOTIFS")</h1>
 
-@if (Model != null || Model.Count > 0)
-{
-    @foreach (var notification in Model)
-    {
-       
-        @if (notification.Status == NotificationStatus.Pending)
+<div class="container d-flex justify-content-center">
+
+        @if (Model != null || Model.Count > 0)
         {
-            <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-25 justify-content-center align-items-center">
-                <h3>@Html.Translate("LB_INVITECOLLAB")</h3>
-                <p><strong>@notification.CollaborationTitle</strong></p>
-                <div name="collaborationDescription"></div>
+            @foreach (var notification in Model)
+            {
+       
+                @if (notification.Status == NotificationStatus.Pending)
+                {
+                    <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-25 justify-content-center align-items-center">
+                        <h3>@Html.Translate("LB_INVITECOLLAB")</h3>
+                        <p><strong>@notification.CollaborationTitle</strong></p>
+                        <div name="collaborationDescription"></div>
 
-                @{
-                    var username = Context.Users.Where(s => s.Id.ToString() == notification.SenderId).FirstOrDefault().UserName;
+                        @{
+                            var username = Context.Users.Where(s => s.Id.ToString() == notification.SenderId).FirstOrDefault().UserName;
+                        }
+
+                        <p>@Html.Translate("LB_THEUSER") <strong>@username</strong> @Html.Translate("LB_ISINVITING")</p>
+                        <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
+                            <input type="hidden" name="notificationId" value="@notification.Id" />
+                            <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_ACCEPT")</button>
+                        </form>
+                        <form asp-action="DeclineInvite" asp-controller="Notification" method="post" class="pt-2">
+                            <input type="hidden" name="notificationId" value="@notification.Id" />
+                            <button type="submit" class="btn btn-danger">@Html.Translate("LB_DECLINE")</button>
+                        </form>
+                    </div>
                 }
-
-                <p>@Html.Translate("LB_THEUSER") <strong>@username</strong> @Html.Translate("LB_ISINVITING")</p>
-                <form asp-action="AcceptInvite" asp-controller="Notification" method="post">
-                    <input type="hidden" name="notificationId" value="@notification.Id" />
-                    <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_ACCEPT")</button>
-                </form>
-                <form asp-action="DeclineInvite" asp-controller="Notification" method="post" class="pt-2">
-                    <input type="hidden" name="notificationId" value="@notification.Id" />
-                    <button type="submit" class="btn btn-danger">@Html.Translate("LB_DECLINE")</button>
-                </form>
-            </div>
+            }
         }
-    }
-}
-else if (Model.Count > 0 && Model.Any(s => s.Status == NotificationStatus.Pending))
-{
-    <h2>@Html.Translate("LB_NONOTIFS")</h2>
-}
+        else
+        {
+            <h3>Não existem Notificações</h3>
+        }
+</div>
+
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
@@ -82,4 +87,3 @@ else if (Model.Count > 0 && Model.Any(s => s.Status == NotificationStatus.Pendin
         ?
     </button>
 </div>
-
