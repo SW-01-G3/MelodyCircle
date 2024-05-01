@@ -48,7 +48,6 @@
 </div>
 
 
-
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto my-4 w-50">
     @if (!Model.IsClosed)
     {
@@ -70,8 +69,11 @@
 					<div class="form-group">
                         <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
 					</div>
-			    </form>
-			}
+            </form>
+        } else
+        {
+            <input type="hidden" id="editor" />
+        }
     }
     else
     {
