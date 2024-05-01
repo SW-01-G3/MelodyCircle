@@ -13,6 +13,10 @@
     var hasUriError = !string.IsNullOrEmpty(TempData["UriError"] as string);
 }
 
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+
+
 <div class=" text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
 
     <div class="col-sm-3 justify-content-center align-items-center ">
@@ -246,6 +250,8 @@
                 });
             </script>
 
+
+
 	    </div>
     }
 </div>
@@ -308,6 +314,7 @@
 	        User = Model.User, 
 	        MusicUri = Model.User.MusicURI.ToList()
         })
+
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
