@@ -12,11 +12,16 @@
             editor.setContents(contents);
             return editor.root.innerHTML;
         }
-
-        const quill = new Quill('#editor', {
-            placeholder: 'Compose an epic...',
-            theme: 'snow',
-        });
+        let userIsAuth = @(User.Identity.IsAuthenticated ? Html.Raw("true") : Html.Raw("false"));
+        let quill; 
+        if (userIsAuth) {
+            quill = new Quill('#editor', {
+                placeholder: 'Compose an epic...',
+                theme: 'snow',
+            });
+        } else {
+            quill = new Quill('#editor');
+        }
         const quillDefaultHTML = "<p>Hello, <strong>World</strong></p>";
         let contentDiv = document.getElementById("contentDiv");
         let contentData = @Html.Raw(@Model.Content);
