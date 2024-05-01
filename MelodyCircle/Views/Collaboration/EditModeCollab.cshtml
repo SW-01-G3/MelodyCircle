@@ -90,11 +90,7 @@
                         <a href="@Url.Action("Finish", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_FINALIZE")</a>
                     }
                 }
-
-                @* @if (!collaboration.IsFinished)
-                { *@
-                    <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_OPENPANNEL")</a>
-                @* } *@
+                <a href="@Url.Action("ArrangementPanel", "Collaboration", new { id = collaboration.Id })" class="btn bg-purple text-white">@Html.Translate("LB_OPENPANNEL")</a>
             </div>
         </div>
     }

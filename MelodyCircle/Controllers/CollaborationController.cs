@@ -247,24 +247,30 @@ namespace MelodyCircle.Controllers
                 hasValidationError = true;
             }
 
-            if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
+            if (string.IsNullOrEmpty(collaboration.Description))
             {
-                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                ModelState.AddModelError(nameof(collaboration.Description), "A descrição não pode ser vazia");
                 hasValidationError = true;
             }
 
             if (collaboration.MaxUsers <= 0 || collaboration.MaxUsers > 10)
             {
-                ModelState.AddModelError(nameof(collaboration.Description), "O range de utilizador são de 1 a 10");
+                ModelState.AddModelError(nameof(collaboration.MaxUsers), "O range de utilizador são de 1 a 10");
                 hasValidationError = true;
             }
+
+            if (collaboration.AccessPassword == null || collaboration.AccessPassword.Length == 0)
+            {
+                ModelState.AddModelError(nameof(collaboration.AccessPassword), "A password de acesso não pode ser vazia");
+                hasValidationError = true;
+            }
+
 
             if (photo == null)
             {
                 ModelState.AddModelError(nameof(collaboration.Photo), "A foto é obrigatória");
                 hasValidationError = true;
             }
-
             else
             {
                 var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
@@ -356,7 +362,13 @@ namespace MelodyCircle.Controllers
                     hasValidationError = true;
                 }
 
-                if(hasValidationError)
+                if (collaboration.AccessPassword == null || collaboration.AccessPassword.Length == 0)
+                {
+                    ModelState.AddModelError(nameof(collaboration.AccessPassword), "A password de acesso não pode ser vazia");
+                    hasValidationError = true;
+                }
+
+                if (hasValidationError)
                     return View(collaboration);
 
                 else

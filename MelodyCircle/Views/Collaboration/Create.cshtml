@@ -50,7 +50,7 @@
                 <div id="editor">
                     <p>Hello, <strong>World</strong></p>
                 </div>
-                @* <textarea class="form-control border-purple" id="Description" name="Description">@Model.Description</textarea> *@
+               <span asp-validation-for="Description" class="text-danger"></span>                
             </div>
             <div class="form-group text-center">
                 <label for="MaxUsers">@Html.Translate("LB_MAXUSERS"):</label>
@@ -70,6 +70,7 @@
             <div class="form-group text-center">
                 <label for="AccessPassword">@Html.Translate("LB_PASSWORD"):</label>
                 <input type="password" class="form-control border-purple" id="AccessPassword" name="AccessPassword" value="@Model.AccessPassword">
+                <span asp-validation-for="AccessPassword" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
                 <label asp-for="Photo" class="control-label">@Html.Translate("LB_PHOTO")</label>
