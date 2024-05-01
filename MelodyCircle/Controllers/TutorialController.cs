@@ -35,7 +35,7 @@ namespace MelodyCircle.Controllers
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name)
                 .OrderBy(t => t.Id)
-                .Take(10)
+                .Take(2)
                 .Select(tutorial => new
                 {
                     Tutorial = tutorial,
@@ -59,7 +59,7 @@ namespace MelodyCircle.Controllers
             var tutoriaisCriados = await _context.Tutorials
                 .Where(t => t.Creator == User.Identity.Name && (lastId == null || t.Id > lastId))
                 .OrderBy(t => t.Id)
-                .Take(10)
+                .Take(2)
                 .Select(tutorial => new
                 {
                     Tutorial = tutorial,
@@ -99,7 +99,7 @@ namespace MelodyCircle.Controllers
             var tutoriaisInscritos = await _context.SubscribeTutorials
                 .Where(elem => elem.User.Id.ToString() == userId && (elem.Tutorial.Id > lastId))
                 .OrderBy(t => t.Id)
-                .Take(10)
+                .Take(2)
                 .Select(tutorial => new { Tutorial = tutorial.Tutorial, StepCount = _context.Steps.Count(elem => elem.TutorialId == tutorial.TutorialId) })
                 .ToListAsync();
 

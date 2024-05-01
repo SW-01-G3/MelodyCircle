@@ -8,21 +8,50 @@
 
 @section Scripts {
     <script>
-        document.getElementById("getPartial").addEventListener("click", () => {
-            let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
-            $.ajax({
-                url: 'EditModePartials',
-                type: 'GET',
-                data: {
-                    lastId: lastId
-                },
-                success: function (response) {
-                    $('#content-container').append(response);
-                },
-                error: function () {
-                    console.error('Failed to fetch the HTML');
-                }
+        // document.getElementById("getPartial").addEventListener("click", () => {
+        //     let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+        //     $.ajax({
+        //         url: 'EditModePartials',
+        //         type: 'GET',
+        //         data: {
+        //             lastId: lastId
+        //         },
+        //         success: function (response) {
+        //             $('#content-container').append(response);
+        //         },
+        //         error: function () {
+        //             console.error('Failed to fetch the HTML');
+        //         }
+        //     });
+        // });
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.getElementById('getPartial');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+                        $.ajax({
+                            url: 'EditModePartials',
+                            type: 'GET',
+                            data: {
+                                lastId: lastId
+                            },
+                            success: function (response) {
+                                $('#content-container').append(response);
+                            },
+                            error: function () {
+                                console.error('Failed to fetch the HTML');
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null, // assuming the viewport is the root
+                rootMargin: '0px',
+                threshold: 0.1 // Adjust this value based on when you want to trigger the load
             });
+
+            observer.observe(target);
         });
     </script>
 }
@@ -39,50 +68,14 @@
 
 
 
-<div class="container d-flex justify-content-center">
+<div class="container">
     
         @if (Model != null && Model.Any())
-        {   
-            <input id="last-id-given" type="hidden" value="@Model.First().Id" />
-            <div id="content-container" class="row justify-content-between">
-            
-            @foreach (var item in Model)
-            {
-                <div class="card col-lg-3 m-4 rounded border border-purple" style="width: 300px;" data-tutorial-id="@item.Id">
-                    <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" />
-                    <div class="card-body align-content-center text-center" >
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-
-                        <div>
-                            <span class="card-title">@Html.Translate("LB_NUMBEROFSTEPS"): </span>
-                            <span>@item.StepCount</span>
-                        </div>
-                        
-                        <div>
-                            <span class="card-title">@Html.Translate("LB_NUMBEROFSUBSCRIBED"): </span>
-                            <span>@item.SubscribersCount</span>
-                        </div>
-
-
-                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white my-2">@Html.Translate("LB_OPEN")</a><br />
-                        @if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
-                        {
-                            <div class="d-flex justify-content-evenly">
-                                <a asp-action="Edit" asp-route-id="@item.Id"><img src="~/img/edit-black.svg" alt="Edit tutorial." class="icon fill-purple" /></a>
-                                <a asp-action="Delete" asp-route-id="@item.Id"><img src="~/img/delete.svg" alt="Delete tutorial." class="icon" /></a>
-                            </div>
-                        }
-                        else
-                        {
-                            <form asp-action="Subscribe" asp-route-tutorialId="@item.Id" method="post">
-                                <button type="submit" class="btn bg-purple text-white">@Html.Translate("LB_SUBSCRIBE")</button>
-                            </form>
-                        }
-                    </div>
-                </div>
-            }
+        {
+            <div id="content-container" class="d-flex flex-wrap justify-content-center">
+                @await Html.PartialAsync("_EditModePartial", Model)
             </div>
-            
+            <div id="getPartial"></div>
         }
         else
         {
@@ -90,9 +83,8 @@
             <h1>@Html.Translate("LB_NOAVAVAILABLETUTO")</h1>
 	        </div>
         }
-
+    
 </div>
-<button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">@Html.Translate("LB_SEEMORE")</button>
 <div class="text-end">
 	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
             title="<p>@Html.Translate("TT_CREATEDTUTO")</p>">
