@@ -454,4 +454,13 @@ body {
     margin-left: 32%;
 }
 
+.chat {
+    max-height: 33rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column-reverse
+}
+
+
 /* FINAL DO PAINEL DE ARRANJO */
