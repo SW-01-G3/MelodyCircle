@@ -189,14 +189,14 @@ namespace MelodyCircleTest
 		{
 			// Arrange
 			var user = new User { Id = "1", UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
-			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, ContributingUsers = new List<User> { user }, MaxUsers = 4};
+			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, ContributingUsers = new List<User> { user }, MaxUsers = 4, AccessPassword = "asdasd"};
 
 			var photoContent = Encoding.UTF8.GetBytes("fake image");
 			var photoStream = new MemoryStream(photoContent);
 			var photo = new FormFile(photoStream, 0, photoContent.Length, "photo", "photo.jpg")
 			{
 				Headers = new HeaderDictionary(),
-				ContentType = "image/jpeg" // Set a valid content type for the photo
+				ContentType = "image/jpeg" 
 			};
 			_mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
 			_context.Users.Add(user);
@@ -222,7 +222,7 @@ namespace MelodyCircleTest
 		public async Task Edit_ReturnsViewResult_WithCollaboration()
 		{
 			// Arrange
-			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private };
+			var collaboration = new Collaboration { Id = Guid.NewGuid(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "asdasd" };
 			_context.Collaborations.Add(collaboration);
 			_mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(collaboration.CreatorId);
 			await _context.SaveChangesAsync();
@@ -240,8 +240,8 @@ namespace MelodyCircleTest
 		{
 			// Arrange
 			var collaborationId = Guid.NewGuid();
-			var existingCollaboration = new Collaboration { Id = collaborationId, MaxUsers = 5, ContributingUsers = new List<User>(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private };
-			var updatedCollaboration = new Collaboration { Id = collaborationId, Title = "Updated Title", Description = "Updated Description", MaxUsers = 10, AccessMode = AccessMode.Public };
+			var existingCollaboration = new Collaboration { Id = collaborationId, MaxUsers = 5, ContributingUsers = new List<User>(), CreatorId = "1", Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "asdasd" };
+			var updatedCollaboration = new Collaboration { Id = collaborationId, Title = "Updated Title", Description = "Updated Description", MaxUsers = 10, AccessMode = AccessMode.Public, AccessPassword = "asdasd" };
 
 			var photo = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("fake image")), 0, 0, "photo", "photo.jpg");
 

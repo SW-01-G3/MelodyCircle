@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 using MelodyCircle.Controllers;
 using MelodyCircle.Data;
 using MelodyCircle.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,8 +70,8 @@ namespace MelodyCircleTest
 		{
 			var collabData = new List<Collaboration>
 			{
-				new Collaboration { CreatedDate = DateTime.Now.AddDays(-10) },
-				new Collaboration { CreatedDate = DateTime.Now.AddDays(-20) },
+				new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "SAD" },
+				new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "SAD" },
 			};
 
 			_context.Collaborations.AddRange(collabData);
@@ -97,62 +99,90 @@ namespace MelodyCircleTest
 		}
 
 		[Fact]
-		public void UserTutorialStats_RedirectsToIndex()
+		public async Task UserTutorialStats_RedirectsToIndex()
 		{
-			var user = new User { UserName = "testUser", NormalizedUserName = "TESTUSER"};
+			var user = new User { Id = Guid.NewGuid().ToString(), UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
+
+			var photo = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("fake image")), 0, 0, "photo", "photo.jpg");
 
 			var tutorialData = new List<Tutorial>
 			{
-				new Tutorial { CreationDate = DateTime.Now.AddDays(-10), Creator = "testUser"},
-				new Tutorial { CreationDate = DateTime.Now.AddDays(-20), Creator = "testUser"},
+				new Tutorial { CreationDate = DateTime.Now.AddDays(-10), Creator = "testUser", Title = "SADASD", Description = "asddas"},
+				new Tutorial
+				{
+					CreationDate = DateTime.Now.AddDays(-20), Creator = "testUser", Title = "SADASD",
+					Description = "asddas"
+				},
 			};
 
-			_context.Users.Add(user);
-			_context.Tutorials.AddRange(tutorialData);
-			_context.SaveChangesAsync();
-
-			var result = _controller.UserTutorialStats(user.UserName);
-			Assert.IsType<ViewResult>(result);
-		}
-
-		[Fact]
-		public void UserCollaborationStats_RedirectsToIndex()
-		{
-            var user = new User { Id = "1", UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
-
-            var tutorialData = new List<Collaboration>
+			using (var memoryStream = new MemoryStream())
 			{
-                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private},
-                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private},
-			};
+				await photo.CopyToAsync(memoryStream);
+				tutorialData[0].Photo = memoryStream.ToArray();
+				tutorialData[1].Photo = memoryStream.ToArray();
+			}
 
+			_context.Tutorials.AddRange(tutorialData);
 
-			_context.Collaborations.AddRange(tutorialData);
-			_context.SaveChangesAsync();
+			await _context.SaveChangesAsync();
 
-            _mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("1");
+			_mockUserManager.Setup(m => m.FindByNameAsync(user.UserName)).ReturnsAsync(user);
 
-            var result = _controller.UserCollaborationStats(user.Id);
+			var result = await _controller.UserTutorialStats(user.UserName);
 			Assert.IsType<ViewResult>(result);
 		}
 
 		[Fact]
-		public void UserStepStats_RedirectsToIndex()
+		public async Task UserCollaborationStats_RedirectsToIndex()
 		{
-			var user = new User { UserName = "testUser", NormalizedUserName = "TESTUSER" };
+            var user = new User { Id = Guid.NewGuid().ToString(), UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
+
+            var photo = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("fake image")), 0, 0, "photo", "photo.jpg");
+
+			var collabData = new List<Collaboration>
+			{
+                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "AD", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "SAD" },
+                new Collaboration { Id = Guid.NewGuid(), CreatorId = "1" , Title = "ADs", Description = "asddas", CreatedDate = DateTime.Now, AccessMode = AccessMode.Private, AccessPassword = "SAD" },
+			};
+
+			using (var memoryStream = new MemoryStream())
+			{
+				await photo.CopyToAsync(memoryStream);
+				collabData[0].Photo = memoryStream.ToArray();
+				collabData[1].Photo = memoryStream.ToArray();
+			}
+
+			_context.Collaborations.AddRange(collabData);
+
+			await _context.SaveChangesAsync();
+
+			_mockUserManager.Setup(m => m.FindByIdAsync(user.Id)).ReturnsAsync(user);
+
+			var result = await _controller.UserCollaborationStats(user.Id);
+			Assert.IsType<ViewResult>(result);
+		}
+
+		[Fact]
+		public async Task UserStepStats_RedirectsToIndex()
+		{
+			var user = new User { Id = Guid.NewGuid().ToString(), UserName = "sad", Name = "asddsa", BirthDate = DateOnly.MaxValue, Password = "sad" };
+
+			var tuto = new Tutorial
+				{ CreationDate = DateTime.Now.AddDays(-10), Creator = "testUser", Title = "SADASD", Description = "asddas" };
 
 			var stepData = new List<Step>
 			{
-				new Step { CreationDate = DateTime.Now.AddDays(-10) },
-				new Step { CreationDate = DateTime.Now.AddDays(-20) },
+				new Step { CreationDate = DateTime.Now.AddDays(-10) , Title = "ads", Order = 1, Content = "asdasd", TutorialId = tuto.Id, Tutorial = tuto},
+				new Step { CreationDate = DateTime.Now.AddDays(-20) , Title = "ads", Order = 2, Content = "asdasd",TutorialId = tuto.Id, Tutorial = tuto},
 			};
 
-			_context.Users.Add(user);
-
 			_context.Steps.AddRange(stepData);
-			_context.SaveChangesAsync();
 
-			var result = _controller.UserStepStats(user.UserName);
+			await _context.SaveChangesAsync();
+
+			_mockUserManager.Setup(m => m.FindByNameAsync(user.UserName)).ReturnsAsync(user);
+
+			var result = await _controller.UserStepStats(user.UserName);
 			Assert.IsType<ViewResult>(result);
 		}
 
