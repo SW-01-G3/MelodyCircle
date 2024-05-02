@@ -40,52 +40,43 @@
         let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
         function allowDrop(event) {
-            if (!isFinished) {
-            console.log("Drag over the drop area");
-            event.preventDefault();
-            }
+            if (!isFinished)
+                event.preventDefault();
         }
 
         function drag(event) {
-            // console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
-            // event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
             if(!isFinished) {
-            const instrumentElement = event.target;
-            const isUploaded = instrumentElement.classList.contains('uploaded');
-            const instrumentData = {
-                name: instrumentElement.getAttribute('data-instrument'),
-                isUploaded: isUploaded,
-                id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
-            };
+                const instrumentElement = event.target;
+                const isUploaded = instrumentElement.classList.contains('uploaded');
+                const instrumentData = {
+                    name: instrumentElement.getAttribute('data-instrument'),
+                    isUploaded: isUploaded,
+                    id: isUploaded ? instrumentElement.getAttribute('data-instrument-id') : null
+                };
 
-            console.log('Dragging instrument:', instrumentData); 
-            event.dataTransfer.setData("text/plain", JSON.stringify(instrumentData));
+                event.dataTransfer.setData("text/plain", JSON.stringify(instrumentData));
             }
         }
 
         function drop(event) {
             event.preventDefault();
+
             if (!isFinished) {
-            const data = event.dataTransfer.getData("text/plain");
-            console.log('Dropped data:', data); 
-            const instrumentData = JSON.parse(data);
+                const data = event.dataTransfer.getData("text/plain");
+                const instrumentData = JSON.parse(data);
+                const trackContainer = event.target.closest('.track');
+                const trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
+                const mouseX = event.clientX;
+                const trackRect = trackContainer.getBoundingClientRect();
+                const trackStartX = trackRect.left;
+                const trackWidth = trackRect.width;
+                const relativePosition = (mouseX - trackStartX) / trackWidth;
+                const startTimeSeconds = relativePosition * 4 * 60;
 
-            console.log('Parsed instrument data:', instrumentData);
-
-            const trackContainer = event.target.closest('.track');
-            const trackId = trackContainer ? trackContainer.getAttribute('data-track-id') : '';
-            const mouseX = event.clientX;
-            const trackRect = trackContainer.getBoundingClientRect();
-            const trackStartX = trackRect.left;
-            const trackWidth = trackRect.width;
-            const relativePosition = (mouseX - trackStartX) / trackWidth;
-            const startTimeSeconds = relativePosition * 4 * 60;
-
-            if (trackId && instrumentData) {
-                updateTrack(trackId, instrumentData, startTimeSeconds);
-            } else {
-                console.error("Drop target is not a track container or instrumentData is missing.");
-            }
+                if (trackId && instrumentData)
+                    updateTrack(trackId, instrumentData, startTimeSeconds);
+                else
+                    console.error("Drop target is not a track container or instrumentData is missing.");
             }
         }
 
@@ -116,7 +107,6 @@
             })
             .then(data => {
                 if (data.success) {
-                    console.log('Instrument added successfully:', data.instrumentId);
                     window.location.href = '@Url.Action("ArrangementPanel", "Collaboration", new { id = Model.Collaboration.Id })';
                     addInstrumentToTrackElement(trackId, instrumentName, startTimeSeconds, data.duration, data.instrumentId);
                 } else
@@ -160,15 +150,11 @@
             var elementVisibleWidth = pxPerSecond * durationInSeconds;
 
             if (elementRect.width < elementVisibleWidth) {
-                console.log("Tooltip activated for:", instrumentName);
-
                 element.onmouseenter = function () {
-                    console.log("Mouse enter:", instrumentName);
                     tooltipSpan.style.display = 'block';
                 };
 
                 element.onmouseleave = function () {
-                    console.log("Mouse leave:", instrumentName);
                     tooltipSpan.style.display = 'none';
                 };
             }
@@ -284,6 +270,7 @@
             if (isPlaying) {
                 isPlaying = false;
                 const audios = document.querySelectorAll('.track audio');
+
                 audios.forEach(audio => {
                     audio.pause();
                     currentPlaybackPosition = audio.currentTime;
@@ -305,7 +292,9 @@
             pauseTracks();
 
             currentPlaybackPosition = 0;
+
             const audios = document.querySelectorAll('.track audio');
+
             audios.forEach(audio => {
                 audio.currentTime = 0;
             });
@@ -363,7 +352,6 @@
         function adjustPlaybackSpeed(bpm) {
             const defaultBpm = 102;
             const playbackRate = bpm / defaultBpm;
-
             const audios = document.querySelectorAll('.track audio');
 
             audios.forEach(audio => {
@@ -424,7 +412,7 @@
                     })
                         .then(response => {
                             if (response.ok)
-                                console.log('BPMs da colaboração atualizados com sucesso.');
+                                console.log('BPMs da colaboração atualizados com sucesso');
                             else
                                 response.text().then(text => alert('Erro ao atualizar BPMs da colaboração: ' + text));
                         })
@@ -447,9 +435,7 @@
 
         $(document).ready(function () {
             var error = "@TempData["UploadError"]";
-            if (error.length > 0) {
                 $('#uploadModal').modal('show');
-            }
         });
     </script>
 
@@ -517,13 +503,13 @@
             <div id="arrangement-panel">
                 <div class="header d-flex">
                     <button id="play-button" class="control-button">
-                        <img src="@Url.Content("~/img/painel-play.svg")" alt="Play" />
+                        <img src="~/img/painel-play.svg" alt="Play" />
                     </button>
                     <button id="pause-button" class="control-button">
-                        <img src="@Url.Content("~/img/painel-pause.svg")" alt="Pause" />
+                        <img src="~/img/painel-pause.svg" alt="Pause" />
                     </button>
                     <button id="restart-button" class="control-button">
-                        <img src="@Url.Content("~/img/painel-restart.svg")" alt="Restart" />
+                        <img src="~/img/painel-restart.svg" alt="Restart" />
                     </button>
 
                     @if (user.Id == Model.Collaboration.CreatorId)

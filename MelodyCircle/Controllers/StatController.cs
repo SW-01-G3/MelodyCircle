@@ -3,6 +3,7 @@ using MelodyCircle.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 
 namespace MelodyCircle.Controllers
 {
@@ -105,11 +106,11 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
-        public IActionResult UserTutorialStats(string userName)
+        public async Task<IActionResult> UserTutorialStats(string userName)
         {
             //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
 
-            var user = _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
 
 			if (user == null)
             {
@@ -120,12 +121,12 @@ namespace MelodyCircle.Controllers
             var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
             var sixMonthsAgo = startOfMonth.AddMonths(-6);
 
-            var tutorialStats = _context.Tutorials
+            var tutorialStats = await _context.Tutorials
                 .Where(t => t.Creator == userName && t.CreationDate >= sixMonthsAgo && t.CreationDate <= currentDate)
                 .GroupBy(t => new { t.CreationDate.Month, t.CreationDate.Year })
                 .Select(g => new { Month = g.Key.Month, Count = g.Count() })
                 .OrderBy(g => g.Month)
-                .ToList();
+                .ToListAsync();
 
             var monthsAndYears = tutorialStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
 
@@ -136,9 +137,9 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
-        public IActionResult UserCollaborationStats(string userName)
+        public async Task<IActionResult> UserCollaborationStats(string userName)
         {
-            var user = _userManager.FindByIdAsync(userName);
+            var user = await _userManager.FindByIdAsync(userName);
 
 
             if (user == null)
@@ -150,21 +151,21 @@ namespace MelodyCircle.Controllers
             var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
             var sixMonthsAgo = startOfMonth.AddMonths(-6);
 
-            var collaborationStats = _context.Collaborations
+            var collaborationStats = await _context.Collaborations
                 .Where(c => c.CreatorId == userName && c.CreatedDate >= sixMonthsAgo && c.CreatedDate <= currentDate)
                 .GroupBy(c => new { c.CreatedDate.Month, c.CreatedDate.Year })
                 .Select(g => new { Month = g.Key.Month, Count = g.Count() })
                 .OrderBy(g => g.Month)
-                .ToList();
+                .ToListAsync();
 
             var monthsAndYears = collaborationStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
 
 
             ViewBag.UserName = userName;
 
-            if (user.Result != null)
+            if (user != null)
             {
-                ViewBag.UserName = user.Result.UserName;
+                ViewBag.UserName = user.UserName;
             }
 
             ViewBag.MonthsAndYears = monthsAndYears;
@@ -173,35 +174,33 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
-        public IActionResult UserStepStats(string userName)
+        public async Task<IActionResult> UserStepStats(string userName)
         {
-            //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
+	        var user = await _userManager.FindByNameAsync(userName);
 
-            var user = _userManager.FindByNameAsync(userName);
+	        if (user == null)
+	        {
+		        return RedirectToAction("Index");
+	        }
 
-			if (user == null)
-            {
-                return RedirectToAction("Index");
-            }
+	        var currentDate = DateTime.Now;
+	        var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+	        var sixMonthsAgo = startOfMonth.AddMonths(-6);
 
-            var currentDate = DateTime.Now;
-            var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-            var sixMonthsAgo = startOfMonth.AddMonths(-6);
+	        var stepStats = await _context.Steps
+		        .Where(s => s.Tutorial.Creator == userName && s.CreationDate >= sixMonthsAgo && s.CreationDate <= currentDate)
+		        .GroupBy(s => new { s.CreationDate.Month, s.CreationDate.Year })
+		        .Select(g => new { Month = g.Key.Month, Count = g.Count() })
+		        .OrderBy(g => g.Month)
+		        .ToListAsync();
 
-            var stepStats = _context.Steps
-                .Where(s => s.Tutorial.Creator == userName && s.CreationDate >= sixMonthsAgo && s.CreationDate <= currentDate)
-                .GroupBy(s => new { s.CreationDate.Month, s.CreationDate.Year })
-                .Select(g => new { Month = g.Key.Month, Count = g.Count() })
-                .OrderBy(g => g.Month)
-                .ToList();
+	        var monthsAndYears = stepStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
 
-            var monthsAndYears = stepStats.Select(d => $"{CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(d.Month)} {DateTime.Now.Year}");
+	        ViewBag.UserName = userName;
+	        ViewBag.MonthsAndYears = monthsAndYears;
+	        ViewBag.StepCounts = stepStats.Select(d => d.Count);
 
-            ViewBag.UserName = userName;
-            ViewBag.MonthsAndYears = monthsAndYears;
-            ViewBag.StepCounts = stepStats.Select(d => d.Count);
-
-            return View();
+	        return View();
         }
-    }
+	}
 }
