@@ -433,10 +433,10 @@
             $('#chatModal').modal('show');
         });
 
-        $(document).ready(function () {
-            var error = "@TempData["UploadError"]";
-                $('#uploadModal').modal('show');
-        });
+        // $(document).ready(function () {
+        //     var error = "@TempData["UploadError"]";
+        //         $('#uploadModal').modal('show');
+        // });
     </script>
 
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
@@ -469,7 +469,7 @@
                     <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4 opacity-50" data-bs-toggle="modal" data-bs-target="#uploadModal" disabled>Upload</button>
                 } else
                 {
-                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#uploadModal" >Upload</button>
                 }
 
                 <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
