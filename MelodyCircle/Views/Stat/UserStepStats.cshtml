@@ -1,16 +1,21 @@
-﻿@{
-    ViewData["Title"] = "Estatísticas de Passos";
-
-    var monthsAndYears = ViewBag.MonthsAndYears as IEnumerable<string>;
-    var stepCounts = ViewBag.StepCounts as IEnumerable<int>;
+﻿@using MelodyCircle.ExtensionMethods
+@{
+	var monthsAndYears = ViewBag.MonthsAndYears as IEnumerable<string>;
+	var stepCounts = ViewBag.StepCounts as IEnumerable<int>;
 }
 
+@{
+	ViewData["Title"] = @Html.Translate("LB_USERCREATIONTUTOSTATS");
+}
 
-<div class="container">
-    <h2>Estatísticas de Passos - @ViewBag.UserName</h2>
+<div class="container text-center border-purple bg-white p-5 mx-auto w-50 row d-flex justify-content-center align-items-center">
+    <h2>@Html.Translate("LB_USERCREATIONSTEPSTATS") - @ViewBag.UserName</h2>
 
-    <canvas id="stepCreationChart" width="800" height="400"></canvas>
+    <div class="w-100">
+        <canvas id="stepCreationChart" width="800" height="400"></canvas>
+    </div>
 </div>
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -1,12 +1,9 @@
 ﻿using MelodyCircle.Data;
 using MelodyCircle.Models;
-using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SendGrid.Helpers.Mail;
-using System;
 
 namespace MelodyCircle.Controllers
 {
@@ -123,7 +120,6 @@ namespace MelodyCircle.Controllers
 
 				if (!result.Succeeded)
 				{
-					// Handle errors if user creation fails
 					foreach (var error in result.Errors)
 					{
 						ModelState.AddModelError("", error.Description);
@@ -177,7 +173,6 @@ namespace MelodyCircle.Controllers
 					CreationDate = currentDate.AddDays(-randomDays) 
 				};
 
-				// lógica para criar o tutorial no banco de dados
 				_context.Tutorials.Add(tutorial);
 			}
 
@@ -297,7 +292,8 @@ namespace MelodyCircle.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAddedSteps()
         {
-            var tutorials = await _context.Tutorials.Where(t => t.Title == "SpecialTutorial").ToListAsync();
+            var tutorials = await _context.Tutorials.
+                Where(t => t.Title == "SpecialTutorial").ToListAsync();
 
             _context.Tutorials.RemoveRange(tutorials);
             await _context.SaveChangesAsync();

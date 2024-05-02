@@ -1,22 +1,100 @@
-﻿@model MelodyCircle.Models.Search
+@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MelodyCircle.ViewModels.SearchResultViewModel
+﻿@using MelodyCircle.ExtensionMethods
 
 @{
-    ViewData["Title"] = "Pesquisar";
+    ViewData["Title"] = @Html.Translate("LB_SEARCH");
+}
+
+@section head {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+    <script>
+        function convertToHtml(editor, contents) {
+            editor.setContents(contents);
+            return editor.root.innerHTML;
+        }
+
+        const quill = new Quill('#editor');
+
+        let tutorialData = [];
+        let tutorialDivs = document.getElementsByName("tutorialDescription");
+
+
+        @foreach (var tutorial in Model.Tutorials)
+        {
+            @:tutorialData.push(@Html.Raw(tutorial.Description));
+        }
+
+        for (let cnt = 0; cnt < tutorialData.length; cnt++) {
+            tutorialDivs[cnt].innerHTML = convertToHtml(quill, tutorialData[cnt]);
+        }
+    </script>
 }
 
 <div class="text-center">
     <h1>@ViewData["Title"]</h1>
 </div>
 
+<input type="hidden" id="editor" value="" />
+
 <form asp-action="Search" method="post" class="text-center mx-auto w-50 d-flex justify-content-center align-items-center">
 
     <select name="searchType" class="border-purple rounded bg-white p-1 text-center">
-        <option value="None">Nenhum filtro</option>
-        <option value="User">Artista</option>
-        <option value="Tutorial">Tutorial</option>
-        <option value="Collaboration">Colaboração</option>
+        <option value="None">@Html.Translate("LB_NOFILTER")</option>
+        <option value="User">@Html.Translate("LB_ARTIST")</option>
+        <option value="Tutorial">@Html.Translate("LB_TUTORIAL")</option>
+        <option value="Collaboration">@Html.Translate("LB_COLLAB")</option>
     </select>
-    <input type="text" name="searchTerm" placeholder="Pesquisar" class="border-purple rounded p-1 w-50" />
+    <input type="text" name="searchTerm" placeholder="@Html.Translate("LB_SEARCH")" class="border-purple rounded p-1 w-50" />
     <button type="submit" class="border-0 bg-lightBlue"><img src="~/img/iconprocurar.svg" /></button>
 </form>
 
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3 class="text-center">@Html.Translate("LB_RECENTUSERS")</h3>
+            @foreach (var user in Model.Users)
+            {
+                <div class=" text-center border-purple bg-white p-4 mx-auto mb-4 w-50  justify-content-center align-items-center">
+                    <h4><a asp-action="Profile" asp-controller="User" asp-route-id="@user.UserName">@user.UserName</a></h4>
+                </div>
+            }
+        </div>
+        <div class="col-md-4">
+            <h3 class="text-center">@Html.Translate("LB_RECENTTUTOS")</h3>
+            @foreach (var tutorial in Model.Tutorials)
+            {
+                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
+                    <h4 class="d-flex justify-content-center"><a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@tutorial.Id">@tutorial.Title</a></h4>
+                    <a asp-action="SubscribeConfirmation" asp-controller="SubscribeTutorial" asp-route-tutorialId="@tutorial.Id">Inscrever-se</a>
+                    <div name="tutorialDescription"></div>
+                </div>
+            }
+        </div>
+        <div class="col-md-4">
+            <h3 class="text-center">@Html.Translate("LB_RECENTCOLLABS")</h3>
+            @foreach (var collab in Model.Collaborations)
+            {
+                <div class="text-center border-purple bg-white p-4 mx-auto mb-4 w-50 justify-content-center align-items-center">
+                    <h4>@collab.Title</h4>
+                    <form method="post" action="@Url.Action("JoinQueue", "Collaboration", new { id = collab.Id })">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn bg-purple text-white">Entrar</button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>@Html.Translate("TT_SEARCH")</p>">
+        ?
+    </button>
+</div>

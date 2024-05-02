@@ -3,8 +3,10 @@
 @using Microsoft.AspNetCore.Identity
 @using MelodyCircle.Data
 @model IEnumerable<ForumPost>
+
 @inject UserManager<User> UserManager
 @inject ApplicationDbContext Context
+
 
 @{
     ViewData["Title"] = "Home Page";
@@ -23,7 +25,7 @@
                 @:stepData.push(@Html.Raw(item.Content));
             }
         }
-                var quill = new Quill('#editor');
+        var quill = new Quill('#editor');
 
         for (let cnt = 0; cnt < stepData.length; cnt++) {
             stepDivs[cnt].innerHTML = convertToHtml(quill, stepData[cnt]);
@@ -33,37 +35,54 @@
             editor.setContents(contents);
             return editor.root.innerHTML;
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.getElementById('getPartial');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+                        $.ajax({
+                            url: 'Forum/Posts',
+                            type: 'GET',
+                            data: {
+                                lastId: lastId
+                            },
+                            success: function (response) {
+                                $('#content-container').append(response);
+                                console.log(response);
+                            },
+                            error: function () {
+                                console.error('Failed to fetch the HTML');
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null, // assuming the viewport is the root
+                rootMargin: '0px',
+                threshold: 0.1 // Adjust this value based on when you want to trigger the load
+            });
+
+            observer.observe(target);
+        });
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">@Html.Translate("LB_WELCOME").</h1>
-    <hr />
-    <br />
-</div>
+
+    <h1 class="text-center">@Html.Translate("LB_WELCOME")</h1>
 
 @if (Model != null && Model.Any())
 {
-    <div class="d-flex flex-wrap justify-content-center">
-        @foreach (var item in Model)
-        {
-            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;">
-                <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
-                <hr>
-                <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
-                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">Ver comentários</a>
-                @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
-                {
-                    <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
-                        <button type="submit" class="btn btn-danger mt-2 mb-1">Fechar Post</button>
-                    </form>
-                }
-            </div>
-        }
+    <div class="d-flex flex-wrap justify-content-center" id="content-container">
+        @await Html.PartialAsync("../Forum/_PostsPartial", Model)
     </div>
+    @* <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button> *@
+    <div id="getPartial"></div>
 }
+
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -74,3 +93,12 @@
     }
     <input type="hidden" id="editor" name="editor" value="" />
 }
+
+
+
+<div class="text-end">
+    <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+            title="<p>@Html.Translate("TT_HOMEPAGE")</p>">
+        ?
+    </button>
+</div>

@@ -30,16 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const toggleFiltersButton = document.getElementById('toggleFilters');
     const filterContent = document.querySelector('.filter-content');
 
-    toggleFiltersButton.addEventListener('click', function () {
-        filterContent.classList.toggle('active');
-        // Alterna entre a exibição e a ocultação do conteúdo dos filtros ao clicar no botão de alternância
-        if (toggleFiltersButton.innerHTML === '▲') {
-            toggleFiltersButton.innerHTML = '▼';
-        } else {
-            toggleFiltersButton.innerHTML = '▲';
-        }
-    });
-});
+    if (toggleFiltersButton !== void 0 && toggleFiltersButton !== null) {
+        toggleFiltersButton.addEventListener('click', function () {
+            filterContent.classList.toggle('active');
+            // Alterna entre a exibição e a ocultação do conteúdo dos filtros ao clicar no botão de alternância
+            if (toggleFiltersButton.innerHTML === '▲') {
+                toggleFiltersButton.innerHTML = '▼';
+            } else {
+                toggleFiltersButton.innerHTML = '▲';
+            }
+        });
+    };
+});   
 
 //Procurar
 // Função para verificar e definir os checkboxes selecionados
@@ -98,20 +100,24 @@ checkboxes.forEach(checkbox => {
 });
 
 // Adiciona um evento de mudança ao checkbox "Nenhum filtro"
-document.getElementById('searchNone').addEventListener('change', function () {
-    if (this.checked) {
-        // Se o checkbox "Nenhum filtro" for selecionado, desmarca os outros checkboxes
-        checkboxes.forEach(cb => {
-            cb.checked = false;
-        });
+let searchNone = document.getElementById('searchNone');
 
-        // Armazena 'None' como único valor selecionado no armazenamento local
-        localStorage.setItem('selectedValues', 'None');
+if (searchNone !== void 0 && searchNone !== null) {
+    searchNone.addEventListener('change', function () {
+        if (this.checked) {
+            // Se o checkbox "Nenhum filtro" for selecionado, desmarca os outros checkboxes
+            checkboxes.forEach(cb => {
+                cb.checked = false;
+            });
 
-        // Atualiza a página com a nova URL
-        window.location.href = '?None';
-    }
-});
+            // Armazena 'None' como único valor selecionado no armazenamento local
+            localStorage.setItem('selectedValues', 'None');
+
+            // Atualiza a página com a nova URL
+            window.location.href = '?None';
+        }
+    });
+}
 
 // Verifica e define os checkboxes selecionados ao carregar a página
-checkSelectedCheckboxes();
+//checkSelectedCheckboxes();

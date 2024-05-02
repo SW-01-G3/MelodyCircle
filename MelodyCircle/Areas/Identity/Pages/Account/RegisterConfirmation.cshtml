@@ -1,7 +1,8 @@
 ﻿@page
+@using MelodyCircle.ExtensionMethods
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = @Html.Translate("LB_REGISTER");
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -16,7 +17,7 @@
     else
     {
 <p>
-        Please check your email to confirm your account.
+            @Html.Translate("LB_PLEASECHECKEMAIL")
 </p>
     }
 }

@@ -4,6 +4,7 @@ using MelodyCircle.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MelodyCircle.Controllers
@@ -266,7 +267,6 @@ namespace MelodyCircle.Controllers
                 userToRate.Ratings.Add(new UserRating { UserName = currentUser.UserName, RatedUserName = userToRate.UserName, Value = rating });
             }
 
-            // Update the user in the database
             await _userManager.UpdateAsync(userToRate);
 
             return RedirectToAction("Profile", new { id });
@@ -290,35 +290,42 @@ namespace MelodyCircle.Controllers
             return View(_context.UserRating.Where(u => u.UserId.ToString().Equals(id.ToString())));
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="musicUri"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> AddMusicCard(string id, string musicUri)
         {
             var user = await _userManager.GetUserAsync(User);
 
+
             if (musicUri == null || !IsValidSpotifyUri(musicUri))
             {
-                ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
-            }
-
-            if (user.MusicURI.Contains(musicUri))
-            {
-                ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
-            }
-
-            /*if (!await IsValidSpotifyTrack(uri))
-            {
-                ModelState.AddModelError("uri", "O URI da música não é válido ou não existe no Spotify.");
-            }*/
-
-            if (!ModelState.IsValid)
-            {
-     
-                return RedirectToAction("Profile", new { id });
+                //ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
+                TempData["UriError"] = "The song URI is in an invalid format.";
+                return RedirectToAction("Profile", new { id , error = "The song URI is in an invalid format." });
             }
 
             var regex = new Regex(@"\/track\/(\w+)");
             var match = regex.Match(musicUri);
+
+            if (user.MusicURI.Contains(match.Value))
+            {
+                //ModelState.AddModelError("musicUri", "Esta música já está na sua lista de favoritos.");
+                TempData["UriError"] = "This song is already on your favorites list.";
+                return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Profile", new { id ,error = "The song URI is in an invalid format." });
+            }
+
+            //var regex = new Regex(@"\/track\/(\w+)");
+            //var match = regex.Match(musicUri);
 
             user.MusicURI.Add(match.Value.ToString());
             await _userManager.UpdateAsync(user);
@@ -326,7 +333,11 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
- 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> RemoveMusicCard(string uri)
         {
@@ -341,8 +352,8 @@ namespace MelodyCircle.Controllers
 
             if (!user.MusicURI.Contains(uri))
             {
-                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
-                return RedirectToAction("Profile", new { id });
+                TempData["UriError"] = "The song was not found in the favorites list.";
+                return RedirectToAction("Profile", new { id, error = "The song was not found in the favorites list." });
             }
 
             user.MusicURI.Remove(uri);
@@ -351,6 +362,12 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id }); 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="newMusicUri"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> EditMusicCard(string uri, string newMusicUri)
         {
@@ -364,19 +381,21 @@ namespace MelodyCircle.Controllers
 
             if (newMusicUri == null || !IsValidSpotifyUri(newMusicUri))
             {
-                ModelState.AddModelError("musicUri", "O URI da música está em um formato inválido.");
-                return RedirectToAction("Profile", new { id }); 
+                TempData["UriError"] = "The song URI is in an invalid format.";
+                return RedirectToAction("Profile", new { id, error = "The song URI is in an invalid format." });
             }
 
-            if (!user.MusicURI.Contains(uri))
+            var regex = new Regex(@"\/track\/(\w+)");
+            var match = regex.Match(newMusicUri);
+
+            if (user.MusicURI.Contains(match.Value))
             {
-                ModelState.AddModelError("", "A música não foi encontrada na lista de favoritos.");
-                return RedirectToAction("Profile", new { id });
+                TempData["UriError"] = "This song is already on your favorites list.";
+                return RedirectToAction("Profile", new { id, error = "This song is already on your favorites list." });
             }
 
             user.MusicURI.Remove(uri);
-            var regex = new Regex(@"\/track\/(\w+)");
-            var match = regex.Match(newMusicUri);
+
 
             user.MusicURI.Add(match.Value.ToString());
             await _userManager.UpdateAsync(user);
@@ -384,12 +403,28 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id }); 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
         private bool IsValidSpotifyUri(string uri)
         {
-            // O URI da música do Spotify deve começar com "https://open.spotify.com/embed/track/" 
-            //return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 80;
-
-            return uri.StartsWith("https://open.spotify.com/track/") && uri.Length == 73;
+            if (uri.StartsWith("https://open.spotify.com/track/"))
+            {
+                int trackIdStartIndex = "https://open.spotify.com/track/".Length;
+                return uri.Length > trackIdStartIndex && uri.Length == 73;
+            }
+            else if (uri.StartsWith("https://open.spotify.com/intl-pt/track/"))
+            {
+                int trackIdStartIndex = "https://open.spotify.com/intl-pt/track/".Length;
+                return uri.Length > trackIdStartIndex && uri.Length == 81;
+            }
+            else
+            {
+                // A URI não corresponde aos formatos esperados
+                return false;
+            }
         }
 
     }

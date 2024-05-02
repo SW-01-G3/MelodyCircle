@@ -1,18 +1,14 @@
 ﻿using MelodyCircle.Controllers;
-using MelodyCircle.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using MelodyCircle.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Xunit;
-using Microsoft.Extensions.Primitives;
+using MelodyCircle.Models;
 using MelodyCircle.ViewModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Moq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
-using System;
 
 
 namespace MelodyCircleTest
@@ -43,16 +39,12 @@ namespace MelodyCircleTest
             _mockUserManager.Setup(m => m.Users).Returns(new List<User> { user }.AsQueryable());
             _mockUserManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(viewModel.Roles);
             _context.Users.Add(user);
-            //await _context.SaveChangesAsync();
 
             // Act
             var result = await _controller.Profile("TestUser");
 
             // Assert
-            //var viewResult = Assert.IsType<ViewResult>(result);
-            //var model = Assert.IsAssignableFrom<ProfileViewModel>(viewResult.Model);
             Assert.Equal(viewModel.User.UserName, user.UserName);
-            //Assert.Equal(viewModel.Roles, );
         }
 
         [Fact]
@@ -100,8 +92,6 @@ namespace MelodyCircleTest
             var result = await _controller.ListConnections("Connection1");
 
             // Assert
-            //var viewResult = Assert.IsType<ViewResult>(result);
-            //var model = Assert.IsAssignableFrom<IEnumerable<User>>(viewResult.Model);
             Assert.Equal(2,user.Connections.Count);
         }
 

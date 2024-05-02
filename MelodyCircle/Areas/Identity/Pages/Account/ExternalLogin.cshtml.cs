@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -179,7 +180,23 @@ namespace MelodyCircle.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+	            DateTime currentDate = DateTime.Now;
+	            DateOnly minDate = new DateOnly(currentDate.Year - 100, 1, 1);
+	            DateOnly maxDate = new DateOnly(currentDate.Year - 5, 1, 1);
+
+	            if (Input.BirthDate < minDate || Input.BirthDate > maxDate)
+	            {
+		            ModelState.AddModelError("Input.BirthDate", $"The BirthDate must be between {minDate} and {maxDate}");
+		            return Page();
+	            }
+
+	            if (!Regex.IsMatch(Input.UserName, @"^[^@]+$"))
+	            {
+		            ModelState.AddModelError("Input.UserName", "Username não pode conter '@'");
+					return Page();
+	            }
+
+				var user = CreateUser();
                 user.Email = Input.Email;
                 user.Name = Input.Name;
                 user.BirthDate = Input.BirthDate;

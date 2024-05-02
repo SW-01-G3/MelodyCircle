@@ -1,4 +1,6 @@
-﻿namespace MelodyCircle.Models
+﻿using MelodyCircle.Models;
+
+namespace MelodyCircle.ViewModels
 {
     public class ArrangementPanelViewModel
     {
@@ -7,6 +9,7 @@
         public IList<Track> Tracks { get; set; }
 
         public IList<Instrument> AvailableInstruments { get; set; }
+        public IList<UploadedInstrument> UploadedInstruments { get; set; }
 
         public bool IsContributorOrCreator { get; set; }
 

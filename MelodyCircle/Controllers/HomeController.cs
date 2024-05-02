@@ -19,7 +19,7 @@ namespace MelodyCircle.Controllers
 
         public IActionResult Index()
         {
-            var listOfPosts = _context.ForumPost.ToList();
+            var listOfPosts = _context.ForumPost.OrderBy(elem => elem.Id).Take(3).ToList();
             return View(listOfPosts);
         }
 

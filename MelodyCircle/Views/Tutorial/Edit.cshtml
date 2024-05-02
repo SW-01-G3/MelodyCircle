@@ -1,7 +1,9 @@
-﻿@model MelodyCircle.Models.Tutorial
+﻿@using MelodyCircle.ExtensionMethods
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MelodyCircle.Models.Tutorial
 
 @{
-    ViewData["Title"] = "Editar Tutorial";
+    ViewData["Title"] = @Html.Translate("LB_EDITTUTO");
 }
 
 @section head {
@@ -32,7 +34,7 @@
     <div class="col-sm-6 bg-white rounded-3 border border-purple">
         <div class="text-end">
             <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                    title="<p>Pode editar o título e a descrição do tutorial.</p>">
+                    title="@Html.Translate("TT_EDITTUTO")">
                 ?
             </button>
         </div>
@@ -51,21 +53,21 @@
                 @* <textarea asp-for="Description" class="form-control border-purple" rows="4"></textarea> *@
                 <input type="hidden" asp-for="Description" id="contentInput" value="" />
                 <div id="editor">
-                    <h1>Texto texto</h1>
+                    <h1>Texto</h1>
                 </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group text-center">
-                <label asp-for="Photo" class="control-label">Foto</label>
+                <label asp-for="Photo" class="control-label">@Html.Translate("LB_PHOTO")</label>
                 <input type="file" class="form-control border-purple " id="Photo" name="photo" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
             <div class="form-group text-center my-3">
-                <input type="submit" value="Guardar" class="btn bg-purple text-white" />
+                <input type="submit" value="@Html.Translate("LB_SAVE")" class="btn bg-purple text-white" />
             </div>
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index" asp-controller="Tutorial">Voltar à lista de Tutoriais</a>
+    <a asp-action="Index" asp-controller="Tutorial">@Html.Translate("LB_GOBACKTOTUTOLIST")</a>
 </div>

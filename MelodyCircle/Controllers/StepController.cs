@@ -61,55 +61,51 @@ namespace MelodyCircle.Controllers
         // POST: Step/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TutorialId,Title,Content,Order")] Step step)
+        public async Task<IActionResult> Create([Bind("TutorialId,Title,Content")] Step step)
         {
-            if (string.IsNullOrEmpty(step.Title) || string.IsNullOrEmpty(step.Content))
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(step.Title))
+            { 
                 ModelState.AddModelError(nameof(step.Title), "O título é obrigatório");
+                hasValidationError = true;
+            }
 
-            if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
-                ModelState.AddModelError(nameof(step.Title), "O conteúdo é obrigatório");
+            if (string.IsNullOrEmpty(step.Content))
+            {
+                ModelState.AddModelError(nameof(step.Content), "O conteúdo é obrigatório");
+                hasValidationError = true;
+            }
 
-            var currentStepCount = _context.Steps.Count(s => s.TutorialId == step.TutorialId);
+            var currentStepCount = await _context.Steps.CountAsync(s => s.TutorialId == step.TutorialId);
 
             if (currentStepCount >= maxSteps)
+            {
                 ModelState.AddModelError(string.Empty, "Limite máximo de Passos atingido para este tutorial");
-
-            var existingStep = await _context.Steps
-                .FirstOrDefaultAsync(s => s.TutorialId == step.TutorialId && s.Order == step.Order);
-
-            if (existingStep != null)
-            {
-                ModelState.AddModelError(nameof(step.Order), $"A Order '{step.Order}' já está ocupada");
-
-                var occupiedOrders = await _context.Steps
-                    .Where(s => s.TutorialId == step.TutorialId)
-                    .OrderBy(s => s.Order)
-                    .Select(s => s.Order + 1)
-                    .ToListAsync();
-
-                var stepsWithOrders = await _context.Steps
-                    .Where(s => s.TutorialId == step.TutorialId)
-                    .OrderBy(s => s.Order)
-                    .Select(s => new { Order = s.Order + 1, s.Title })
-                    .ToListAsync();
-
-                var availableOrders = Enumerable.Range(1, maxSteps).Except(occupiedOrders).ToList();
-
-                ViewBag.StepsWithOrders = stepsWithOrders;
-                ViewBag.OccupiedOrders = occupiedOrders;
-                ViewBag.AvailableOrders = availableOrders;
+                hasValidationError = true;
             }
 
-            else 
-            {
-                step.CreationDate = DateTime.Now;
-                _context.Add(step);
-                await _context.SaveChangesAsync();
+            if(hasValidationError)
+                return View(step);
 
-                return RedirectToAction("Index", new { tutorialId = step.TutorialId });
-            }
+            var occupiedOrders = await _context.Steps
+                .Where(s => s.TutorialId == step.TutorialId)
+                .OrderBy(s => s.Order)
+                .Select(s => s.Order)
+                .ToListAsync();
 
-            return View(step);
+            int nextAvailableOrder = 0;
+
+            while (occupiedOrders.Contains(nextAvailableOrder))
+                nextAvailableOrder++;
+
+            step.Order = nextAvailableOrder;
+            step.CreationDate = DateTime.Now;
+
+            _context.Add(step);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
         // GET: Step/Delete/tutorialId
@@ -168,37 +164,34 @@ namespace MelodyCircle.Controllers
                 return NotFound($"Step with ID {step.Id} not found.");
 
             if (tutorialId != step.TutorialId)
-                return NotFound($"The TutorialId of the step does not match the provided tutorialId.");
+                return NotFound($"The TutorialId of the step does not match the provided tutorialId");
 
-            if (string.IsNullOrEmpty(step.Title) || string.IsNullOrEmpty(step.Content))
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(step.Title))
+            {
                 ModelState.AddModelError(nameof(step.Title), "O título é obrigatório");
+                hasValidationError = true;
+            }
 
-            if (string.IsNullOrEmpty(step.Content) || string.IsNullOrEmpty(step.Title))
+            if (string.IsNullOrEmpty(step.Content))
+            {
                 ModelState.AddModelError(nameof(step.Content), "O conteúdo é obrigatório");
+                hasValidationError = true;
+            }
+
+            if (hasValidationError)
+                return View(step);
 
             else
             {
-                try
-                {
-                    _context.Entry(existingStep).State = EntityState.Detached;
-                    _context.Update(step);
+                _context.Entry(existingStep).State = EntityState.Detached;
+                _context.Update(step);
 
-                    await _context.SaveChangesAsync();
-                }
-
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StepExists(step.Id))
-                        return NotFound();
-
-                    else
-                        throw;
-                }
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", new { tutorialId = step.TutorialId });
             }
-
-            return View(step);
         }
 
         [HttpPost]

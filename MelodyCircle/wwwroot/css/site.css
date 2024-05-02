@@ -44,6 +44,12 @@ body {
 
 /* -------------------------------------------- */
 
+#editor {
+    min-height: 8rem;
+}
+
+/* -------------------------------------------- */
+
 .bg-darkPurple {
   background-color: var(--darkPurple) !important;
 }
@@ -248,9 +254,20 @@ body {
 .instrument {
     margin: 5px;
     padding: 5px;
-    background-color: #f8f9fa;
+    background-color: var(--purple);
+    color: white;
     border: 1px solid #ccc;
     cursor: grab;
+    border-radius: 10px;
+}
+
+.upload-button {
+    background-color: var(--darkPurple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
 }
 
 .drop-area {
@@ -264,7 +281,7 @@ body {
     position: relative;
     width: 100%;
     margin-bottom: 20px;
-    padding-left: 50px; /* Espaço para a numeração da track */
+    padding-left: 50px;
 }
 
 .timeline {
@@ -272,7 +289,7 @@ body {
     width: 100%;
     position: relative;
     margin-top: 0px;
-    top: 50px;
+    top: 25px;
     left: 0px;
 }
 
@@ -282,6 +299,7 @@ body {
     background-color: #f8f9fa;
     margin-top: 25px;
     width: 1055px;
+    margin-bottom: 5px;
 }
 
 .time-marker {
@@ -309,9 +327,8 @@ body {
 
 .track-number {
     position: absolute;
-    top: 50px;
-    left: -2.5%;
-    font-weight: bold;
+    top: 35px;
+    left: -2%;
     background-color: #fff;
     padding: 2px 5px;
 }
@@ -338,10 +355,9 @@ body {
     border-radius: 6px;
     padding: 5px;
     z-index: 255;
-    bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
+    white-space: normal;
 }
 
 .instrument-on-track {
@@ -349,8 +365,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     border: 2px solid #000;
-    background-color: #FFF;
-    color: #000;
+    background-color: var(--darkPurple);
+    color: white;
     text-align: left;
     line-height: 50px;
     margin-top: 5px;
@@ -363,5 +379,88 @@ body {
     display: inline-block;
     padding: 0px;
 }
+
+.timeline {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 20px;
+}
+
+.timeMarker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
+}
+
+.playback-line {
+    position: absolute;
+    margin-top: 27px;
+    margin-left: 50px;
+    height: 100%;
+    width: 2px;
+    background-color: red;
+    display: none;
+    z-index: 1;
+}
+
+.arrangement-container {
+    position: relative;
+    width: 100%;
+}
+
+.marker-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
+}
+
+/* Custom CSS for modal positioning */
+.modal-dialog-bottom-right {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    margin: 0;
+    width: 400px; /* Adjust the width as needed */
+}
+
+/* Style for the chat component trigger button */
+#chatComponentButton {
+    position: fixed;
+    bottom: 20px; /* Adjust this value to change the distance from the bottom */
+    right: 20px; /* Adjust this value to change the distance from the right */
+    z-index: 1051; /* Ensure the button stays above the modal backdrop */
+}
+
+.control-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.control-button img {
+    width: 30px;
+    height: auto;
+}
+
+.bpm-style-text {
+    margin-left: 35%;
+}
+
+.assignedTrackNumber {
+    margin-left: 32%;
+}
+
+.chat {
+    max-height: 33rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column-reverse
+}
+
 
 /* FINAL DO PAINEL DE ARRANJO */

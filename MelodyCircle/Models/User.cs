@@ -5,13 +5,6 @@ namespace MelodyCircle.Models
 {
     public class User : IdentityUser
     {
-        //[PersonalData]
-        //[Required]
-        //[EmailAddress]
-        //[UniqueEmail]
-        //[Display(Name = "E-Mail")]
-        //public string Email { get; set; }
-
         [PersonalData]
         [Required]
         [DataType(DataType.Text)]
@@ -41,7 +34,6 @@ namespace MelodyCircle.Models
         public string? Locality { get; set; }
 
         [PersonalData]
-        //[DataType(DataType.)]
         [Display(Name = "Género")]
         public Gender? Gender { get; set; }
 

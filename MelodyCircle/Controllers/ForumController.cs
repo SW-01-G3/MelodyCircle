@@ -15,10 +15,21 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
-        // GET: Forum
-        public async Task<IActionResult> Index()
+        //// GET: Forum
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.ForumPost.OrderBy(elem => elem.Id)
+        //        .Take(1).ToListAsync());
+        //}
+
+        public async Task<IActionResult> Posts(Guid lastId)
         {
-            return View(await _context.ForumPost.ToListAsync());
+            var forumPosts = await _context.ForumPost.Where(elem => (elem.Id > lastId))
+                .OrderBy(elem => elem.Id)
+                .Take(3)
+                .ToListAsync();
+
+            return PartialView("_PostsPartial", forumPosts);
         }
 
         // GET: Forum/Create
@@ -28,12 +39,28 @@ namespace MelodyCircle.Controllers
         }
 
         // POST: Forum/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Content")] ForumPost forumPost)
         {
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(forumPost.Title))
+            {
+                ModelState.AddModelError(nameof(forumPost.Title), "O título é obrigatório");
+                hasValidationError = true;
+            }
+
+            if (string.IsNullOrEmpty(forumPost.Content))
+            {
+                ModelState.AddModelError(nameof(forumPost.Content), "O conteúdo é obrigatório");
+                hasValidationError = true;
+            }
+
+            if (hasValidationError)
+                return View(forumPost);
+
             if (ModelState.IsValid)
             {
                 forumPost.Id = Guid.NewGuid();
@@ -45,7 +72,7 @@ namespace MelodyCircle.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Forum/Edit/5
@@ -65,37 +92,36 @@ namespace MelodyCircle.Controllers
         }
 
         // POST: Forum/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Content")] ForumPost forumPost)
         {
-            if (id != forumPost.Id)
+            bool hasValidationError = false;
+
+            if (string.IsNullOrEmpty(forumPost.Title))
             {
-                return NotFound();
+                ModelState.AddModelError(nameof(forumPost.Title), "O título é obrigatório");
+                hasValidationError = true;
             }
+
+            if (string.IsNullOrEmpty(forumPost.Content))
+            {
+                ModelState.AddModelError(nameof(forumPost.Content), "O conteúdo é obrigatório");
+                hasValidationError = true;
+            }
+
+            if (hasValidationError)
+                return View(forumPost);
+
+            if (id != forumPost.Id)
+                return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(forumPost);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ForumPostExists(forumPost.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(forumPost);
+                await _context.SaveChangesAsync();
             }
+
             return View(forumPost);
         }
 
@@ -158,7 +184,12 @@ namespace MelodyCircle.Controllers
             if (forumPost == null || forumPost.IsClosed)
                 return RedirectToAction(nameof(Comments), new { id = id });
 
-            if (comment.Content != null)
+            if (string.IsNullOrEmpty(comment.Content))
+            {
+                ModelState.AddModelError(nameof(comment.Content), "Comentário não pode ser vazio");
+                TempData["ErrorMessage"] = "Comentário não pode ser vazio";
+            }
+            else
             {
                 comment.Id = Guid.NewGuid();
                 comment.CreatedAt = DateTime.Now;
@@ -171,6 +202,7 @@ namespace MelodyCircle.Controllers
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Comments), new { id = id });
         }
 

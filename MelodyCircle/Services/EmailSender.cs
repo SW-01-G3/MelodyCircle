@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MimeKit;
 using MimeKit.Text;
-using MailKit.Net.Smtp;
+//using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using PostmarkDotNet.Model;
+using PostmarkDotNet;
+using System.Net.Mail;
+using System.Net;
 
 namespace MelodyCircle.Services
 {
@@ -63,34 +67,103 @@ namespace MelodyCircle.Services
             this.logger = logger;
         }
 
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    string sendGridApiKey = configuration["EmailSender:SendGridAPIKey"];
+        //    if (string.IsNullOrEmpty(sendGridApiKey))
+        //    {
+        //        throw new Exception("The 'SendGridApiKey' is not configured");
+        //    }
+
+        //    var client = new SendGridClient(sendGridApiKey);
+        //    var msg = new SendGridMessage()
+        //    {
+        //        From = new EmailAddress("melodycirclemail@gmail.com", "MelodyCircle"),
+        //        Subject = subject,
+        //        PlainTextContent = message,
+        //        HtmlContent = message
+        //    };
+        //    msg.AddTo(new EmailAddress(toEmail));
+
+        //    var response = await client.SendEmailAsync(msg);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        logger.LogInformation("Email queued successfully");
+        //    }
+        //    else
+        //    {
+        //        logger.LogError("Failed to send email");
+        //    }
+        //}
+
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    var msg = new PostmarkMessage()
+        //    {
+        //        To = toEmail,
+        //        From = "202000906@estudantes.ips.pt",
+        //        TrackOpens = true,
+        //        Subject = subject,
+        //        TextBody = message,
+        //        //HtmlBody = "HTML goes here",
+        //        //Tag = "New Year's Email Campaign",
+        //    };
+
+        //    var client = new PostmarkClient("");
+        //    var sendResult = await client.SendMessageAsync(msg);
+
+        //    if (sendResult.Status == PostmarkStatus.Success) { logger.LogInformation("Email queued successfully"); }
+        //    else { logger.LogError("Failed to send email"); }
+        //}
+
+        //public async Task SendEmailAsync(string toEmail, string subject, string message)
+        //{
+        //    var email = new MimeMessage();
+
+        //    email.From.Add(new MailboxAddress("Support MelodyCircle", "melodycirclehelp@gmail.com"));
+        //    email.To.Add(new MailboxAddress("Receiver Name", toEmail));
+
+        //    email.Subject = subject;
+        //    email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+        //    {
+        //        Text = message
+        //    };
+
+        //    using (var smtp = new SmtpClient())
+        //    {
+        //        smtp.Connect("smtp.gmail.com", 587, false);
+
+        //        // Note: only needed if the SMTP server requires authentication
+        //        smtp.Authenticate("melodycirclehelp@gmail.com", "#helpsupport");
+
+        //        smtp.Send(email);
+        //        smtp.Disconnect(true);
+        //    }
+        //}
+
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            string sendGridApiKey = configuration["EmailSender:SendGridAPIKey"];
-            if (string.IsNullOrEmpty(sendGridApiKey))
+            using (var client = new SmtpClient())
             {
-                throw new Exception("The 'SendGridApiKey' is not configured");
-            }
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.UseDefaultCredentials = false;
+                client.EnableSsl = true;
+                client.Credentials = new NetworkCredential("melodycirclehelp@gmail.com", "rbrb cyic lzgw spfg");
+                using (var mail = new MailMessage(
+                    from: new MailAddress("melodycirclehelp@gmail.com", "Support Melodycircle"),
+                    to: new MailAddress(toEmail, "THEIR NAME")
+                ))
+                {
 
-            var client = new SendGridClient(sendGridApiKey);
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress("melodycirclemail@gmail.com", "MelodyCircle"),
-                Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
-            };
-            msg.AddTo(new EmailAddress(toEmail));
+                    mail.Subject = subject;
+                    mail.IsBodyHtml = true;
+                    mail.Body = message;
 
-            var response = await client.SendEmailAsync(msg);
-            if (response.IsSuccessStatusCode)
-            {
-                logger.LogInformation("Email queued successfully");
-            }
-            else
-            {
-                logger.LogError("Failed to send email");
-                // Adding more information related to the failed email could be helpful in debugging failure,
-                // but be careful about logging PII, as it increases the chance of leaking PII
+
+                    await client.SendMailAsync(mail);
+                }
             }
         }
     }

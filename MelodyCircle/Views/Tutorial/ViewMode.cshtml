@@ -6,106 +6,66 @@
 @inject ApplicationDbContext Context
 
 @{
-    ViewData["Title"] = "Tutoriais Inscritos";
+    ViewData["Title"] = @Html.Translate("LB_SUBSCRIBEDTUTO");
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.getElementById('getPartial');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+                        $.ajax({
+                            url: 'ViewModePartials',
+                            type: 'GET',
+                            data: {
+                                lastId: lastId
+                            },
+                            success: function (response) {
+                                $('#content-container').append(response);
+                                console.log(response);
+                            },
+                            error: function () {
+                                console.error('Failed to fetch the HTML');
+                            }
+                        });
+                        console.log(lastId);
+                    }
+                });
+            }, {
+                root: null, // assuming the viewport is the root
+                rootMargin: '0px',
+                threshold: 0.1 // Adjust this value based on when you want to trigger the load
+            });
 
+            observer.observe(target);
+        });
+    </script>
+}
 
-<div class="container d-flex justify-content-center">
-    <div class="row justify-content-between">
+<div class="container">
+   
         @if (Model != null && Model.Any())
         {
-            @foreach (var item in Model)
-            {
-                <div class="card col-lg-3 m-4 rounded border border-purple" style="width: 300px;">
-                    <img class="card-img-top mt-3" style="width: 100%; height: 200px;" src="data:@($"image/{item.PhotoContentType};base64,{Convert.ToBase64String(item.Photo)}")" />
-                    <div class="card-body align-content-center text-center">
-                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
-
-                        <div>
-                            <span class="card-title">Nº de passos: </span>
-                            <span>@item.StepCount</span>
-                        </div>
-                        
-                        <div>
-                            <span class="card-title">Nº de inscritos: </span>
-                            <span>@item.SubscribersCount</span>
-                        </div>
-                        
-
-                        <a asp-action="Index" asp-controller="Step" asp-route-tutorialId="@item.Id" class="btn bg-purple text-white mt-2">Abrir</a><br />
-
-                        @{
-                            double averageRating = Context.TutorialRating
-                            .Where(u => u.TutorialId.Equals(item.Id))
-                            .ToList()
-                            .CalculateAverageRating();
-
-                            int roundedRating = (int)Math.Round(averageRating, MidpointRounding.AwayFromZero);
-                            int fullStars = roundedRating / 2;
-                            int halfStar = roundedRating % 2;
-                            int emptyStars = 5 - fullStars - halfStar;
-                        }
-                        <div class="star-rating mt-3">
-                            @for (int i = 0; i < fullStars; i++)
-                            {
-                                <img src="~/img/star-filled-svgrepo-com.svg" />
-                            }
-                            @if (halfStar > 0)
-                            {
-                                <img src="~/img/star-half-svgrepo-com.svg" />
-                                fullStars++;
-                            }
-                            @for (int i = fullStars; i < 5; i++)
-                            {
-                                <img src="~/img/estrelaEmpty.svg" />
-                            }
-                        </div>
-
-                        <button type="button" class="border-purple bg-purple rounded mt-3" data-bs-toggle="modal" data-bs-target="#addStarRatingModal">
-                            <img src="~/img/star-add-filled-svgrepo-com.svg" />
-                        </button>
-
-                        <div class="modal fade" id="addStarRatingModal" tabindex="-1" aria-labelledby="addStarRatingModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addStarRatingModalLabel">@Html.Translate("LB_010")</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form id="starRatingForm" asp-action="RateTutorial" asp-route-id="@item.Id" method="post">
-                                            <div class="star-rating">
-                                                @for (int i = 1; i <= 10; i++)
-                                                {
-                                                    <img class="star" src="~/img/estrelaEmpty.svg" data-value="@i" />
-                                                }
-                                            </div>
-                                            <input type="hidden" name="rating" id="starRating" value="0" />
-                                            <button type="submit" class="btn bg-purple text-white border-darkPurple rounded">@Html.Translate("LB_GIVESTARS")</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+        <div id="content-container" class="d-flex justify-content-center">
+            @await Html.PartialAsync("_ViewModePartial", Model)
+        </div>
+        <div id="getPartial"></div>
         }
         else
         {
             <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
-	            <h1>Não existem tutoriais disponiveis.</h1>
+	            <h3>@Html.Translate("LB_NOAVAVAILABLETUTO")</h3>
 	            </div>
-        }
-    </div>
+        }   
 </div>
-
 <div class="text-end">
 	<button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-	        title="<p>Nesta página pode visualizar todos os tutoriais aos quais está inscrito.</p>">
+	        title="<p>@Html.Translate("TT_SUBSCRIBEDTUTO")</p>">
 		?
 	</button>
 </div>
