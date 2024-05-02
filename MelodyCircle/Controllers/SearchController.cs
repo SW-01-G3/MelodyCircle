@@ -101,7 +101,7 @@ namespace MelodyCircle.Controllers
                     return View("CollaborationSearchResult", collabs);
                 }
             }
-            return View("Index");
+            return RedirectToAction("Index");
         }
     }
 }
