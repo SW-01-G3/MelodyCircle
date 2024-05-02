@@ -12,11 +12,16 @@
             editor.setContents(contents);
             return editor.root.innerHTML;
         }
-
-        const quill = new Quill('#editor', {
-            placeholder: 'Compose an epic...',
-            theme: 'snow',
-        });
+        let userIsAuth = @(User.Identity.IsAuthenticated ? Html.Raw("true") : Html.Raw("false"));
+        let quill; 
+        if (userIsAuth) {
+            quill = new Quill('#editor', {
+                placeholder: 'Compose an epic...',
+                theme: 'snow',
+            });
+        } else {
+            quill = new Quill('#editor');
+        }
         const quillDefaultHTML = "<p>Hello, <strong>World</strong></p>";
         let contentDiv = document.getElementById("contentDiv");
         let contentData = @Html.Raw(@Model.Content);
@@ -48,7 +53,6 @@
 </div>
 
 
-
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto my-4 w-50">
     @if (!Model.IsClosed)
     {
@@ -57,7 +61,6 @@
                 <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
 				<form asp-action="Comment" asp-route-id="@Model.Id" method="post">
 					<div class="form-group">
-						@* <textarea asp-for="Content" class="form-control"></textarea> *@
                         <input type="hidden" asp-for="Content" id="editContent" />
                         <div id="editor">
                             <p>Hello, <strong>World</strong></p>
@@ -71,8 +74,11 @@
 					<div class="form-group">
                         <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
 					</div>
-			    </form>
-			}
+            </form>
+        } else
+        {
+            <input type="hidden" id="editor" />
+        }
     }
     else
     {

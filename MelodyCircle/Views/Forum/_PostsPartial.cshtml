@@ -7,19 +7,19 @@
 @inject ApplicationDbContext Context
 
 
-        @foreach (var item in Model)
-        {
-            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;" data-tutorial-id="@item.Id">
-                <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
-                <hr>
-                <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
+@foreach (var item in Model)
+{
+    <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;" data-tutorial-id="@item.Id">
+        <h1 class="bold text-truncate d-block">@Html.DisplayFor(modelItem => item.Title)</h1>
+        <hr>
+        <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
         <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4">@Html.Translate("LB_SEECOMMENTS")</a>
-                @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
-                {
-                    <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
+        @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
+        {
+            <form asp-action="ClosePost" asp-controller="Forum" asp-route-id="@item.Id" method="post">
                 <button type="submit" class="btn btn-danger mt-2 mb-1">@Html.Translate("LB_CLOSEPOST")</button>
-                    </form>
-                }
-            </div>
+            </form>
+            @Html.AntiForgeryToken()
         }
-
+    </div>
+}

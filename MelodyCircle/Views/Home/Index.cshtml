@@ -25,7 +25,7 @@
                 @:stepData.push(@Html.Raw(item.Content));
             }
         }
-                var quill = new Quill('#editor');
+        var quill = new Quill('#editor');
 
         for (let cnt = 0; cnt < stepData.length; cnt++) {
             stepDivs[cnt].innerHTML = convertToHtml(quill, stepData[cnt]);
@@ -36,88 +36,53 @@
             return editor.root.innerHTML;
         }
 
-        document.getElementById("getPartial").addEventListener("click", () => {
-            let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
-            $.ajax({
-                url: 'Forum/Posts',
-                type: 'GET',
-                data: {
-                    lastId: lastId
-                },
-                success: function (response) {
-                    $('#content-container').append(response);
-                    console.log(response);
-                },
-                error: function () {
-                    console.error('Failed to fetch the HTML');
-                }
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.getElementById('getPartial');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
+                        $.ajax({
+                            url: 'Forum/Posts',
+                            type: 'GET',
+                            data: {
+                                lastId: lastId
+                            },
+                            success: function (response) {
+                                $('#content-container').append(response);
+                                console.log(response);
+                            },
+                            error: function () {
+                                console.error('Failed to fetch the HTML');
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null, // assuming the viewport is the root
+                rootMargin: '0px',
+                threshold: 0.1 // Adjust this value based on when you want to trigger the load
             });
-            console.log(lastId)
+
+            observer.observe(target);
         });
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.snow.css" rel="stylesheet" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">@Html.Translate("LB_WELCOME").</h1>
-    <hr />
-    <br />
-</div>
+
+    <h1 class="text-center">@Html.Translate("LB_WELCOME")</h1>
 
 @if (Model != null && Model.Any())
 {
     <div class="d-flex flex-wrap justify-content-center" id="content-container">
-        @foreach (var item in Model)
-        {
-            <div class="border border-purple bg-white text-dark p-2 p-sm-2 p-md-3 p-lg-5 rounded-3 text-center m-2" style="width: 24%;" data-tutorial-id="@item.Id" >
-                <h1 class="bold">@Html.DisplayFor(modelItem => item.Title)</h1>
-                <hr>
-                <section id="stepDiv" name="stepDiv" class="py-2 px-1"></section>
-                <a href="@Url.Action("Comments", "Forum", new { id = item.Id })" class="btn bg-purple text-white mt-4 text-wrap">Ver comentários</a>
-                @if (!item.IsClosed && (User.IsInRole("Admin") || User.IsInRole("Mod")))
-                {
-                        <!-- Botão de fechar Post -->
-                        <button type="button" class="mt-2 btn bg-danger text-white p-auto" data-bs-toggle="modal" data-bs-target="#fecharPostModal">
-                        Fechar Post
-                        </button>
-
-
-                    <!-- Modal para fechar post -->
-                    <div class="modal fade" id="fecharPostModal" tabindex="-1" aria-labelledby="fecharPostModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="fecharPostModalLabel">Fechar Post</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Mensagem de confirmação -->
-                                    <p>Tem certeza que deseja remover este post?</p>
-                                    <!-- Formulário para remover post -->
-                                    <form asp-controller="Forum" asp-action="ClosePost" method="post">
-                                        <input type="hidden" id="postId" name="id" value="@item.Id">
-                                        <div class="mb-3">
-                                            <!-- Botão de confirmação -->
-                                            <button type="submit" class="btn bg-danger text-white rounded">Remover</button>
-                                        </div>
-                                        <!-- Para proteção CSRF -->
-                                        @Html.AntiForgeryToken()
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    
-                }
-
-               
-            </div>
-        }
+        @await Html.PartialAsync("../Forum/_PostsPartial", Model)
     </div>
-    <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button>
+    @* <button id="getPartial" class="d-flex justify-content-center btn bg-purple text-white my-2">Ver partials</button> *@
+    <div id="getPartial"></div>
 }
+
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -133,7 +98,7 @@
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Esta página é destinada para os Fóruns criados debater temas através dos comentários dos utilizadores    </p>">
+            title="<p>@Html.Translate("TT_HOMEPAGE")</p>">
         ?
     </button>
 </div>

@@ -13,6 +13,10 @@
     var hasUriError = !string.IsNullOrEmpty(TempData["UriError"] as string);
 }
 
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+
+
 <div class=" text-center border-purple bg-white p-5 mx-auto w-50  row d-flex justify-content-center align-items-center">
 
     <div class="col-sm-3 justify-content-center align-items-center ">
@@ -148,14 +152,14 @@
 			    }
 
                 <button type="button" class="border-purple bg-purple rounded " data-bs-toggle="modal" data-bs-target="#addToCollabModal">
-                    <img src="~/img/statistic.svg" />
+                    <img src="~/img/music-add-svgrepo-com.svg" />
                 </button>
 
                 <div class="modal fade" id="addToCollabModal" tabindex="-1" aria-labelledby="addToCollabModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="addToCollabModalLabel">Colaborações Privadas</h5>
+                                <h5 class="modal-title" id="addToCollabModalLabel">@Html.Translate("LB_PRIVATECOLLABS")</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body" id="privateCollaborationsContainer">
@@ -173,7 +177,7 @@
                                     <div>
                                         <h3>@collaboration.Title</h3>
                                         <form asp-action="InviteToCollab" asp-controller="Collaboration" asp-route-collaborationId="@collaboration.Id"  asp-route-userId="@Model.User.UserName" >
-                                            <button class="btn bg-purple text-white" type="submit">Convidar</button>
+                                            <button class="btn bg-purple text-white" type="submit">@Html.Translate("LB_INVITE")</button>
                                         </form>
                                     </div>
                                 }
@@ -246,6 +250,8 @@
                 });
             </script>
 
+
+
 	    </div>
     }
 </div>
@@ -309,9 +315,10 @@
 	        MusicUri = Model.User.MusicURI.ToList()
         })
 
+
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Nesta página pode visualizar as informações de um utilizador. Nesta página é possível visualizar músicas favoritas, adicionar conexões, dar rating a um utilizador ou até mesmo convidar para uma colaboração. </p>">
+            title="<p>@Html.Translate("TT_PROFILE") </p>">
         ?
     </button>
 </div>

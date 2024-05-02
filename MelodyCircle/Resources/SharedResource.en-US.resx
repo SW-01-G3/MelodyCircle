@@ -150,6 +150,9 @@
   <data name="LB_ADD_MUSIC" xml:space="preserve">
     <value>Add Music</value>
   </data>
+  <data name="LB_ADMIN" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
   <data name="LB_ALLOWENTRY" xml:space="preserve">
     <value>Allow Entry</value>
   </data>
@@ -372,6 +375,9 @@
   <data name="LB_INSTRUMENTS" xml:space="preserve">
     <value>Instruments</value>
   </data>
+  <data name="LB_INVITE" xml:space="preserve">
+    <value>Invite</value>
+  </data>
   <data name="LB_INVITECOLLAB" xml:space="preserve">
     <value>Collaboration Invite</value>
   </data>
@@ -411,11 +417,17 @@
   <data name="LB_NO" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="LB_NOAVAVAILABLECOLLABS" xml:space="preserve">
+    <value>No available collaborations.</value>
+  </data>
   <data name="LB_NOAVAVAILABLETUTO" xml:space="preserve">
     <value>There are no tutorials available.</value>
   </data>
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>No Comments</value>
+  </data>
+  <data name="LB_NOCONNECTIONS" xml:space="preserve">
+    <value>No connections.</value>
   </data>
   <data name="LB_NOCONTENT" xml:space="preserve">
     <value>No content added yet.</value>
@@ -485,6 +497,9 @@
   </data>
   <data name="LB_PRIVATE" xml:space="preserve">
     <value>Private</value>
+  </data>
+  <data name="LB_PRIVATECOLLABS" xml:space="preserve">
+    <value>Private Collabs</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Profile</value>
@@ -648,8 +663,14 @@
   <data name="TT_ADDTUTO" xml:space="preserve">
     <value>You can add tutorials by mandatory inserting a title and description.</value>
   </data>
+  <data name="TT_CONNECTIONS" xml:space="preserve">
+    <value>This page is used to view the list of Connections.</value>
+  </data>
   <data name="TT_CREATEDTUTO" xml:space="preserve">
     <value>On this page you can view all of your tutorials. If you are an instructor, you can add tutorials using the '+' button. If you still want, you can even edit or delete created tutorials.</value>
+  </data>
+  <data name="TT_EDITCOLLABMODE" xml:space="preserve">
+    <value>On this page, the available collaborations will appear, as well as their information and the user will be able to access the editing and removal of the collaboration, the waiting list, the list of collaborators, finalize and open the arrangement panel.</value>
   </data>
   <data name="TT_EDITSTEP" xml:space="preserve">
     <value>You can edit a step by mandatory insertion of a title and an order.</value>
@@ -657,14 +678,23 @@
   <data name="TT_EDITTUTO" xml:space="preserve">
     <value>You can edit the tutorial title and description.</value>
   </data>
+  <data name="TT_HOMEPAGE" xml:space="preserve">
+    <value>This page is intended for Forums created to discuss topics through user comments.</value>
+  </data>
   <data name="TT_LOGIN" xml:space="preserve">
     <value>If you haven't registered yet, you can do so in the register option, with your email and password, or with your Google account.</value>
+  </data>
+  <data name="TT_NOTIFS" xml:space="preserve">
+    <value>On this page you can view system notifications.</value>
   </data>
   <data name="TT_PROFILE" xml:space="preserve">
     <value>User profile. If you wish, you can change your profile photo by clicking the change button. You can also add, edit and remove songs from Spotify.</value>
   </data>
   <data name="TT_REGISTER" xml:space="preserve">
     <value>Between 6 and 20 characters with an uppercase letter (A-Z) and a lowercase letter (a-z) are required for the password. Confirmation must be the same as the password.</value>
+  </data>
+  <data name="TT_SEARCH" xml:space="preserve">
+    <value>On this page you can search for Artists, Collaborations and Tutorials.</value>
   </data>
   <data name="TT_STEP" xml:space="preserve">
     <value>On this page you can view all the steps of the tutorial. If you are an instructor, you can add, edit or remove steps.</value>

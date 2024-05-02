@@ -31,6 +31,7 @@
         let trackTimers = [];
         let masterTimer;
         let playbackLineInterval;
+        let isFinished = @(Model.Collaboration.IsFinished ? Html.Raw("true") : Html.Raw("false"));
 
         let quill = new Quill("#editor");
         let collabDecription = @Html.Raw(Model.Collaboration.Description);
@@ -39,14 +40,16 @@
         let token = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
         function allowDrop(event) {
+            if (!isFinished) {
             console.log("Drag over the drop area");
             event.preventDefault();
+            }
         }
 
         function drag(event) {
             // console.log("Starting to drag the instrument:", event.target.getAttribute('data-instrument'));
             // event.dataTransfer.setData("text/plain", event.target.getAttribute('data-instrument'));
-
+            if(!isFinished) {
             const instrumentElement = event.target;
             const isUploaded = instrumentElement.classList.contains('uploaded');
             const instrumentData = {
@@ -57,11 +60,12 @@
 
             console.log('Dragging instrument:', instrumentData); 
             event.dataTransfer.setData("text/plain", JSON.stringify(instrumentData));
+            }
         }
 
         function drop(event) {
             event.preventDefault();
-
+            if (!isFinished) {
             const data = event.dataTransfer.getData("text/plain");
             console.log('Dropped data:', data); 
             const instrumentData = JSON.parse(data);
@@ -81,6 +85,7 @@
                 updateTrack(trackId, instrumentData, startTimeSeconds);
             } else {
                 console.error("Drop target is not a track container or instrumentData is missing.");
+            }
             }
         }
 
@@ -344,6 +349,7 @@
         }
 
         function attachClickEventToRemoveInstrument() {
+            if (!isFinished) {
             document.querySelectorAll('.removable-instrument').forEach(item => {
                 item.addEventListener('click', function (event) {
                     event.stopPropagation();
@@ -351,6 +357,7 @@
                     removeInstrumentFromTrack(instrumentId, this);
                 });
             });
+            }
         }
 
         function adjustPlaybackSpeed(bpm) {
@@ -471,11 +478,23 @@
                     </div>
                 }
                 <!-- Botão de Upload de Instrumento -->
-                <button type="button" id="upload-button" class="upload-button" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+                @if (Model.Collaboration.IsFinished)
+                {
+                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4 opacity-50" data-bs-toggle="modal" data-bs-target="#uploadModal" disabled>Upload</button>
+                } else
+                {
+                    <button type="button" id="upload-button" class="upload-button btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#uploadModal">Upload</button>
+                }
 
                 <button type="button" class="btn bg-purple text-white mt-4" data-bs-toggle="modal" data-bs-target="#collabDescriptionModal-@Model.Collaboration.Id">
 	                @Html.Translate("LB_DESCRIPTION")
                 </button>
+
+                <div class="d-flex justify-content-center align-items-center m-3">
+                    <button type="button" onclick="history.back();" class="btn bg-purple text-white">
+                        Voltar Atrás
+                    </button>
+                </div>
 
                 <div class="modal fade" id="collabDescriptionModal-@Model.Collaboration.Id" tabindex="-1" aria-labelledby="collabDescriptionLabel-@Model.Collaboration.Id" aria-hidden="true">
                     <div class="modal-dialog">
@@ -496,7 +515,7 @@
         <div class="col-md-10">
             <!-- Painel de Arranjo -->
             <div id="arrangement-panel">
-                <div class="header">
+                <div class="header d-flex">
                     <button id="play-button" class="control-button">
                         <img src="@Url.Content("~/img/painel-play.svg")" alt="Play" />
                     </button>
@@ -511,7 +530,13 @@
                     {
                         <span class="bpm-style-text">
                             BPM:
-                            <input type="number" id="bpm" value="@(Model.UserTrack?.BPM ?? 102)" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
+                            @if (Model.Collaboration.IsFinished)
+                            {
+                                <input type="number" id="bpm" value="@(Model.UserTrack?.BPM ?? 102)" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" disabled/>
+                            } else
+                            {
+                                <input type="number" id="bpm" value="@(Model.UserTrack?.BPM ?? 102)" min="60" max="150" onchange="adjustPlaybackSpeed(this.value)" />
+                            }
                         </span>
                     }
                     else
@@ -610,10 +635,14 @@
                     </div>
                     <button type="submit" class="btn bg-darkPurple text-white" id="upload-instrument-btn">Upload</button>
                 </form>
+
+
             </div>
         </div>
     </div>
 </div>
+
+
 
 <div id="chatModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-bottom-right" role="document">
