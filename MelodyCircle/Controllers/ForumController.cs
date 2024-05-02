@@ -186,9 +186,10 @@ namespace MelodyCircle.Controllers
 
             if (string.IsNullOrEmpty(comment.Content))
             {
-                ModelState.AddModelError(nameof(comment.Content), "Comentário não pode ser vazio");
-                TempData["ErrorMessage"] = "Comentário não pode ser vazio";
+                ModelState.AddModelError(nameof(comment.Content), "Comment can not be empty");
+                TempData["ErrorMessage"] = "Comment can not be empty";
             }
+
             else
             {
                 comment.Id = Guid.NewGuid();
@@ -202,7 +203,6 @@ namespace MelodyCircle.Controllers
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
             }
-
             return RedirectToAction(nameof(Comments), new { id = id });
         }
 

@@ -1,4 +1,6 @@
 ﻿@using MelodyCircle.ExtensionMethods
+@using System.Text.Json
+@using Newtonsoft.Json
 @model MelodyCircle.Models.ForumPost
 
 @section head {
@@ -7,105 +9,99 @@
 
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
-    <script> 
-        function convertToHtml(editor, contents) {
-            editor.setContents(contents);
-            return editor.root.innerHTML;
-        }
-        let userIsAuth = @(User.Identity.IsAuthenticated ? Html.Raw("true") : Html.Raw("false"));
-        let quill; 
-        if (userIsAuth) {
-            quill = new Quill('#editor', {
-                placeholder: 'Compose an epic...',
-                theme: 'snow',
-            });
-        } else {
-            quill = new Quill('#editor');
-        }
-        const quillDefaultHTML = "<p>Hello, <strong>World</strong></p>";
-        let contentDiv = document.getElementById("contentDiv");
-        let contentData = @Html.Raw(@Model.Content);
-        let commentData = [];
-        let commentDivs = document.getElementsByName("commentContent");
-        
-        contentDiv.innerHTML = convertToHtml(quill, contentData);
-        
-        @if (Model != null && Model.Comments.Any())
-        {
-            @foreach (var comment in Model.Comments)
-            {
-                @:commentData.push(@Html.Raw(comment.Content));
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let contentDiv = document.getElementById("contentDiv");
+            if (contentDiv) {
+                let quillView = new Quill(contentDiv, {
+                    theme: 'bubble',
+                    readOnly: true
+                });
+
+                let content = @Html.Raw(Json.Serialize(Model.Content));
+                quillView.setContents(JSON.parse(content));
             }
-        }
 
-        for (let cnt = 0; cnt < commentData.length; cnt++) {
-            commentDivs[cnt].innerHTML = convertToHtml(quill, commentData[cnt]);
-        }
+            let quillComment = new Quill('#editor-comment', {
+                placeholder: 'Write a comment...',
+                theme: 'snow'
+            });
 
-        
-        quill.root.innerHTML = quillDefaultHTML;
+            document.querySelector('#comment-form').addEventListener('submit', function (event) {
+                let content = quillComment.root.innerHTML;
+                let isEmpty = content.trim() === '<p><br></p>';
+                if (isEmpty) {
+                    event.preventDefault();
+                    document.getElementById('comment-error').textContent = "Comment cannot be empty";
+                } else {
+                    document.getElementById('hiddenContent').value = content;
+                }
+            });
+
+            let comments = @Html.Raw(JsonConvert.SerializeObject(Model.Comments.Select(c => c.Content)));
+            comments.forEach((comment, index) => {
+                let commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment-content-view');
+                document.body.appendChild(commentDiv);
+                let quillCommentView = new Quill(commentDiv, {
+                    theme: 'bubble',
+                    readOnly: true
+                });
+                quillCommentView.setContents(JSON.parse(comment));
+            });
+        });
     </script>
 }
 
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto" style="width: 50%;">
     <h1>@Model.Title</h1>
-    <div id="contentDiv" class=""></div>
+    <div id="contentDiv"></div>
 </div>
-
 
 <div class="border border-purple bg-white text-dark p-3 rounded-3 text-center mx-auto my-4 w-50">
     @if (!Model.IsClosed)
     {
-			@if (User.Identity.IsAuthenticated)
-			{
-                <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
-				<form asp-action="Comment" asp-route-id="@Model.Id" method="post">
-					<div class="form-group">
-                        <input type="hidden" asp-for="Content" id="editContent" />
-                        <div id="editor">
-                            <p>Hello, <strong>World</strong></p>
-                        </div>
-						<span asp-validation-for="Content" class="text-danger"></span>
-					</div>
-                    @if (TempData["ErrorMessage"] != null)
-                    {
-                        <span class="text-danger">@TempData["ErrorMessage"]</span>
-                    }
-					<div class="form-group">
-                        <input type="submit" value="@Html.Translate("LB_ADDCOMMENTS")" class="btn bg-purple text-white mt-3" />
-					</div>
-            </form>
-        } else
+        @if (User.Identity.IsAuthenticated)
         {
-            <input type="hidden" id="editor" />
+            <h3>@Html.Translate("LB_ADDCOMMENTS")</h3>
+            <form asp-action="Comment" asp-route-id="@Model.Id" method="post" id="comment-form">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <div id="editor-comment" style="height: 150px;"></div>
+                    <input type="hidden" name="Content" id="hiddenContent" />
+                </div>
+                <div id="comment-error" class="text-danger"></div>
+                <button type="submit" class="btn bg-purple text-white mt-3">@Html.Translate("LB_ADDCOMMENTS")</button>
+            </form>
+        }
+        else
+        {
+            <p>Please log in to comment</p>
         }
     }
     else
     {
         <div class="text-center my-4"><p>@Html.Translate("LB_COMMENTINFO")</p></div>
     }
-    
+
     <hr>
-    
+
     @if (Model.Comments.Any())
     {
-
         <h2>@Html.Translate("LB_COMMENTS")</h2>
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="bg-light p-3 mb-3 rounded">
-                    <div class="d-flex justify-content-between mb-2">
-                        <div><a asp-action="Profile" asp-controller="User" asp-route-id="@comment.User.UserName" class="text-decoration-none text-primary">@comment.User.UserName</a></div>
-                        <div class="text-muted">@comment.CreatedAt.ToString("dd-MM-yyyy HH:mm")</div>
-                    </div>
-                    <div name="commentContent" class="text-start">@comment.Content</div>
+        foreach (var comment in Model.Comments)
+        {
+            <div class="bg-light p-3 mb-3 rounded">
+                <div class="d-flex justify-content-between mb-2">
+                    <div><a asp-action="Profile" asp-controller="User" asp-route-id="@comment.User.UserName" class="text-decoration-none text-primary">@comment.User.UserName</a></div>
+                    <div class="text-muted">@comment.CreatedAt.ToString("dd-MM-yyyy HH:mm")</div>
                 </div>
-            }
-        
+                <div name="commentContent" class="text-start">@Html.Raw(comment.Content)</div>
+            </div>
+        }
     }
     else
     {
         <div class="text-center my-4"><p>@Html.Translate("LB_NOCOMMENTS")</p></div>
     }
 </div>
-
