@@ -375,6 +375,9 @@
   <data name="LB_INSTRUMENTS" xml:space="preserve">
     <value>Instrumentos</value>
   </data>
+  <data name="LB_INVITE" xml:space="preserve">
+    <value>Convidar</value>
+  </data>
   <data name="LB_INVITECOLLAB" xml:space="preserve">
     <value>Convite para colaboração</value>
   </data>
@@ -414,11 +417,17 @@
   <data name="LB_NO" xml:space="preserve">
     <value>Não</value>
   </data>
+  <data name="LB_NOAVAVAILABLECOLLABS" xml:space="preserve">
+    <value>Sem colaborações existentes.</value>
+  </data>
   <data name="LB_NOAVAVAILABLETUTO" xml:space="preserve">
     <value>Não existem tutoriais disponiveis.</value>
   </data>
   <data name="LB_NOCOMMENTS" xml:space="preserve">
     <value>Sem Comentários</value>
+  </data>
+  <data name="LB_NOCONNECTIONS" xml:space="preserve">
+    <value>Sem conexões.</value>
   </data>
   <data name="LB_NOCONTENT" xml:space="preserve">
     <value>Ainda não foi adicionado conteúdo.</value>
@@ -488,6 +497,9 @@
   </data>
   <data name="LB_PRIVATE" xml:space="preserve">
     <value>Privado</value>
+  </data>
+  <data name="LB_PRIVATECOLLABS" xml:space="preserve">
+    <value>Colaborações Privadas</value>
   </data>
   <data name="LB_PROFILE" xml:space="preserve">
     <value>Perfil</value>
@@ -651,8 +663,14 @@
   <data name="TT_ADDTUTO" xml:space="preserve">
     <value>Pode adicionar tutoriais através a inserção obrigatória de um título e uma descrição.</value>
   </data>
+  <data name="TT_CONNECTIONS" xml:space="preserve">
+    <value>Esta página serve para visualizar a lista de Conexões.</value>
+  </data>
   <data name="TT_CREATEDTUTO" xml:space="preserve">
     <value>Nesta página pode visualizar todos os seus tutoriais. Caso seja instrutor, poderá adicionar tutoriais no botão '+'. Se pretender ainda, pode mesmo editar ou eliminar tutoriais criados.</value>
+  </data>
+  <data name="TT_EDITCOLLABMODE" xml:space="preserve">
+    <value>Nesta página aparecerá as colaborações disponiveis, bem como as suas informações e o utilizador poderá aceder à edição e remoção da colaboração, à lista de espera, à lista de colaboradores, finalizar e abrir o painel de arranjo.</value>
   </data>
   <data name="TT_EDITSTEP" xml:space="preserve">
     <value>Pode editar passo através da inserção obrigatória de um título e uma ordem.</value>
@@ -660,14 +678,23 @@
   <data name="TT_EDITTUTO" xml:space="preserve">
     <value>Pode editar o título e a descrição do tutorial.</value>
   </data>
+  <data name="TT_HOMEPAGE" xml:space="preserve">
+    <value>Esta página é destinada para os Fóruns criados debater temas através dos comentários dos utilizadores.</value>
+  </data>
   <data name="TT_LOGIN" xml:space="preserve">
     <value>Se ainda não se registou pode faze-lo na opção registar, com email e password, ou com a sua conta Google.</value>
+  </data>
+  <data name="TT_NOTIFS" xml:space="preserve">
+    <value>Nesta página pode visualizar as notificações do sistema.</value>
   </data>
   <data name="TT_PROFILE" xml:space="preserve">
     <value>Perfil de utilizador. Se pretender pode alterar a foto de perfil ao clicar no botão de alteração. Pode ainda adicionar, editar e remover músicas do Spotify.</value>
   </data>
   <data name="TT_REGISTER" xml:space="preserve">
     <value>São necessários entre 6 a 20 caracteres com uma letra maiuscula (A-Z) e minuscula (a-z) para a palavra-passe.CoNfirmação tem de ser igual á palavra-passe.</value>
+  </data>
+  <data name="TT_SEARCH" xml:space="preserve">
+    <value>Nesta página pode pesquisar Artistas, Colaborações e Tutoriais.</value>
   </data>
   <data name="TT_STEP" xml:space="preserve">
     <value>Nesta página pode visualizar todos os passos do tutorial. Caso seja instrutor, poderá adicionar passos, editar ou remover.</value>

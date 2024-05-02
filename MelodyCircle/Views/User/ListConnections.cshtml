@@ -1,28 +1,36 @@
 ﻿@using MelodyCircle.ExtensionMethods
+@using Microsoft.IdentityModel.Tokens
 @model IEnumerable<User>
 
 @{
     ViewData["Title"] = Html.Translate("LB_CONNECTIONS");
 }
 
-       <h1 class="text-center">@Html.Translate("LB_CONNECTIONS")</h1>
+<h1 class="text-center">@Html.Translate("LB_CONNECTIONS")</h1>
+@if (Model.Count() > 0 || !Model.IsNullOrEmpty())
+{
+	<div class="container">
+	    <div class="row justify-content-center">
 
-<div class="container">
-    <div class="row justify-content-center">
+	        @foreach (var user in Model)
+	        {
+	            <div class="col-md-3 text-center">
+	                <a href="@Url.Action("Profile", "User", new { id = user.UserName })" class="profile-link">
+	                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.ProfilePicture))" alt="Profile Picture" class="profile-picture" style="width: 64px; height: 64px;" />
+	                    <h4>@Html.DisplayFor(modelItem => user.UserName)</h4>
+	                </a>
+	            </div>
+	        }
 
-        @foreach (var user in Model)
-        {
-            <div class="col-md-3 text-center">
-                <a href="@Url.Action("Profile", "User", new { id = user.UserName })" class="profile-link">
-                    <img src="data:image/jpeg;base64,@(Convert.ToBase64String(user.ProfilePicture))" alt="Profile Picture" class="profile-picture" style="width: 64px; height: 64px;" />
-                    <h4>@Html.DisplayFor(modelItem => user.UserName)</h4>
-                </a>
-            </div>
-        }
-
-    </div>
-</div>
-
+	    </div>
+	</div>
+}
+else
+{
+	<div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+		<h3>@Html.Translate("LB_NOCONNECTIONS")</h3>
+	</div>
+}
 @*<div>
     <a asp-action="Index">Back to List</a>
 </div>*@
@@ -31,7 +39,7 @@
 
 <div class="text-end">
     <button type="button" class="btn btn-sm bg-darkPurple text-white rounded-circle floating-button-left" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-            title="<p>Esta página serve para visualizar a lista de Conexões  </p>">
+            title="<p>@Html.Translate("TT_CONNECTIONS") </p>">
         ?
     </button>
 </div>
