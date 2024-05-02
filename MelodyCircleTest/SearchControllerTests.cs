@@ -87,8 +87,8 @@ namespace MelodyCircleTest
             var result = await _controller.Search(search);
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.Equal("Index", viewResult.ViewName);
+            var viewResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", viewResult.ActionName);
         }
 
     }
