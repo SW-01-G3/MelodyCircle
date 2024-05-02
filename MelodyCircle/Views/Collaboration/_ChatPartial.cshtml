@@ -7,6 +7,7 @@
     <button class="btn bg-purple text-white w-50 pt-2 d-block mx-auto" id="sendButton">@Html.Translate("LB_SEND")</button>
 </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script>
@@ -21,7 +22,7 @@
 
             connection.on("ReceiveMessage", function (userName, message, timestamp) {
                 var msg = document.createElement("div");
-                msg.className = "mb-2 bg-purple text-white rounded"
+                msg.className = "mb-2 p-2 bg-darkPurple text-white rounded"
                 var chatWindow = document.getElementById("chatWindow");
                 msg.innerHTML =
                     `
@@ -73,31 +74,3 @@
             });
         });
     </script>
-
-
-
-
-
-
-
-<style>
-    .message {
-        margin-bottom: 10px;
-    }
-
-    .user {
-        font-weight: bold;
-    }
-
-    .timestamp {
-        font-size: 0.8em;
-    }
-
-    .chat {
-        max-height: 33rem;
-        overflow-y: auto;
-        overflow-x: hidden;
-        display: flex;
-        flex-direction: column-reverse
-    }
-</style>
