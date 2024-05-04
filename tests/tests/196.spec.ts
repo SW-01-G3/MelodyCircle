@@ -3,6 +3,7 @@ import randomNumber from "../helper/randomNumber";
 
 let lastPostAdded: string;
 
+/* Eduardo Andrade, André Nunes */
 test("test", async ({ page }) => {
   page.on("dialog", (dialog) => dialog.accept());
   await page.goto("https://localhost:7237/");

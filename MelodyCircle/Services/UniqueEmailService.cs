@@ -4,6 +4,7 @@ namespace MelodyCircle.Services
 {
     public class UniqueEmailService
     {
+        /* Guilherme Bernardino */
         private readonly ApplicationDbContext _context;
 
         public UniqueEmailService(ApplicationDbContext context)

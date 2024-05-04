@@ -4,6 +4,7 @@ namespace MelodyCircle.Models
 {
     public class Collaboration
     {
+        /* Rodrigo Nogueira */
         public Guid Id { get; set; }
 
         [Required]

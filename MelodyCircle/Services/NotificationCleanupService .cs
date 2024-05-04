@@ -1,5 +1,6 @@
 ﻿namespace MelodyCircle.Services
 {
+    /* Guilherme Bernardino */
     public class NotificationCleanupService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;

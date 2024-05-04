@@ -3,6 +3,7 @@ import randomNumber from "../helper/randomNumber";
 
 let stepText: string = "TestStep" + randomNumber(0, 9999).toString();
 
+/* Eduardo Andrade, André Nunes */
 test("Adicionar passo a um tutorial, listar passos, editar passo e apagar passo.", async ({
   page,
 }) => {

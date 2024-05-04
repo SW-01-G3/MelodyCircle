@@ -12,12 +12,14 @@ namespace MelodyCircle.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
 
+        /* Guilherme Bernardino */
         public StatController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+        /* Guilherme Bernardino */
         public IActionResult UserCreationStats()
         {
             var currentDate = DateTime.Now;
@@ -40,6 +42,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public IActionResult TutorialCreationStats()
         {
             var currentDate = DateTime.Now;
@@ -62,6 +65,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public IActionResult CollaborationCreationStats()
         {
             var currentDate = DateTime.Now;
@@ -84,6 +88,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public IActionResult StepCreationStats()
         {
             var currentDate = DateTime.Now;
@@ -106,6 +111,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public async Task<IActionResult> UserTutorialStats(string userName)
         {
             //var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
@@ -137,6 +143,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public async Task<IActionResult> UserCollaborationStats(string userName)
         {
             var user = await _userManager.FindByIdAsync(userName);
@@ -174,6 +181,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino */
         public async Task<IActionResult> UserStepStats(string userName)
         {
 	        var user = await _userManager.FindByNameAsync(userName);

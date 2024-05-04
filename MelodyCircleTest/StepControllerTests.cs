@@ -8,6 +8,7 @@ using Moq;
 
 namespace MelodyCircleTest
 {
+    /* Guilherme Bernardino, Rodrigo Nogueira */
     public class StepControllerTests
     {
         private readonly UserManager<User> _userManager;

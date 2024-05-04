@@ -12,6 +12,7 @@ using Moq;
 
 namespace MelodyCircleTest
 {
+    /* Guilherme Bernardino, Rodrigo Nogueira */
     public class StatControllerTests : IClassFixture<ApplicationDbContextFixture>
 	{
 		private ApplicationDbContext _context;

@@ -2,6 +2,7 @@
 {
     public class CollaborationRating
     {
+        /* Guilherme Bernardino */
         public Guid Id { get; set; }
         public required string UserName { get; set; }
         public int Value { get; set; }

@@ -9,6 +9,8 @@
     ViewData["Title"] = @Html.Translate("LB_SUBSCRIBEDTUTO");
 }
 
+@* Eduardo Andrade, Rodrigo Nogueira, Guilherme Bernardino *@
+
 <h1 class="text-center">@ViewData["Title"]</h1>
 
 @section Scripts {
@@ -27,13 +29,11 @@
                             },
                             success: function (response) {
                                 $('#content-container').append(response);
-                                console.log(response);
                             },
                             error: function () {
                                 console.error('Failed to fetch the HTML');
                             }
                         });
-                        console.log(lastId);
                     }
                 });
             }, {

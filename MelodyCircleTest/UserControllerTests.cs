@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace MelodyCircleTest
 {
+    /* Guilherme Bernardino, Rodrigo Nogueira */
     public class UserControllerTests : IClassFixture<ApplicationDbContextFixture>
     {
         private ApplicationDbContext _context;

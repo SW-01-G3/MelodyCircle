@@ -11,6 +11,8 @@
     ViewData["Title"] = ViewBag.Title;
 }
 
+@* Eduardo Andrade, Rodrigo Nogueira, Guilherme Bernardino *@
+
 @section scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
@@ -75,7 +77,6 @@
                 return step.getAttribute('data-step-id');
             });
 
-            console.log('stepOrder to send:', stepOrder);
 
             fetch('/Step/UpdateOrder', {
                 method: 'POST',
@@ -86,7 +87,6 @@
             })
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
-                    console.log('Success:', data);
 
                     if (data && data.success) {
                         var centralMenuElements = document.querySelectorAll('#centralMenu .step-div');

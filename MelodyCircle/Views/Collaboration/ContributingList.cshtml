@@ -1,6 +1,8 @@
 ﻿@using MelodyCircle.ExtensionMethods
 @model MelodyCircle.Models.Collaboration
 
+@* Eduardo Andrade, Guilherme Bernardino *@
+
 @{
     ViewData["Title"] = @Html.Translate("LB_CONTRIBUTINGLIST");
 }
@@ -58,49 +60,3 @@
 
     <a href="@Url.Action("Index", "Collaboration")" class="btn bg-purple text-white">@Html.Translate("LB_GOBACK")</a>
 </div>
-
-
-@* <div id="chatWindow">
-    <!-- Messages will be displayed here -->
-</div>
-<input type="text" id="messageInput" />
-<button onclick="sendMessage()" >Send</button>
-
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-
-<button id="sendButton" class="btn btn-primary">Send</button>
-
-<script>
-    // Ensure that the document is fully loaded before attaching event handlers
-    document.addEventListener('DOMContentLoaded', function () {
-        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-        var sendButton = document.getElementById("sendButton");
-
-        // Disable the send button until the connection is established.
-        sendButton.disabled = true;
-
-        // Start the connection.
-        connection.start().then(function () {
-            console.log("Connected!");
-            sendButton.disabled = false; // Enable send button.
-        }).catch(function (err) {
-            console.error(err.toString());
-            alert("An error occurred while connecting to the chat service. Please try again later."); // Notify the user.
-        });
-
-        // Assuming sendMessage is your function to send messages.
-        sendButton.addEventListener("click", function (event) {
-            var message = document.getElementById("messageInput").value;
-            // Only send a message if the connection is in the 'Connected' state.
-            if (connection.state === signalR.HubConnectionState.Connected) {
-                connection.invoke("SendMessage", "@Model.Id", message).catch(function (err) {
-                    return console.error(err.toString());
-                });
-            } else {
-                console.error("Connection not established.");
-                // Optionally, try to reconnect or notify the user.
-            }
-            event.preventDefault();
-        });
-    });
-</script> *@

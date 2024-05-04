@@ -22,6 +22,7 @@
     var hasUploadError = !string.IsNullOrEmpty(TempData["UploadError"] as string);
 }
 
+@* Rodrigo Nogueira, Eduardo Andrade, Guilherme Bernardino *@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
 
@@ -83,8 +84,6 @@
         function updateTrack(trackId, instrumentData, startTimeSeconds) {
             var url = '@Url.Action("AddInstrumentToTrack", "Collaboration")';
 
-            console.log('Updating track with:', { trackId, instrumentData, startTimeSeconds });
-
             fetch(url, {
                 method: 'POST',
                 headers: {
@@ -126,7 +125,6 @@
         }
 
         function createInstrumentElement(instrumentName, startTimeSeconds, durationInSeconds, instrumentId, trackElement) {
-            console.log("Creating instrument element:", instrumentName);
 
             var element = document.createElement('div');
             element.classList.add('instrument-on-track');
@@ -181,7 +179,6 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        console.log('Instrument removed successfully:', instrumentId);
                         element.remove();
                     } else
                         console.error('Error removing instrument:', data.message);
@@ -277,7 +274,6 @@
                     audio.addEventListener('pause', () => {
                         currentPlaybackPosition = audio.currentTime;
                     });
-                    console.log('Current Playback Position on Pause:', currentPlaybackPosition);
                 });
 
                 trackTimers.forEach(clearTimeout);
@@ -411,9 +407,7 @@
                         body: JSON.stringify({ collaborationId: '@Model.Collaboration.Id', bpm: bpmValue })
                     })
                         .then(response => {
-                            if (response.ok)
-                                console.log('BPMs da colaboração atualizados com sucesso');
-                            else
+                            if (!response.ok)
                                 response.text().then(text => alert('Erro ao atualizar BPMs da colaboração: ' + text));
                         })
                         .catch(error => {

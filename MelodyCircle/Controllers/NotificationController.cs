@@ -11,6 +11,8 @@ namespace MelodyCircle.Controllers
         {
             _notificationService = notificationService;
         }
+
+        /* Guilherme Bernardino */
         public async Task<IActionResult> Index()
         {
             var userId = User.Identity.Name;
@@ -19,6 +21,7 @@ namespace MelodyCircle.Controllers
             return View(notifications);
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         public async Task<IActionResult> AcceptInvite(Guid notificationId)
         {
@@ -26,6 +29,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", "Home"); 
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         public async Task<IActionResult> DeclineInvite(Guid notificationId)
         {

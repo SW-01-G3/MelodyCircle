@@ -19,6 +19,7 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
+        /* Rodrigo Nogueira */
         public async Task<IActionResult> Index()
         {
             if (User.IsInRole("Teacher") || User.IsInRole("Mod") || User.IsInRole("Admin"))
@@ -27,6 +28,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("ViewMode");
         }
 
+        /* Rodrigo Nogueira, Eduardo Andrade */
         // GET: Tutorial/EditMode
         public async Task<IActionResult> EditMode()
         {
@@ -52,6 +54,7 @@ namespace MelodyCircle.Controllers
             return View("EditMode", tutoriaisCriadosComContagem);
         }
 
+        /* Eduardo Andrade, Rodrigo Nogueira */
         public async Task<IActionResult> EditModePartials(Guid lastId)
         {
             var userId = _userManager.GetUserId(User); 
@@ -75,6 +78,7 @@ namespace MelodyCircle.Controllers
             return PartialView("_EditModePartial", tutoriaisCriadosComContagem);
         }
 
+        /* Rodrigo Nogueira, Eduardo Andrade */
         // GET: Tutorial/ViewMode
         public async Task<IActionResult> ViewMode()
         {
@@ -92,6 +96,7 @@ namespace MelodyCircle.Controllers
             return View("ViewMode", tutoriaisInscritosComContagem);
         }
 
+        /* Eduardo Andrade, Rodrigo Nogueira */
         public async Task<IActionResult> ViewModePartials(Guid lastId)
         {
             var userId = _userManager.GetUserId(User); 
@@ -108,12 +113,14 @@ namespace MelodyCircle.Controllers
             return PartialView("_ViewModePartial", tutoriaisInscritosComContagem);
         }
 
+        /* Rodrigo Nogueira, Eduardo Andrade */
         // GET: Tutorial/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        /* Rodrigo Nogueira, Eduardo Andrade */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Description")] Tutorial tutorial, IFormFile photo)
@@ -178,6 +185,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /* Rodrigo Nogueira */
         // GET: Tutorial/Edit/id
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -192,6 +200,7 @@ namespace MelodyCircle.Controllers
             return View(tutorial);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Tutorial/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -251,6 +260,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /* Rodrigo Nogueira */
         // GET: Tutorial/Delete/id
         public async Task<IActionResult> Delete(Guid? id)
         {
@@ -265,6 +275,7 @@ namespace MelodyCircle.Controllers
             return View(tutorial);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Tutorial/Delete/id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -281,12 +292,14 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /* Rodrigo Nogueira */
         // GET: Tutorial/AddStep/id
         public IActionResult AddStep(Guid id)
         {
             return RedirectToAction("Index", "Step", new { tutorialId = id });
         }
 
+        /* Rodrigo Nogueira */
         public async Task<IActionResult> RateTutorial(Guid id, int rating)
         {
             if (rating < 0 || rating > 10)
@@ -319,6 +332,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Rodrigo Nogueira */
         private bool TutorialExists(Guid id)
         {
             return _context.Tutorials.Any(e => e.Id == id);

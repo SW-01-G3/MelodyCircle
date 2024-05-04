@@ -4,6 +4,7 @@ import randomNumber from "../helper/randomNumber";
 let tutorialTitle: string =
   "UmTutorialDeTeste" + randomNumber(0, 9999).toString();
 
+/* Eduardo Andrade, André Nunes */
 test("Testar listagem e adição de tutoriais.", async ({ page }) => {
   await page.goto("https://localhost:7237/");
   await page.getByRole("link", { name: "Login" }).click();

@@ -1,5 +1,6 @@
 ﻿namespace MelodyCircle.Models
 {
+    /* Guilherme Bernardino */
     public class UserRating
     {
         public Guid Id { get; set; }

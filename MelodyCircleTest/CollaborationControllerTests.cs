@@ -10,6 +10,8 @@ using Moq;
 using System.Security.Claims;
 using System.Text;
 
+/* Guilherme Bernardino, Rodrigo Nogueira */
+
 namespace MelodyCircleTest
 {
 	public class CollaborationControllerTests : IClassFixture<ApplicationDbContextFixture>

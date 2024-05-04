@@ -2,6 +2,7 @@
 
 namespace MelodyCircle.ViewModels
 {
+    /* Rodrigo Nogueira */
     public class SearchResultViewModel
     {
         public List<User> Users { get; set; }

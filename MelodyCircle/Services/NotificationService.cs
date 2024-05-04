@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MelodyCircle.Services
 {
+    /* Guilherme Bernardino */
     public class NotificationService
     {
         private readonly ApplicationDbContext _context;

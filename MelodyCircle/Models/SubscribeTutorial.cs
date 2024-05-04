@@ -2,6 +2,7 @@
 {
     public class SubscribeTutorial
     {
+        /* Rodrigo Nogueira */
         public Guid Id { get; set; }
 
         public User User { get; set; }

@@ -10,7 +10,8 @@ using SendGrid.Helpers.Mail;
 
 namespace MelodyCircleTest
 {
-	public class ForumControllerTests : IClassFixture<ApplicationDbContextFixture>
+    /* Guilherme Bernardino, Rodrigo Nogueira */
+    public class ForumControllerTests : IClassFixture<ApplicationDbContextFixture>
 	{
 		private ApplicationDbContext _context;
 		private ForumController _controller;

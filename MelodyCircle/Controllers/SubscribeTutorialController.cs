@@ -18,6 +18,7 @@ namespace MelodyCircle.Controllers
             _userManager = userManager;
         }
 
+        /* Rodrigo Nogueira */
         // GET: SubscribeTutorial/Subscribe
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,6 +51,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", "Tutorial");
         }
 
+        /* Rodrigo Nogueira */
         [HttpGet]
         public IActionResult SubscribeConfirmation(Guid tutorialId)
         {
@@ -57,6 +59,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Rodrigo Nogueira */
         // GET: SubscribeTutorial/MyTutorials
         [Authorize]
         public async Task<IActionResult> MyTutorials()
@@ -71,6 +74,7 @@ namespace MelodyCircle.Controllers
             return View(tutoriaisInscritos);
         }
 
+        /* Rodrigo Nogueira */
         // GET: SubscribeTutorial/RemoveSubscription/id
         [HttpPost]
         [ValidateAntiForgeryToken]

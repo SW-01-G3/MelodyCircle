@@ -15,6 +15,7 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
+        /* Rodrigo Nogueira */
         public async Task<IActionResult> Index()
         {
             var recentUsers = await _context.Users
@@ -43,6 +44,7 @@ namespace MelodyCircle.Controllers
             return View(viewModel);
         }
 
+        /* Rodrigo Nogueira */
         [HttpPost]
         public async Task<IActionResult> Search(Search search)
         {

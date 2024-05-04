@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 
+/* Eduardo Andrade, André Nunes */
 test("test", async ({ page }) => {
   page.on("dialog", (dialog) => dialog.accept());
   await page.goto("https://localhost:7237/");

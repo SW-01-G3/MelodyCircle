@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MelodyCircle.Models
 {
+    /* Guilherme Bernardino */
     public class User : IdentityUser
     {
         [PersonalData]

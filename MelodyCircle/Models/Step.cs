@@ -4,6 +4,7 @@ namespace MelodyCircle.Models
 {
     public class Step
     {
+        /* Rodrigo Nogueira */
         public Guid Id { get; set; }
         public Guid TutorialId { get; set; }
         public Tutorial Tutorial { get; set; }

@@ -22,6 +22,7 @@ namespace MelodyCircle.Controllers
         //        .Take(1).ToListAsync());
         //}
 
+        /* Eduardo Andrade */
         public async Task<IActionResult> Posts(Guid lastId)
         {
             var forumPosts = await _context.ForumPost.Where(elem => (elem.Id > lastId))
@@ -32,14 +33,15 @@ namespace MelodyCircle.Controllers
             return PartialView("_PostsPartial", forumPosts);
         }
 
+        /* Rodrigo Nogueira */
         // GET: Forum/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/Create
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Content")] ForumPost forumPost)
@@ -75,6 +77,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /* Rodrigo Nogueira */
         // GET: Forum/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -91,6 +94,7 @@ namespace MelodyCircle.Controllers
             return View(forumPost);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -125,6 +129,7 @@ namespace MelodyCircle.Controllers
             return View(forumPost);
         }
 
+        /* Rodrigo Nogueira */
         // GET: Forum/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
@@ -140,6 +145,7 @@ namespace MelodyCircle.Controllers
             return View(forumPost);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -155,6 +161,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /* Rodrigo Nogueira */
         // GET: Forum/Comments/5
         public async Task<IActionResult> Comments(Guid? id)
         {
@@ -174,6 +181,7 @@ namespace MelodyCircle.Controllers
             return View(forumPost);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/Comment/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -206,6 +214,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(Comments), new { id = id });
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/ClosePost/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -221,6 +230,7 @@ namespace MelodyCircle.Controllers
             return View("ClosePost", forumPost);
         }
 
+        /* Rodrigo Nogueira */
         // POST: Forum/ConfirmClosePost/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -238,6 +248,7 @@ namespace MelodyCircle.Controllers
             return View("ClosePostConfirmation", forumPost);
         }
 
+        /* Rodrigo Nogueira */
         private bool ForumPostExists(Guid id)
         {
             return _context.ForumPost.Any(e => e.Id == id);

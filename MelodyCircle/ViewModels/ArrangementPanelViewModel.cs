@@ -2,6 +2,7 @@
 
 namespace MelodyCircle.ViewModels
 {
+    /* Rodrigo Nogueira */
     public class ArrangementPanelViewModel
     {
         public Collaboration Collaboration { get; set; }

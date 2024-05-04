@@ -16,7 +16,8 @@ namespace MelodyCircle.Controllers
         private readonly UserManager<User> _userManager;
         private readonly NotificationService _notificationService;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        
+
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public CollaborationController(ApplicationDbContext context, UserManager<User> userManager, IWebHostEnvironment hostingEnvironment, NotificationService notificationService)
         {
             _context = context;
@@ -25,12 +26,14 @@ namespace MelodyCircle.Controllers
             _notificationService = notificationService;
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         //GET: Collaboration
         public Task<IActionResult> Index()
         {
             return Task.FromResult<IActionResult>(RedirectToAction("EditMode"));
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: Collaboration/EditModeCollab
         public async Task<IActionResult> EditMode()
         {
@@ -41,6 +44,7 @@ namespace MelodyCircle.Controllers
             return View("EditModeCollab", collabsCriados);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: Collaboration/ViewModeCollab
         public async Task<IActionResult> ViewMode()
         {
@@ -55,6 +59,7 @@ namespace MelodyCircle.Controllers
             return View("ViewModeCollab", collabsParticipantes);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /Collaboration/WaitingList/{id}
         public async Task<IActionResult> WaitingList(Guid id)
         {
@@ -77,6 +82,7 @@ namespace MelodyCircle.Controllers
             return View(collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public async Task<IActionResult> JoinQueue(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);
@@ -87,6 +93,7 @@ namespace MelodyCircle.Controllers
             return View("JoinQueue", collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -115,6 +122,7 @@ namespace MelodyCircle.Controllers
             return View("JoinQueueConfirmation", collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AllowUser(Guid collaborationId, string userId)
@@ -151,6 +159,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(WaitingList), new { id = collaborationId });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /Collaboration/ContributingUsers/{collaborationId}
         public async Task<IActionResult> ContributingUsers(Guid id)
         {
@@ -164,6 +173,7 @@ namespace MelodyCircle.Controllers
             return View("ContributingList", collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: /Collaboration/RemoveUser/{collaborationId}/{userId}
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -192,6 +202,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction(nameof(ContributingUsers), new { id = collaborationId });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public async Task<IActionResult> InviteToCollab(Guid collaborationId, string userId)
         {
             var collaboration = await _context.Collaborations
@@ -220,12 +231,14 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("EditMode");
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public IActionResult Create()
         {
             var model = new Collaboration();
             return View(model);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Collaboration collaboration, IFormFile photo)
@@ -303,6 +316,7 @@ namespace MelodyCircle.Controllers
             return View(collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /collaboration/edit/{id}
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -323,6 +337,7 @@ namespace MelodyCircle.Controllers
             return View(collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: /collaboration/edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -408,6 +423,7 @@ namespace MelodyCircle.Controllers
             return View(collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /collaboration/delete/{id}
         public async Task<IActionResult> Delete(Guid? id)
         {
@@ -428,6 +444,7 @@ namespace MelodyCircle.Controllers
             return View(collaboration);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: /collaboration/delete/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -450,6 +467,7 @@ namespace MelodyCircle.Controllers
             return Forbid();
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /collaboration/finish/{id}
         public async Task<IActionResult> Finish(Guid? id)
         {
@@ -472,6 +490,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: /collaboration/finishconfirmed/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -498,6 +517,7 @@ namespace MelodyCircle.Controllers
             return Forbid();
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public async Task<IActionResult> RateCollaboration(Guid id, int rating)
         {
             if (rating < 0 || rating > 10)
@@ -541,6 +561,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: /Collaboration/ArrangementPanel/{id}
         public async Task<IActionResult> ArrangementPanel(Guid id, string error = "")
         {
@@ -600,6 +621,7 @@ namespace MelodyCircle.Controllers
             return View("Painel", arrangementViewModel);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddInstrumentToTrack([FromBody] InstrumentOnTrackDto dto)
@@ -665,6 +687,7 @@ namespace MelodyCircle.Controllers
             });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveInstrumentFromTrack([FromBody] InstrumentOnTrackDto dto)
@@ -687,6 +710,7 @@ namespace MelodyCircle.Controllers
             return Json(new { success = true, message = "Instrumento removido com sucesso" });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         public async Task<IActionResult> UploadInstrument(Guid collaborationId, string instrumentName, IFormFile soundFile)
         {
@@ -722,6 +746,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("ArrangementPanel", new { id = collaborationId, error = "Please insert a .mp3 file" });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpGet]
         public async Task<IActionResult> GetInstrumentAudio(Guid id)
         {
@@ -766,17 +791,20 @@ namespace MelodyCircle.Controllers
             return Ok();
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         private TimeSpan GetAudioDuration(string filePath)
         {
             using var reader = new Mp3FileReader(filePath);
             return reader.TotalTime;
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         private bool CollaborationExists(Guid id)
         {
             return _context.Collaborations.Any(e => e.Id == id);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         private async Task<ActionResult<Collaboration>> GetCollaboration(Guid id)
         {
             var collaboration = await _context.Collaborations.FindAsync(id);

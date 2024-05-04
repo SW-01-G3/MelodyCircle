@@ -2,28 +2,14 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<Tutorial>
 
+@* Eduardo Andrade, Rodrigo Nogueira, Guilherme Bernardino *@
+
 @{
     ViewData["Title"] = @Html.Translate("LB_CREATEDTUTO");
 }
 
 @section Scripts {
     <script>
-        // document.getElementById("getPartial").addEventListener("click", () => {
-        //     let lastId = document.getElementById("content-container").lastElementChild.getAttribute("data-tutorial-id");
-        //     $.ajax({
-        //         url: 'EditModePartials',
-        //         type: 'GET',
-        //         data: {
-        //             lastId: lastId
-        //         },
-        //         success: function (response) {
-        //             $('#content-container').append(response);
-        //         },
-        //         error: function () {
-        //             console.error('Failed to fetch the HTML');
-        //         }
-        //     });
-        // });
         document.addEventListener("DOMContentLoaded", () => {
             const target = document.getElementById('getPartial');
             const observer = new IntersectionObserver((entries, observer) => {
@@ -46,9 +32,9 @@
                     }
                 });
             }, {
-                root: null, // assuming the viewport is the root
+                root: null, 
                 rootMargin: '0px',
-                threshold: 0.1 // Adjust this value based on when you want to trigger the load
+                threshold: 0.1
             });
 
             observer.observe(target);

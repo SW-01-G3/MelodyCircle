@@ -17,18 +17,21 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
+        /* Rodrigo Nogueira */
         public IActionResult Index()
         {
             var listOfPosts = _context.ForumPost.OrderBy(elem => elem.Id).Take(3).ToList();
             return View(listOfPosts);
         }
 
+        /* Rodrigo Nogueira */
         [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        /* Rodrigo Nogueira */
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

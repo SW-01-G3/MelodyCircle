@@ -13,12 +13,14 @@ namespace MelodyCircle.Controllers
         private readonly UserManager<User> _userManager;
         private int maxSteps = 100;
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public StepController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         public async Task<IActionResult> Index(Guid? tutorialId)
         {
             if (tutorialId == null)
@@ -47,6 +49,7 @@ namespace MelodyCircle.Controllers
             return View(steps);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: Step/Create
         public IActionResult Create(Guid? tutorialId)
         {
@@ -58,6 +61,7 @@ namespace MelodyCircle.Controllers
             return View();
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: Step/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -108,6 +112,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: Step/Delete/tutorialId
         public async Task<IActionResult> Delete(Guid? id)
         {
@@ -122,6 +127,7 @@ namespace MelodyCircle.Controllers
             return View(step);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // POST: Step/DeleteConfirmed
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -138,6 +144,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         // GET: Step/Edit/tutorialId
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -154,6 +161,7 @@ namespace MelodyCircle.Controllers
             return View(step);
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid tutorialId, [Bind("Id,TutorialId,Title,Content,Order")] Step step)
@@ -194,6 +202,7 @@ namespace MelodyCircle.Controllers
             }
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -239,6 +248,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index", new { tutorialId = step.TutorialId });
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         [HttpPost]
         public async Task<IActionResult> UpdateOrder([FromBody] List<Guid> stepOrder)
         {
@@ -271,6 +281,7 @@ namespace MelodyCircle.Controllers
             }
         }
 
+        /* Guilherme Bernardino, Rodrigo Nogueira */
         private bool StepExists(Guid tutorialId)
         {
             return _context.Steps.Any(e => e.Id == tutorialId);

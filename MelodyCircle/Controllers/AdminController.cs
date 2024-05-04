@@ -14,6 +14,7 @@ namespace MelodyCircle.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly ApplicationDbContext _context;
 
+		/* Guilherme Bernardino */
         public AdminController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
@@ -21,12 +22,14 @@ namespace MelodyCircle.Controllers
 			_context = context;
         }
 
+        /* Guilherme Bernardino */
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
 
+        /* Guilherme Bernardino */
         [HttpGet]
         public async Task<IActionResult> EditUser(string? id)
         {
@@ -47,6 +50,7 @@ namespace MelodyCircle.Controllers
             return PartialView("_EditUserRoles", user);
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUserRoles(string userId, string selectedRole)
@@ -64,6 +68,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Guilherme Bernardino */
         public async Task<IActionResult> DeleteUser(string? id)
         {
             if (id == null)
@@ -74,6 +79,7 @@ namespace MelodyCircle.Controllers
             return PartialView("_DeleteUser", user);
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUserConfirmed(string userId)
@@ -83,6 +89,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         [ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateMultipleUsers(int numberOfUsers)
@@ -131,7 +138,8 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
+        /* Guilherme Bernardino */
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteAddedUsers()
 		{
@@ -148,7 +156,8 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
+        /* Guilherme Bernardino */
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateMultipleTutorials(int numberOfTutorials)
 		{
@@ -181,7 +190,8 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
+        /* Guilherme Bernardino */
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteAddedTutorials()
 		{
@@ -194,7 +204,8 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
+        /* Guilherme Bernardino */
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateMultipleCollaborations(int numberOfCollaborations)
 		{
@@ -230,7 +241,8 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
+        /* Guilherme Bernardino */
+        [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteAddedCollaborations()
 		{
@@ -243,6 +255,7 @@ namespace MelodyCircle.Controllers
 			return RedirectToAction("Index");
 		}
 
+        /* Guilherme Bernardino */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateMultipleSteps(int numberOfSteps)
@@ -288,6 +301,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Index");
         }
 
+        /* Guilherme Bernardino */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAddedSteps()

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MelodyCircleTest
 {
+    /* Guilherme Bernardino, Rodrigo Nogueira */
     public class SearchControllerTests : IClassFixture<ApplicationDbContextFixture>
     {
         private ApplicationDbContext _context;

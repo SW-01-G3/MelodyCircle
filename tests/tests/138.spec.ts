@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 
+/* Eduardo Andrade, André Nunes */
 test("test", async ({ page }) => {
   await page.goto("https://localhost:7237/");
   await page.getByRole("link", { name: "Login" }).click();

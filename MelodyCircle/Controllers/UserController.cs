@@ -20,6 +20,7 @@ namespace MelodyCircle.Controllers
             _context = context;
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Return the index of all users list.
         /// </summary>
@@ -30,6 +31,7 @@ namespace MelodyCircle.Controllers
             return View(await users.ToListAsync());
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Action for checking user profile by param (Username).
         /// Displays the profile of the user.
@@ -66,6 +68,7 @@ namespace MelodyCircle.Controllers
             return View(viewModel);
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Action for adding a new connection of a user.
         /// Checks for user existence, connection existence.
@@ -109,6 +112,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id = userToAdd.UserName });
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Action for removing an existing connection of a user.
         /// Checks for user existence, connection existence.
@@ -136,6 +140,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id = connectionToRemove.UserName });
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Lists all user's connections.
         /// Checks for user existence and list's connections.
@@ -167,6 +172,7 @@ namespace MelodyCircle.Controllers
             return View(user.Connections);
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Insert a new profile picture on the editing user's profile.
         /// Checks for picture's format, transforms it into an array of bytes.
@@ -216,6 +222,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Action for rating a user's profile.
         /// Checks existence of user and if rating is between 0 and 10 (included).
@@ -272,6 +279,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// Listing of all rating by user.
         /// </summary>
@@ -290,6 +298,7 @@ namespace MelodyCircle.Controllers
             return View(_context.UserRating.Where(u => u.UserId.ToString().Equals(id.ToString())));
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// 
         /// </summary>
@@ -333,6 +342,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id });
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// 
         /// </summary>
@@ -362,6 +372,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id }); 
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// 
         /// </summary>
@@ -403,6 +414,7 @@ namespace MelodyCircle.Controllers
             return RedirectToAction("Profile", new { id }); 
         }
 
+        /* Guilherme Bernardino */
         /// <summary>
         /// 
         /// </summary>

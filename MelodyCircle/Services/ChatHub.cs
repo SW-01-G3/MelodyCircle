@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MelodyCircle.Services
 {
+    /* Guilherme Bernardino */
     public class ChatHub : Hub
     {
         private readonly ApplicationDbContext _context;
